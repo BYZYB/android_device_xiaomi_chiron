@@ -14,6 +14,27 @@
 # limitations under the License.
 #
 
+# ART
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    dalvik.vm.boot-dex2oat-threads=8 \
+    dalvik.vm.dex2oat-cpu-set=0,1,2,3,4,5,6,7 \
+    dalvik.vm.dex2oat-filter=everything \
+    dalvik.vm.dex2oat-minidebuginfo=false \
+    dalvik.vm.dex2oat-threads=8 \
+    dalvik.vm.dex2oat64.enabled=true \
+    dalvik.vm.image-dex2oat-cpu-set=0,1,2,3,4,5,6,7 \
+    dalvik.vm.image-dex2oat-filter=everything \
+    dalvik.vm.image-dex2oat-threads=8 \
+    dalvik.vm.minidebuginfo=false \
+    pm.dexopt.ab-ota=everything \
+    pm.dexopt.bg-dexopt=everything \
+    pm.dexopt.boot=everything \
+    pm.dexopt.first-boot=everything \
+    pm.dexopt.inactive=everything \
+    pm.dexopt.install=everything \
+    pm.dexopt.shared=everything \
+    ro.sys.fw.dex2oat_thread_count=8
+
 # Audio
 PRODUCT_PROPERTY_OVERRIDES += \
     aaudio.hw_burst_min_usec=2000 \
@@ -113,18 +134,6 @@ PRODUCT_PRODUCT_PROPERTIES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.cne.feature=1
 
-# Dexpreopt
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    dalvik.vm.dex2oat-filter=everything \
-    dalvik.vm.image-dex2oat-filter=everything \
-    pm.dexopt.ab-ota=everything \
-    pm.dexopt.bg-dexopt=everything \
-    pm.dexopt.boot=everything \
-    pm.dexopt.first-boot=everything \
-    pm.dexopt.inactive=everything \
-    pm.dexopt.install=everything \
-    pm.dexopt.shared=everything
-
 # Display
 PRODUCT_PROPERTY_OVERRIDES += \
     debug.cpurend.vsync=false \
@@ -168,6 +177,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Perf
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.extension_library=libqti-perfd-client.so \
+    ro.vendor.qti.am.reschedule_service=true \
     ro.vendor.qti.sys.fw.bg_apps_limit=60
 
 # Radio
