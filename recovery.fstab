@@ -10,7 +10,7 @@
 /misc emmc /dev/block/bootdevice/by-name/misc
 /persist ext4 /dev/block/bootdevice/by-name/persist flags=display="Persist"
 /recovery emmc /dev/block/bootdevice/by-name/recovery flags=backup=1
-/system ext4 /dev/block/bootdevice/by-name/system
+/system_root ext4 /dev/block/bootdevice/by-name/system flags=display="System"
 /system_image emmc /dev/block/bootdevice/by-name/system
 /vendor ext4 /dev/block/bootdevice/by-name/cust flags=backup=1;wipeingui
 /vendor_image emmc /dev/block/bootdevice/by-name/cust flags=backup=1

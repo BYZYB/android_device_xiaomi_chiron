@@ -36,6 +36,7 @@ on init
 on fs
     wait /dev/block/platform/soc/1da4000.ufshc
     symlink /dev/block/platform/soc/1da4000.ufshc /dev/block/bootdevice
+    export ANDROID_ROOT /system_root
     chmod 0660 /dev/qseecom
     chmod 0664 /dev/ion
     chown system drmrpc /dev/qseecom
