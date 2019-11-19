@@ -47,9 +47,6 @@ USE_CUSTOM_AUDIO_POLICY := 1
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(DEVICE_PATH)/bluetooth
 BOARD_HAVE_BLUETOOTH_QCOM := true
 
-# Camera
-USE_DEVICE_SPECIFIC_CAMERA := true
-
 # Dexpreopt
 # All apps are pre-compiled with "everything" filter in this rom, which conflicts with the build rules and needs a patch to work.
 # Please refer to the part "diff --git a/core/product.mk b/core/product.mk" in "repo_18.diff" to resolve build errors.
