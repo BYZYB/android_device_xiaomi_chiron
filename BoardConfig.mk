@@ -42,9 +42,6 @@ AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
 BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO := true
 
-# Bluetooth
-BOARD_HAVE_BLUETOOTH_QCOM := true
-
 # Dexpreopt
 # All apps are pre-compiled with "everything" filter in this rom, which conflicts with the build rules and needs a patch to work.
 # Please refer to the part "diff --git a/core/product.mk b/core/product.mk" in "repo_18.diff" to resolve build errors.
