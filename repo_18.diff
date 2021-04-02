@@ -1,20 +1,8 @@
 project build/make/
 diff --git a/core/Makefile b/core/Makefile
-index 5b0430f..3c05f47 100644
+index b418946..39a1fb3 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -325,9 +325,9 @@ endif
- # Both of these tags will be removed and replaced with "release-keys"
- # when the target-files is signed in a post-build step.
- ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/make/target/product/security/testkey)
--BUILD_KEYS := test-keys
-+BUILD_KEYS := release-keys
- else
--BUILD_KEYS := dev-keys
-+BUILD_KEYS := release-keys
- endif
- BUILD_VERSION_TAGS += $(BUILD_KEYS)
- BUILD_VERSION_TAGS := $(subst $(space),$(comma),$(sort $(BUILD_VERSION_TAGS)))
 @@ -2109,15 +2109,7 @@ endif
  #      do bsdiff because boot and recovery will contain different number of entries
  #      (BOARD_INCLUDE_RECOVERY_ACPIO = true).
@@ -226,16 +214,16 @@ index 267859a..31bfedf 100644
  # Bluetooth:
 
 diff --git a/target/product/handheld_product.mk b/target/product/handheld_product.mk
-index 968d150..d723c52 100644
+index 968d150..e326fed 100644
 --- a/target/product/handheld_product.mk
 +++ b/target/product/handheld_product.mk
-@@ -33,12 +33,10 @@ PRODUCT_PACKAGES += \
+@@ -32,13 +32,9 @@ PRODUCT_PACKAGES += \
+     OneTimeInitializer \
      preinstalled-packages-platform-handheld-product.xml \
      QuickSearchBox \
-     SettingsIntelligence \
+-    SettingsIntelligence \
 -    frameworks-base-overlays
-+    NavigationBarMode3ButtonOverlay \
-+    NavigationBarModeGesturalOverlay
++    SettingsIntelligence
 
  ifeq ($(LINEAGE_BUILD),)
  PRODUCT_PACKAGES += \
@@ -399,7 +387,7 @@ index f81a607..b12f9e6 100644
 -    EmergencyInfo \
 
 diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
-index 76c2c97..f9d52fd 100644
+index c5758c7..1779087 100644
 --- a/tools/releasetools/common.py
 +++ b/tools/releasetools/common.py
 @@ -3062,89 +3062,6 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
