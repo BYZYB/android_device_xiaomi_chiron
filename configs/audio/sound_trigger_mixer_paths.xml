@@ -51,7 +51,7 @@
     <ctl name="TX13 INP MUX" value="CDC_DEC_5" />
     <ctl name="AIF4_MAD Mixer SLIM TX12" value="0" />
     <ctl name="AIF4_MAD Mixer SLIM TX13" value="0" />
-    <ctl name="CPE AFE MAD Enable" value="0"/>
+    <ctl name="CPE AFE MAD Enable" value="0" />
     <ctl name="CLK MODE" value="EXTERNAL" />
     <ctl name="EC BUF MUX INP" value="ZERO" />
     <ctl name="ADC MUX1" value="DMIC" />
@@ -104,7 +104,7 @@
         <ctl name="TX13 INP MUX" value="CPE_TX_PP" />
         <ctl name="AIF4_MAD Mixer SLIM TX13" value="1" />
         <ctl name="MAD Input" value="DMIC0" />
-        <ctl name="CPE AFE MAD Enable" value="1"/>
+        <ctl name="CPE AFE MAD Enable" value="1" />
     </path>
 
     <path name="listen-cpe-handset-mic-ecpp">
@@ -119,7 +119,7 @@
         <ctl name="MADONOFF Switch" value="1" />
         <ctl name="AIF4_MAD Mixer SLIM TX12" value="1" />
         <ctl name="MAD Input" value="DMIC0" />
-        <ctl name="CPE AFE MAD Enable" value="1"/>
+        <ctl name="CPE AFE MAD Enable" value="1" />
     </path>
 
     <path name="listen-ape-handset-mic">

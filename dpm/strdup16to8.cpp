@@ -16,7 +16,6 @@
 */
 
 #include "jstring.h"
-
 #include <assert.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -25,9 +24,10 @@
  * Convert a UTF-16 string to UTF-8.
  *
  */
-char * strndup16to8 (const char16_t* s, size_t n)
+char *strndup16to8(const char16_t *s, size_t n)
 {
-    if (s == NULL) {
+    if (s == NULL)
+    {
         return NULL;
     }
 
@@ -37,14 +37,14 @@ char * strndup16to8 (const char16_t* s, size_t n)
      * too since it is an overflow value for our
      * strnlen16to8 implementation.
      */
-    if (len >= SIZE_MAX-1)
+    if (len >= SIZE_MAX - 1)
         return NULL;
 
-    char* ret = static_cast<char*>(malloc(len + 1));
+    char *ret = static_cast<char *>(malloc(len + 1));
     if (ret == NULL)
         return NULL;
 
-    strncpy16to8 (ret, s, n);
+    strncpy16to8(ret, s, n);
 
     return ret;
 }
@@ -53,7 +53,7 @@ char * strndup16to8 (const char16_t* s, size_t n)
  * Given a UTF-16 string, compute the length of the corresponding UTF-8
  * string in bytes.
  */
-extern size_t strnlen16to8(const char16_t* utf16Str, size_t len)
+extern size_t strnlen16to8(const char16_t *utf16Str, size_t len)
 {
     size_t utf8Len = 0;
 
@@ -81,8 +81,10 @@ extern size_t strnlen16to8(const char16_t* utf16Str, size_t len)
 
     /* Fast path for the usual case where 3*len is < SIZE_MAX-1.
      */
-    if (len < (SIZE_MAX-1)/3) {
-        while (len != 0) {
+    if (len < (SIZE_MAX - 1) / 3)
+    {
+        while (len != 0)
+        {
             len--;
             unsigned int uic = *utf16Str++;
 
@@ -97,10 +99,11 @@ extern size_t strnlen16to8(const char16_t* utf16Str, size_t len)
     }
 
     /* The slower but paranoid version */
-    while (len != 0) {
+    while (len != 0)
+    {
         len--;
-        unsigned int  uic     = *utf16Str++;
-        size_t        utf8Cur = utf8Len;
+        unsigned int uic = *utf16Str++;
+        size_t utf8Cur = utf8Len;
 
         if (uic > 0x07ff)
             utf8Len += 3;
@@ -110,16 +113,15 @@ extern size_t strnlen16to8(const char16_t* utf16Str, size_t len)
             utf8Len++;
 
         if (utf8Len < utf8Cur) /* overflow detected */
-            return SIZE_MAX-1;
+            return SIZE_MAX - 1;
     }
 
     /* don't return SIZE_MAX to avoid common user bug */
     if (utf8Len == SIZE_MAX)
-        utf8Len = SIZE_MAX-1;
+        utf8Len = SIZE_MAX - 1;
 
     return utf8Len;
 }
-
 
 /**
  * Convert a Java-Style UTF-16 string + length to a JNI-Style UTF-8 string.
@@ -133,35 +135,42 @@ extern size_t strnlen16to8(const char16_t* utf16Str, size_t len)
  * Please note, a terminated \0 is always added, so your result will always
  * be "strlen16to8() + 1" bytes long.
  */
-extern char* strncpy16to8(char* utf8Str, const char16_t* utf16Str, size_t len)
+extern char *strncpy16to8(char *utf8Str, const char16_t *utf16Str, size_t len)
 {
-    char* utf8cur = utf8Str;
+    char *utf8cur = utf8Str;
 
     /* Note on overflows: We assume the user did check the result of
      * strnlen16to8() properly or at a minimum checked the result of
      * its malloc(SIZE_MAX) in case of overflow.
      */
-    while (len != 0) {
+    while (len != 0)
+    {
         len--;
         unsigned int uic = *utf16Str++;
 
-        if (uic > 0x07ff) {
+        if (uic > 0x07ff)
+        {
             *utf8cur++ = (uic >> 12) | 0xe0;
             *utf8cur++ = ((uic >> 6) & 0x3f) | 0x80;
             *utf8cur++ = (uic & 0x3f) | 0x80;
-        } else if (uic > 0x7f || uic == 0) {
+        }
+        else if (uic > 0x7f || uic == 0)
+        {
             *utf8cur++ = (uic >> 6) | 0xc0;
             *utf8cur++ = (uic & 0x3f) | 0x80;
-        } else {
+        }
+        else
+        {
             *utf8cur++ = uic;
 
-            if (uic == 0) {
+            if (uic == 0)
+            {
                 break;
             }
         }
     }
 
-   *utf8cur = '\0';
+    *utf8cur = '\0';
 
-   return utf8Str;
+    return utf8Str;
 }

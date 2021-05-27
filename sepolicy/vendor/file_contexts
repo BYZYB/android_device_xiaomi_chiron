@@ -1,14 +1,17 @@
+# Amplifier & ultrasound
+/(mnt/vendor)/persist/audio(/.*)? u:object_r:audio_persist_file:s0
+
 # DRM
 /(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.1-service\.widevine u:object_r:hal_drm_widevine_exec:s0
 
 # Fingerprint
+/(mnt/vendor)/persist/fpc(/.*)? u:object_r:fingerprint_persist_file:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service\.xiaomi_msm8998 u:object_r:hal_fingerprint_default_exec:s0
-/dev/goodix_fp                                                u:object_r:fingerprint_device:s0
-/data/misc/gf_data(/.*)?                                      u:object_r:fingerprintd_data_file:s0
-/data/vendor/fpc(/.*)?                                        u:object_r:fingerprint_vendor_data_file:s0
-/data/vendor/goodix(/.*)?                                     u:object_r:fingerprint_vendor_data_file:s0
-/(mnt/vendor)/persist/fpc(/.*)?                               u:object_r:fingerprint_persist_file:s0
-/sys/devices/soc/soc:fingerprint_fpc(/.*)?                    u:object_r:fingerprint_sysfs:s0
+/data/misc/gf_data(/.*)? u:object_r:fingerprintd_data_file:s0
+/data/vendor/fpc(/.*)? u:object_r:fingerprint_vendor_data_file:s0
+/data/vendor/goodix(/.*)? u:object_r:fingerprint_vendor_data_file:s0
+/dev/goodix_fp u:object_r:fingerprint_device:s0
+/sys/devices/soc/soc:fingerprint_fpc(/.*)? u:object_r:fingerprint_sysfs:s0
 
 # HVDCP
 /sys/devices(/platform)?/soc/[a-z0-9]+\.i2c/i2c-[0-9]+/[0-9]+-[a-z0-9]+/[a-z0-9]+\.i2c:qcom,[a-z0-9]+@[a-z0-9]:qcom,smb[a-z0-9]+-parallel-slave@[0-9]+/power_supply/parallel(/.*)? u:object_r:sysfs_usb_supply:s0
@@ -17,18 +20,21 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.light@2\.0-service\.xiaomi_msm8998 u:object_r:hal_light_default_exec:s0
 
 # Mlipay
-/(vendor|system/vendor)/bin/mlipayd@1.1                       u:object_r:hal_mlipay_default_exec:s0
+/(vendor|system/vendor)/bin/mlipayd@1.1 u:object_r:hal_mlipay_default_exec:s0
 
 # Root extra symlink
-/persist                                                      u:object_r:mnt_vendor_file:s0
+/persist u:object_r:mnt_vendor_file:s0
 
 # Sensors
-/(vendor|system/vendor)/bin/init\.panel_info\.sh              u:object_r:qti_init_shell_exec:s0
-/(mnt/vendor)/persist/PRSensorData\.txt                       u:object_r:sensors_persist_file:s0
+/(mnt/vendor)/persist/PRSensorData\.txt u:object_r:sensors_persist_file:s0
+/(vendor|system/vendor)/bin/init\.panel_info\.sh u:object_r:qti_init_shell_exec:s0
 
 # Thermal engine
-/data/decrypt\.txt                                            u:object_r:thermal_decrypt_file:s0
-/data/vendor/thermal(/.*)?                                    u:object_r:thermal_data_file:s0
+/data/decrypt\.txt u:object_r:thermal_decrypt_file:s0
+/data/vendor/thermal(/.*)? u:object_r:thermal_data_file:s0
+
+# Ultrasound
+/dev/elliptic(.*)? u:object_r:sound_device:s0
 
 # WiFi
-/vendor/bin/wifi-mac-generator                                u:object_r:wifi-mac-generator_exec:s0
+/vendor/bin/wifi-mac-generator u:object_r:wifi-mac-generator_exec:s0

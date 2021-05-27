@@ -31,26 +31,29 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.config.vc_call_vol_steps=11 \
     ro.vendor.audio.sdk.fluencetype=fluence \
     ro.vendor.audio.sdk.ssr=false \
+    vendor.audio_hal.period_size=192 \
     vendor.audio.adm.buffering.ms=6 \
     vendor.audio.dolby.ds2.enabled=false \
     vendor.audio.dolby.ds2.hardbypass=false \
     vendor.audio.feature.a2dp_offload.enable=false \
     vendor.audio.feature.afe_proxy.enable=true \
     vendor.audio.feature.anc_headset.enable=true \
+    vendor.audio.feature.audiozoom.enable=false \
     vendor.audio.feature.battery_listener.enable=false \
     vendor.audio.feature.compr_cap.enable=false \
+    vendor.audio.feature.compr_voip.enable=true \
     vendor.audio.feature.compress_in.enable=false \
     vendor.audio.feature.compress_meta_data.enable=true \
-    vendor.audio.feature.compr_voip.enable=true \
     vendor.audio.feature.concurrent_capture.enable=false \
     vendor.audio.feature.custom_stereo.enable=true \
+    vendor.audio.feature.deepbuffer_as_primary.enable=false \
     vendor.audio.feature.display_port.enable=true \
     vendor.audio.feature.dsm_feedback.enable=false \
     vendor.audio.feature.dynamic_ecns.enable=false \
     vendor.audio.feature.ext_hw_plugin.enable=false \
     vendor.audio.feature.external_dsp.enable=false \
-    vendor.audio.feature.external_speaker.enable=false \
     vendor.audio.feature.external_speaker_tfa.enable=false \
+    vendor.audio.feature.external_speaker.enable=false \
     vendor.audio.feature.fluence.enable=true \
     vendor.audio.feature.fm.enable=true \
     vendor.audio.feature.hdmi_edid.enable=false \
@@ -59,23 +62,21 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.audio.feature.hifi_audio.enable=false \
     vendor.audio.feature.hwdep_cal.enable=false \
     vendor.audio.feature.incall_music.enable=false \
-    vendor.audio.feature.multi_voice_session.enable=true \
     vendor.audio.feature.keep_alive.enable=false \
     vendor.audio.feature.kpi_optimize.enable=true \
     vendor.audio.feature.maxx_audio.enable=false \
+    vendor.audio.feature.multi_voice_session.enable=true \
     vendor.audio.feature.ras.enable=true \
     vendor.audio.feature.record_play_concurency.enable=false \
-    vendor.audio.feature.src_trkn.enable=true \
+    vendor.audio.feature.snd_mon.enable=false \
     vendor.audio.feature.spkr_prot.enable=false \
+    vendor.audio.feature.src_trkn.enable=true \
     vendor.audio.feature.ssrec.enable=false \
-    vendor.audio.feature.usb_offload.enable=true \
     vendor.audio.feature.usb_offload_burst_mode.enable=false \
     vendor.audio.feature.usb_offload_sidetone_volume.enable=false \
-    vendor.audio.feature.deepbuffer_as_primary.enable=false \
+    vendor.audio.feature.usb_offload.enable=true \
     vendor.audio.feature.vbat.enable=true \
     vendor.audio.feature.wsa.enable=false \
-    vendor.audio.feature.audiozoom.enable=false \
-    vendor.audio.feature.snd_mon.enable=false \
     vendor.audio.flac.sw.decoder.24bit=true \
     vendor.audio.hw.aac.encoder=false \
     vendor.audio.offload.buffer.size.kb=32 \
@@ -89,8 +90,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.audio.spkr_prot.tx.sampling_rate=48000 \
     vendor.audio.tunnel.encode=false \
     vendor.audio.use.sw.alac.decoder=true \
-    vendor.audio.use.sw.ape.decoder=true \
-    vendor.audio_hal.period_size=192
+    vendor.audio.use.sw.ape.decoder=true
 
 # Bluetooth
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -121,6 +121,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     debug.sf.hw=1 \
     debug.sf.latch_unsignaled=1 \
     ro.opengles.version=196610 \
+    vendor.display.disable_avr=1 \
     vendor.display.disable_partial_split=1 \
     vendor.display.disable_rotator_downscale=1 \
     vendor.display.disable_skip_validate=1 \
@@ -142,6 +143,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.dbg.vt_avail_ovr=1 \
     persist.dbg.wfc_avail_ovr=1 \
     persist.vendor.qti.telephony.vt_cam_interface=1
+
+# I/O scheduler
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    sys.io.scheduler=bfq
 
 # Media
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -188,7 +193,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.sensors.pug=true \
     ro.vendor.sensors.spg=false \
     ro.vendor.sensors.sta_detect=true \
-    ro.vendor.sensors.taptap_gesture=true
+    ro.vendor.sensors.taptap_gesture=true \
+    ro.xiaomi.sar_fusion=true
 
 # SurfaceFlinger
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -199,18 +205,14 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.surface_flinger.vsync_sf_event_phase_offset_ns=6000000
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    debug.sf.early_phase_offset_ns=1500000 \
     debug.sf.early_app_phase_offset_ns=1500000 \
+    debug.sf.early_gl_app_phase_offset_ns=15000000 \
     debug.sf.early_gl_phase_offset_ns=3000000 \
-    debug.sf.early_gl_app_phase_offset_ns=15000000
+    debug.sf.early_phase_offset_ns=1500000
 
 # Time services
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.delta_time.enable=true
-
-# WFD
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.sys.wfd.virtual=0
 
 # Wlan
 PRODUCT_PROPERTY_OVERRIDES += \

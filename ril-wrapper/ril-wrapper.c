@@ -33,66 +33,75 @@
  * These structs are only avaiable in ril_internal.h
  * which is not exposed.
  */
-typedef struct {
+typedef struct
+{
     int requestNumber;
-    void (*dispatchFunction)(void* p, void* pRI);
-    int (*responseFunction)(void* p, void* response, size_t responselen);
+    void (*dispatchFunction)(void *p, void *pRI);
+    int (*responseFunction)(void *p, void *response, size_t responselen);
 } CommandInfo;
 
-typedef struct RequestInfo {
+typedef struct RequestInfo
+{
     int32_t token;
-    CommandInfo* pCI;
-    struct RequestInfo* p_next;
+    CommandInfo *pCI;
+    struct RequestInfo *p_next;
     char cancelled;
     char local;
 } RequestInfo;
 
-static const RIL_RadioFunctions* qmiRilFunctions;
-static const struct RIL_Env* ossRilEnv;
+static const RIL_RadioFunctions *qmiRilFunctions;
+static const struct RIL_Env *ossRilEnv;
 
-static void onRequestCompleteShim(RIL_Token t, RIL_Errno e, void* response, size_t responselen) {
-    if (!response) {
+static void onRequestCompleteShim(RIL_Token t, RIL_Errno e, void *response, size_t responselen)
+{
+    if (!response)
+    {
         ALOGV("%s: response is NULL", __func__);
         goto do_not_handle;
     }
 
-    RequestInfo* requestInfo = (RequestInfo*)t;
-    if (!requestInfo) {
+    RequestInfo *requestInfo = (RequestInfo *)t;
+    if (!requestInfo)
+    {
         ALOGE("%s: request info is NULL", __func__);
         goto do_not_handle;
     }
 
     int request = requestInfo->pCI->requestNumber;
-    switch (request) {
-        /*
+    switch (request)
+    {
+    /*
          * RIL can report a DC-HSPAP rat which is not supported by AOSP,
          * resulting in missing mobile data icon.
          * Remap DC-HSPAP (20) to HSPAP (15) to get a H+ mobile data icon.
          */
-        case RIL_REQUEST_DATA_REGISTRATION_STATE:
-            if (responselen != sizeof(RIL_DataRegistrationStateResponse)) {
-                ALOGE("%s: invalid response length", __func__);
-                goto do_not_handle;
-            }
+    case RIL_REQUEST_DATA_REGISTRATION_STATE:
+        if (responselen != sizeof(RIL_DataRegistrationStateResponse))
+        {
+            ALOGE("%s: invalid response length", __func__);
+            goto do_not_handle;
+        }
 
-            RIL_DataRegistrationStateResponse* dataRegState =
-                (RIL_DataRegistrationStateResponse*)response;
+        RIL_DataRegistrationStateResponse *dataRegState =
+            (RIL_DataRegistrationStateResponse *)response;
 
-            if (dataRegState->rat == RADIO_TECH_DC_HSPAP) {
-                dataRegState->rat = RADIO_TECH_HSPAP;
-                ALOGI("%s: remapping DC-HSPAP to HSPAP", __func__);
-            }
-            break;
+        if (dataRegState->rat == RADIO_TECH_DC_HSPAP)
+        {
+            dataRegState->rat = RADIO_TECH_HSPAP;
+            ALOGI("%s: remapping DC-HSPAP to HSPAP", __func__);
+        }
+        break;
     }
 
 do_not_handle:
     ossRilEnv->OnRequestComplete(t, e, response, responselen);
 }
 
-const RIL_RadioFunctions* RIL_Init(const struct RIL_Env* env, int argc, char** argv) {
-    RIL_RadioFunctions const* (*qmiRilInit)(const struct RIL_Env* env, int argc, char** argv);
+const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc, char **argv)
+{
+    RIL_RadioFunctions const *(*qmiRilInit)(const struct RIL_Env *env, int argc, char **argv);
     static struct RIL_Env shimmedRilEnv;
-    void* qmiRil;
+    void *qmiRil;
 
     /*
      * Save the RilEnv passed from rild.
@@ -109,7 +118,8 @@ const RIL_RadioFunctions* RIL_Init(const struct RIL_Env* env, int argc, char** a
      * Open the qmi RIL.
      */
     qmiRil = dlopen(RIL_LIB_NAME, RTLD_LOCAL);
-    if (!qmiRil) {
+    if (!qmiRil)
+    {
         ALOGE("%s: failed to load %s: %s\n", __func__, RIL_LIB_NAME, dlerror());
         return NULL;
     }
@@ -118,7 +128,8 @@ const RIL_RadioFunctions* RIL_Init(const struct RIL_Env* env, int argc, char** a
      * Get a reference to the qmi RIL_Init.
      */
     qmiRilInit = dlsym(qmiRil, "RIL_Init");
-    if (!qmiRilInit) {
+    if (!qmiRilInit)
+    {
         ALOGE("%s: failed to find RIL_Init\n", __func__);
         goto fail_after_dlopen;
     }
@@ -127,7 +138,8 @@ const RIL_RadioFunctions* RIL_Init(const struct RIL_Env* env, int argc, char** a
      * Init the qmi RIL add pass it the shimmed RilEnv.
      */
     qmiRilFunctions = qmiRilInit(&shimmedRilEnv, argc, argv);
-    if (!qmiRilFunctions) {
+    if (!qmiRilFunctions)
+    {
         ALOGE("%s: failed to get functions from RIL_Init\n", __func__);
         goto fail_after_dlopen;
     }

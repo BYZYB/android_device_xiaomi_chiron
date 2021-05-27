@@ -15,24 +15,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.lineageos.settings.doze"
-    android:sharedUserId="android.uid.system"
-    android:versionCode="1"
-    android:versionName="1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.lineageos.settings.doze" android:sharedUserId="android.uid.system" android:versionCode="1" android:versionName="1.0">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
-    <uses-sdk
-        android:minSdkVersion="24"
-        android:targetSdkVersion="24" />
+    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="24" />
 
-    <application
-        android:label="@string/device_settings_app_name"
-        android:persistent="true">
+    <application android:label="@string/device_settings_app_name" android:persistent="true">
 
         <receiver android:name=".BootCompletedReceiver">
             <intent-filter>
@@ -41,15 +33,10 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".DozeService"
-            android:permission="XiaomiDozeService">
+        <service android:name=".DozeService" android:permission="XiaomiDozeService">
         </service>
 
-        <activity
-            android:name=".DozeSettingsActivity"
-            android:label="@string/ambient_display_title"
-            android:theme="@style/Theme.Main">
+        <activity android:name=".DozeSettingsActivity" android:label="@string/ambient_display_title" android:theme="@style/Theme.Main">
             <intent-filter>
                 <action android:name="org.lineageos.settings.device.DOZE_SETTINGS" />
                 <category android:name="android.intent.category.DEFAULT" />

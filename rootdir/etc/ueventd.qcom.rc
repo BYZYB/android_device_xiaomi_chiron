@@ -31,138 +31,131 @@
 firmware_directories /vendor/firmware_mnt/image/
 
 # The DIAG device node is not world writable/readable
-/dev/diag                 0660   system     oem_2901
-
-/dev/wlan                 0660   wifi       wifi
-/dev/kgsl-3d0             0666   system     system
-/dev/ion                  0664   system     system
-/dev/rtc0                 0660   system     system
-/dev/smd7                 0660   bluetooth  bluetooth
-/dev/ipa                  0660   radio      radio
-/dev/wwan_ioctl           0660   radio      radio
-/dev/ipaNatTable          0660   radio      radio
-/dev/rmnet_ctrl           0660   usb        usb
+/dev/diag 0660 system oem_2901
+/dev/ion 0664 system system
+/dev/ipa 0660 radio radio
+/dev/ipaNatTable 0660 radio radio
+/dev/kgsl-3d0 0666 system system
+/dev/rmnet_ctrl 0660 usb usb
+/dev/rtc0 0660 system system
+/dev/smd7 0660 bluetooth bluetooth
+/dev/wlan 0660 wifi wifi
+/dev/wwan_ioctl 0660 radio radio
 
 # Permissions for CSVT
-/dev/smd11                0660   radio      radio
+/dev/smd11 0660 radio radio
 
 # Permissions for BT/FM
-/dev/btpower              0660   bluetooth  net_bt
-/dev/ttyHS0               0660   bluetooth  net_bt
+/dev/btpower 0660 bluetooth net_bt
+/dev/ttyHS0 0660 bluetooth net_bt
 
 # Permissions for pta
-/dev/pta                  0660   system     system
-
-/dev/smdcntl8             0640   radio      radio
-/dev/at_usb0              0640   radio      radio
-/dev/at_mdm0              0640   radio      radio
-
-/dev/video*               0660   system     camera
-/dev/media*               0660   system     camera
-/dev/v4l-subdev*          0660   system     camera
-
-/dev/qseecom              0660   system     drmrpc
-/dev/smcinvoke            0660   system     system
-/dev/qsee_ipc_irq_spss    0660   system     drmrpc
-/dev/seemplog             0660   system     system
-/dev/spcom                0660   system     system
-
-/dev/jpeg0                0660   system     camera
-/dev/adsprpc-smd          0664   system     system
-/dev/sdsprpc-smd          0660   system     system
+/dev/adsprpc-smd 0664 system system
+/dev/at_mdm0 0640 radio radio
+/dev/at_usb0 0640 radio radio
+/dev/jpeg0 0660 system camera
+/dev/media* 0660 system camera
+/dev/pta 0660 system system
+/dev/qsee_ipc_irq_spss 0660 system drmrpc
+/dev/qseecom 0660 system drmrpc
+/dev/sdsprpc-smd 0660 system system
+/dev/seemplog 0660 system system
+/dev/smcinvoke 0660 system system
+/dev/smdcntl8 0640 radio radio
+/dev/spcom 0660 system system
+/dev/v4l-subdev* 0660 system camera
+/dev/video* 0660 system camera
 
 # Permissions for audio
-/dev/wcd-dsp-glink        0660   system     audio
-/dev/msm_qcelp            0660   system     audio
-/dev/msm_evrc             0660   system     audio
-/dev/msm_wma              0660   system     audio
-/dev/msm_wmapro           0660   system     audio
-/dev/msm_alac             0660   system     audio
-/dev/msm_ape              0660   system     audio
-/dev/msm_amrnb            0660   system     audio
-/dev/msm_amrwb            0660   system     audio
-/dev/msm_amrwbplus        0660   system     audio
-/dev/msm_aac              0660   system     audio
-/dev/msm_multi_aac        0660   system     audio
-/dev/msm_aac_in           0660   system     audio
-/dev/msm_qcelp_in         0660   system     audio
-/dev/msm_evrc_in          0660   system     audio
-/dev/msm_amrnb_in         0660   system     audio
-/dev/msm_amrwb_in         0660   system     audio
-/dev/msm_a2dp_in          0660   system     audio
-/dev/msm_ac3              0660   system     audio
-/dev/msm_audio_cal        0660   system     audio
-/dev/msm_hweffects        0660   system     audio
-/dev/msm_cad              0660   system     audio
-/dev/msm_fm               0660   system     audio
-/dev/msm_mvs              0660   system     audio
-/dev/msm_pcm_lp_dec       0660   system     audio
-/dev/msm_preproc_ctl      0660   system     audio
-/dev/msm_rtac             0660   system     audio
-/dev/msm_voicememo        0660   system     audio
-
-/dev/i2c-5                0660   media      media
-/dev/avtimer              0660   system     audio
+/dev/avtimer 0660 system audio
+/dev/i2c-5 0660 media media
+/dev/msm_a2dp_in 0660 system audio
+/dev/msm_aac 0660 system audio
+/dev/msm_aac_in 0660 system audio
+/dev/msm_ac3 0660 system audio
+/dev/msm_alac 0660 system audio
+/dev/msm_amrnb 0660 system audio
+/dev/msm_amrnb_in 0660 system audio
+/dev/msm_amrwb 0660 system audio
+/dev/msm_amrwb_in 0660 system audio
+/dev/msm_amrwbplus 0660 system audio
+/dev/msm_ape 0660 system audio
+/dev/msm_audio_cal 0660 system audio
+/dev/msm_cad 0660 system audio
+/dev/msm_evrc 0660 system audio
+/dev/msm_evrc_in 0660 system audio
+/dev/msm_fm 0660 system audio
+/dev/msm_hweffects 0660 system audio
+/dev/msm_multi_aac 0660 system audio
+/dev/msm_mvs 0660 system audio
+/dev/msm_pcm_lp_dec 0660 system audio
+/dev/msm_preproc_ctl 0660 system audio
+/dev/msm_qcelp 0660 system audio
+/dev/msm_qcelp_in 0660 system audio
+/dev/msm_rtac 0660 system audio
+/dev/msm_voicememo 0660 system audio
+/dev/msm_wma 0660 system audio
+/dev/msm_wmapro 0660 system audio
+/dev/wcd-dsp-glink 0660 system audio
 
 # Wlan
-/sys/devices/soc/600000.qcom,pcie/pci0000:00/0000:00:00.0/0000:01:00.0/net/wlan0/queues/rx-* rps_cpus 0660 system system
+/sys/devices/soc/18800000.qcom,icnss/net/p2p0/queues/rx-* rps_cpus 0660 system system
+/sys/devices/soc/18800000.qcom,icnss/net/softap0/queues/rx-* rps_cpus 0660 system system
+/sys/devices/soc/18800000.qcom,icnss/net/wlan0/queues/rx-* rps_cpus 0660 system system
 /sys/devices/soc/600000.qcom,pcie/pci0000:00/0000:00:00.0/0000:01:00.0/net/p2p0/queues/rx-* rps_cpus 0660 system system
-/sys/devices/soc/a000000.qcom,wcnss-wlan/net/wlan0/queues/rx-* rps_cpus           0660   system     system
-/sys/devices/soc/a000000.qcom,wcnss-wlan/net/p2p0/queues/rx-* rps_cpus            0660   system     system
-/sys/devices/soc/18800000.qcom,icnss/net/wlan0/queues/rx-* rps_cpus   0660   system     system
-/sys/devices/soc/18800000.qcom,icnss/net/p2p0/queues/rx-* rps_cpus    0660   system     system
-/sys/devices/soc/18800000.qcom,icnss/net/softap0/queues/rx-* rps_cpus 0660   system     system
+/sys/devices/soc/600000.qcom,pcie/pci0000:00/0000:00:00.0/0000:01:00.0/net/wlan0/queues/rx-* rps_cpus 0660 system system
+/sys/devices/soc/a000000.qcom,wcnss-wlan/net/p2p0/queues/rx-* rps_cpus 0660 system system
+/sys/devices/soc/a000000.qcom,wcnss-wlan/net/wlan0/queues/rx-* rps_cpus 0660 system system
 
 # NFC
-/dev/nq-nci               0660   nfc        nfc
+/dev/nq-nci 0660 nfc nfc
 
 # UIO devices
-/dev/uio0                 0660   system     system
-/dev/uio1                 0660   system     system
+/dev/uio0 0660 system system
+/dev/uio1 0660 system system
 
 # SSR devices
-/dev/subsys_*             0640   system     system
+/dev/subsys_* 0640 system system
 
 # Ramdump devices
-/dev/ramdump*             0640   system     system
+/dev/ramdump* 0640 system system
 
 # FRP
-/dev/block/platform/soc/1da4000.ufshc/by-name/frp       0600   system     system
+/dev/block/platform/soc/1da4000.ufshc/by-name/frp 0600 system system
 
 # Kmsg device
-/dev/kmsg                 0620   root       system
+/dev/kmsg 0620 root system
 
 # IR
-/dev/peel_ir              0660   system     system
+/dev/peel_ir 0660 system system
 
 # Elliptic
-/dev/elliptic0            0660   system     system
-/dev/elliptic1            0660   system     system
-/dev/i2c-10               0660   system     system
+/dev/elliptic0 0660 system system
+/dev/elliptic1 0660 system system
+/dev/i2c-10 0660 system system
 
 # Amplifier
-/dev/tiload_node          0660   system     system
+/dev/tiload_node 0660 system system
 
 # Fingerprint
-/sys/devices/soc/soc:fingerprint_fpc*        irq                0700  system system
-/sys/devices/soc/soc:fingerprint_fpc*        irq_enable         0700  system system
-/sys/devices/soc/soc:fingerprint_fpc*        wakeup_enable      0700  system system
-/sys/devices/soc/soc:fingerprint_fpc*        hw_reset           0700  system system
-/sys/devices/soc/soc:fingerprint_fpc*        device_prepare     0700  system system
-/sys/devices/soc/soc:fingerprint_fpc*        vendor             0700  system system
-/dev/goodix_fp            0660   system     system
+/dev/goodix_fp 0660 system system
+/sys/devices/soc/soc:fingerprint_fpc* device_prepare 0700 system system
+/sys/devices/soc/soc:fingerprint_fpc* hw_reset 0700 system system
+/sys/devices/soc/soc:fingerprint_fpc* irq 0700 system system
+/sys/devices/soc/soc:fingerprint_fpc* irq_enable 0700 system system
+/sys/devices/soc/soc:fingerprint_fpc* vendor 0700 system system
+/sys/devices/soc/soc:fingerprint_fpc* wakeup_enable 0700 system system
 
 # /dev/sensors only supports an ioctl to get the current SLPI timestamp
 # allow the sensors daemon to perform this as non-root
-/dev/sensors              0660   root       system
+/dev/sensors 0660 root system
 
 # Sys-fs display
-/sys/class/graphics/fb*     dynamic_fps              0664    system  graphics
-/sys/class/graphics/fb*     lineptr_value            0664    system  graphics
-/sys/class/graphics/fb*     msm_fb_persist_mode      0664    system  graphics
-
-/sys/class/graphics/fb0     idle_time                0664    system  graphics
-/sys/class/graphics/fb0     dyn_pu                   0664    system  graphics
-/sys/class/graphics/fb0     modes                    0664    system  graphics
-/sys/class/graphics/fb0     mode                     0664    system  graphics
-/sys/class/graphics/fb0     msm_cmd_autorefresh_en   0664    system  graphics
+/sys/class/graphics/fb* dynamic_fps 0664 system graphics
+/sys/class/graphics/fb* lineptr_value 0664 system graphics
+/sys/class/graphics/fb* msm_fb_persist_mode 0664 system graphics
+/sys/class/graphics/fb0 dyn_pu 0664 system graphics
+/sys/class/graphics/fb0 idle_time 0664 system graphics
+/sys/class/graphics/fb0 mode 0664 system graphics
+/sys/class/graphics/fb0 modes 0664 system graphics
+/sys/class/graphics/fb0 msm_cmd_autorefresh_en 0664 system graphics

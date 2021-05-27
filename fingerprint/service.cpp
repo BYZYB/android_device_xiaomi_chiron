@@ -29,10 +29,12 @@ using android::hardware::joinRpcThreadpool;
 using android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprint;
 using android::hardware::biometrics::fingerprint::V2_1::implementation::BiometricsFingerprint;
 
-int main() {
+int main()
+{
     android::sp<IBiometricsFingerprint> service = BiometricsFingerprint::getInstance();
 
-    if (service == nullptr) {
+    if (service == nullptr)
+    {
         ALOGE("Instance of BiometricsFingerprint is null");
         return 1;
     }
@@ -40,7 +42,8 @@ int main() {
     configureRpcThreadpool(1, true /*callerWillJoin*/);
 
     android::status_t status = service->registerAsService();
-    if (status != android::OK) {
+    if (status != android::OK)
+    {
         ALOGE("Cannot register BiometricsFingerprint service");
         return 1;
     }

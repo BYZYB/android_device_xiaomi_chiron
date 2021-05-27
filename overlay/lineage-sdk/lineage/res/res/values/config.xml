@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Display mode remapping table. If the mode names returned by the backend do not match the predefined and translated strings in the Settings app, they can be remapped here. The format is "oldname:newname", one per entry. -->
+    <string-array name="config_displayModeMappings" translatable="false">
+        <item>default4-default:standard</item>
+        <item>warm:reading</item>
+        <item>cool:dynamic</item>
+        <item>37sRGB-N:srgb</item>
+    </string-array>
+    <!-- Should we filter any display modes which are unampped? -->
+    <bool name="config_filterDisplayModes">true</bool>
+    <!-- All the capabilities of the LEDs on this device, stored as a bit field. For example, a device with notification and battery lights that supports pulsating and RGB control would set this config to 75. -->
+    <integer name="config_deviceLightCapabilities">232</integer>
+    <!-- Hardware keys present on the device, stored as a bit field. For example, a device with Home, Back and Menu keys would set this config to 7. -->
+    <integer name="config_deviceHardwareKeys">64</integer>
+    <!-- Hardware keys present on the device with the ability to wake, stored as a bit field. For example, a device with Home, Back and Menu keys would set this config to 7. -->
+    <integer name="config_deviceHardwareWakeKeys">64</integer>
+    <!-- Whether device has screen with higher aspect ratio -->
+    <bool name="config_haveHigherAspectRatioScreen">true</bool>
+    <!-- Whether device needs to wait for Qualcomm MPCTL service to startbefore setting power profiles on boot. -->
+    <bool name="config_waitForMpctlOnBoot">true</bool>
+</resources>

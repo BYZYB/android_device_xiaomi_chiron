@@ -16,27 +16,26 @@
 
 #define LOG_TAG "android.hardware.light@2.0-service.xiaomi_msm8998"
 
-#include <hidl/HidlTransportSupport.h>
-
 #include "Light.h"
-
-using android::hardware::configureRpcThreadpool;
-using android::hardware::joinRpcThreadpool;
-
-using android::hardware::light::V2_0::ILight;
-using android::hardware::light::V2_0::implementation::Light;
+#include <hidl/HidlTransportSupport.h>
 
 using android::OK;
 using android::sp;
 using android::status_t;
+using android::hardware::configureRpcThreadpool;
+using android::hardware::joinRpcThreadpool;
+using android::hardware::light::V2_0::ILight;
+using android::hardware::light::V2_0::implementation::Light;
 
-int main() {
+int main()
+{
     sp<ILight> service = new Light();
 
     configureRpcThreadpool(1, true);
 
     status_t status = service->registerAsService();
-    if (status != OK) {
+    if (status != OK)
+    {
         ALOGE("Cannot register Light HAL service.");
         return 1;
     }

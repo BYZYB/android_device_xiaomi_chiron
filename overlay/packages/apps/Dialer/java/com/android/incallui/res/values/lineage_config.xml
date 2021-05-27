@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Whether to check that the proximity is unblocked before showing the incoming call UI. -->
+    <bool name="config_answer_proximity_sensor_enabled">false</bool>
+</resources>
