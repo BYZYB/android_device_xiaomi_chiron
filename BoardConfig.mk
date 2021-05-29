@@ -16,46 +16,23 @@
 
 DEVICE_PATH := device/xiaomi/chiron
 
+# ANT+
+BOARD_ANT_WIRELESS_DEVICE := "qualcomm-hidl"
+
 # Architecture
 TARGET_2ND_ARCH := arm
 TARGET_2ND_ARCH_VARIANT := armv8-a
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := generic
-TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a73
+TARGET_2ND_CPU_VARIANT := cortex-a53
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 :=
-TARGET_CPU_VARIANT := generic
-TARGET_CPU_VARIANT_RUNTIME := cortex-a73
-
-# Assert
-TARGET_OTA_ASSERT_DEVICE := chiron
-
-# Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := msm8998
-TARGET_NO_BOOTLOADER := true
-
-# Kernel
-BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.selinux=permissive ehci-hcd.park=3 msm_rtb.filter=0x37 swiotlb=2048
-BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
-BOARD_KERNEL_PAGESIZE := 4096
-TARGET_KERNEL_CLANG_COMPILE := true
-TARGET_KERNEL_CLANG_PATH := /usr/lib/llvm-12
-TARGET_KERNEL_CLANG_VERSION := 12.0
-TARGET_KERNEL_CONFIG := chiron_defconfig
-TARGET_KERNEL_SOURCE := kernel/xiaomi/chiron
-
-# Platform
-TARGET_BOARD_PLATFORM := msm8998
-
-# ANT+
-BOARD_ANT_WIRELESS_DEVICE := "qualcomm-hidl"
+TARGET_CPU_VARIANT := cortex-a53
 
 # Assert
 TARGET_BOARD_INFO_FILE := $(DEVICE_PATH)/board-info.txt
+TARGET_OTA_ASSERT_DEVICE := chiron
 
 # Audio
 AUDIO_FEATURE_ELLIPTIC_ULTRASOUND_SUPPORT := true
@@ -95,6 +72,22 @@ DEVICE_FRAMEWORK_MANIFEST_FILE := $(DEVICE_PATH)/framework_manifest.xml
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/manifest.xml
 DEVICE_MATRIX_FILE := $(DEVICE_PATH)/compatibility_matrix.xml
 
+# Kernel
+# To build the kernel with gcc-10 (or newer), please install "gcc-10-aarch64-linux-gnu" and "gcc-10-arm-linux-gnueabi".
+# To build the kernel with clang-11 (or newer), please install "clang" and "llvm-dev".
+# After installing necessary toolchains, please modify "vendor/lineage/config/BoardConfigKernel.mk" and set the toolchain paths to proper values.
+# Please refer to the part "diff --git a/config/BoardConfigKernel.mk b/config/BoardConfigKernel.mk" in "repo_17.diff" for more details.
+# NOTE: Custom kernel toolchains cannot be used in official LineageOS builds, which will break the build rules and result in errors without modifying the build system.
+BOARD_KERNEL_BASE := 0x00000000
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.selinux=permissive ehci-hcd.park=3 msm_rtb.filter=0x37 swiotlb=2048
+BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+BOARD_KERNEL_PAGESIZE := 4096
+TARGET_KERNEL_CLANG_COMPILE := true
+TARGET_KERNEL_CLANG_PATH := /usr/lib/llvm-12
+TARGET_KERNEL_CLANG_VERSION := 12.0
+TARGET_KERNEL_CONFIG := chiron_defconfig
+TARGET_KERNEL_SOURCE := kernel/xiaomi/chiron
+
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
@@ -107,6 +100,11 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 120426835968
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDORIMAGE_PARTITION_SIZE := 872415232
 TARGET_COPY_OUT_VENDOR := vendor
+
+# Platform
+TARGET_BOARD_PLATFORM := msm8998
+TARGET_BOOTLOADER_BOARD_NAME := msm8998
+TARGET_NO_BOOTLOADER := true
 
 # Power
 TARGET_TAP_TO_WAKE_NODE := "/proc/touchpanel/double_tap_enable"
