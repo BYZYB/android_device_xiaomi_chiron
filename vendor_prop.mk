@@ -114,6 +114,18 @@ PRODUCT_PRODUCT_PROPERTIES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.cne.feature=1
 
+# Dexpreopt
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    dalvik.vm.dex2oat-filter=everything \
+    dalvik.vm.image-dex2oat-filter=everything \
+    pm.dexopt.ab-ota=everything \
+    pm.dexopt.bg-dexopt=everything \
+    pm.dexopt.boot=everything \
+    pm.dexopt.first-boot=everything \
+    pm.dexopt.inactive=everything \
+    pm.dexopt.install=everything \
+    pm.dexopt.shared=everything
+
 # Display
 PRODUCT_PROPERTY_OVERRIDES += \
     debug.sf.enable_gl_backpressure=1 \
