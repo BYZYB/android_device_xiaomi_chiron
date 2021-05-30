@@ -73,6 +73,9 @@ on init
     # Configure poweron alarm
     write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
 
+    # Enable TCP Fast Open by default
+    write /proc/sys/net/ipv4/tcp_fastopen 3
+
     # Enable UFS powersaving
     write /sys/devices/soc/1da4000.ufshc/clkgate_enable 1
     write /sys/devices/soc/1da4000.ufshc/clkscale_enable 1
