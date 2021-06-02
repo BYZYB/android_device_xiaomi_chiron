@@ -36,6 +36,7 @@ on post-fs
     chmod 0755 /sys/kernel/debug/tracing
 
 on post-fs-data
+    # Create directory for vendor misc files
     mkdir /data/vendor/misc 01771 system system
 
     # Create directory used by display clients
@@ -61,7 +62,7 @@ on post-fs-data
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
 
-    # Create the directories used by CnE subsystem
+    # Create the directories used by CNE subsystem
     mkdir /data/vendor/connectivity 0771 radio radio
 
     # Create directory used by audio subsystem
@@ -100,6 +101,10 @@ on post-fs-data
     write /data/vendor/radio/copy_complete 0
     chown radio radio /data/vendor/radio/copy_complete
     chmod 0660 /data/vendor/radio/copy_complete
+
+    # Create directory for thermal engine
+    mkdir /data/vendor/thermal 0771 root system
+    mkdir /data/vendor/thermal/config 0771 root system
 
     setprop vold.post_fs_data_done 1
 
@@ -293,6 +298,7 @@ on property:ro.vendor.ril.mbn_copy_completed=1
     write /data/vendor/radio/copy_complete 1
 
 on property:sys.boot_completed=1
+    start vendor.custom-post-boot
     start vendor.qcom-post-boot
     start vendor.thermal-engine
     setprop vendor.post_boot.parsed 1
