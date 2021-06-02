@@ -37,9 +37,10 @@ static inline const char *BtmGetDefaultName()
     return ""; // Fallback to ro.product.model
 }
 
+#define BLE_VND_INCLUDED TRUE
 #define BTM_DEF_LOCAL_NAME BtmGetDefaultName()
 #define MAX_ACL_CONNECTIONS 16 // Disables read remote device feature
 #define MAX_L2CAP_CHANNELS 16
-#define BLE_VND_INCLUDED TRUE
+
 #pragma pop_macro("PROPERTY_VALUE_MAX")
 #endif

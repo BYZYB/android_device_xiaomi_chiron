@@ -16,10 +16,9 @@
 
 #define LOG_TAG "android.hardware.biometrics.fingerprint@2.1-service.xiaomi_msm8998"
 
+#include "BiometricsFingerprint.h"
 #include <android/log.h>
 #include <hidl/HidlTransportSupport.h>
-
-#include "BiometricsFingerprint.h"
 
 // libhwbinder:
 using android::hardware::configureRpcThreadpool;

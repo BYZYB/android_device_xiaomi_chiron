@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#define LOG_TAG "LightService"
+
 #include "Light.h"
 #include <fstream>
 #include <log/log.h>
@@ -25,7 +27,6 @@
 #define DUTY_PCTS "duty_pcts"
 #define LCD_LED LEDS "lcd-backlight/"
 #define LEDS "/sys/class/leds/"
-#define LOG_TAG "LightService"
 #define MAX_LCD_BRIGHTNESS 4095
 #define MAX_LED_BRIGHTNESS 255
 #define PAUSE_HI "pause_hi"

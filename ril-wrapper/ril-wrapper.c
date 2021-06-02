@@ -21,10 +21,9 @@
  */
 #define RIL_SHLIB
 
+#include <dlfcn.h>
 #include <log/log.h>
 #include <telephony/ril.h>
-
-#include <dlfcn.h>
 
 #define RIL_LIB_NAME "libril-qc-qmi-1.so"
 #define RADIO_TECH_DC_HSPAP 20

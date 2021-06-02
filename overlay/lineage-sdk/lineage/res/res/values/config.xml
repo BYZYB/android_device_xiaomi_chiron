@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Default value for proximity check on screen wake NOTE ! - Enable for devices that have a fast response proximity sensor (ideally < 300ms)-->
+    <bool name="config_proximityCheckOnWake">true</bool>
+    <bool name="config_proximityCheckOnWakeEnabledByDefault">true</bool>
     <!-- Display mode remapping table. If the mode names returned by the backend do not match the predefined and translated strings in the Settings app, they can be remapped here. The format is "oldname:newname", one per entry. -->
     <string-array name="config_displayModeMappings" translatable="false">
         <item>default4-default:standard</item>
