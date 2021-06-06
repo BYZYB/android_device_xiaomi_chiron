@@ -109,9 +109,6 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on early-boot
-    # set RLIMIT_MEMLOCK to 64MB
-    setrlimit 8 67108864 67108864
-
     # Start devices by sysfs trigger
     write /sys/kernel/boot_adsp/boot 1
     write /sys/kernel/boot_slpi/boot 1
@@ -126,31 +123,30 @@ on early-boot
     write /sys/bus/msm_subsys/devices/subsys6/restart_level "related"
 
 on boot
+    chmod 0660 /sys/class/rfkill/rfkill0/device/extldo
+    chmod 0660 /sys/class/rfkill/rfkill0/state
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/device/extldo
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/state
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/type
-    chmod 0660 /sys/class/rfkill/rfkill0/device/extldo
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-
-    chown system system /sys/module/msm_core/parameters/polling_interval
-    chown system system /sys/module/msm_core/parameters/disabled
     chown system system /sys/kernel/debug/msm_core/enable
     chown system system /sys/kernel/debug/msm_core/ptable
+    chown system system /sys/module/msm_core/parameters/disabled
+    chown system system /sys/module/msm_core/parameters/polling_interval
 
     # Create QMUX deamon socket area
-    mkdir /dev/socket/qmux_radio 2770 radio radio
     mkdir /dev/socket/qmux_audio 2770 media audio
     mkdir /dev/socket/qmux_bluetooth 2770 bluetooth bluetooth
     mkdir /dev/socket/qmux_gps 2770 gps gps
+    mkdir /dev/socket/qmux_radio 2770 radio radio
 
     # Create NETMGR daemon socket area
     mkdir /dev/socket/netmgr 0750 radio radio
 
     # Touchscreen
-    chown system system /proc/touchpanel/double_tap_enable
-    chown system system /proc/touchpanel/reversed_keys_enable
     chmod 0660 /proc/touchpanel/double_tap_enable
     chmod 0660 /proc/touchpanel/reversed_keys_enable
+    chown system system /proc/touchpanel/double_tap_enable
+    chown system system /proc/touchpanel/reversed_keys_enable
 
     # Assign TCP buffer thresholds to be ceiling value of technology maximums
     # Increased technology maximums should be reflected here.
@@ -188,7 +184,6 @@ service vendor.audio-hal /vendor/bin/hw/android.hardware.audio.service
     override
     class hal
     user audioserver
-    # media gid needed for /dev/fm (radio) and for /data/misc/media (tee)
     group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2901 wakelock system
     capabilities BLOCK_SUSPEND SYS_NICE
     ioprio rt 4
@@ -200,6 +195,13 @@ service vendor.cnss-daemon /vendor/bin/cnss-daemon -n -l
     user system
     group system inet net_admin wifi
     capabilities NET_ADMIN
+    writepid /dev/cpuset/system-background/tasks
+
+service vendor.custom-post-boot /vendor/bin/init.custom.post_boot.sh
+    class late_start
+    user root
+    disabled
+    oneshot
     writepid /dev/cpuset/system-background/tasks
 
 service vendor.dataqti /vendor/bin/qti
@@ -224,6 +226,7 @@ service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /vendor/etc/msm_irqb
     class core
     user root
     group root
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.netmgrd /vendor/bin/netmgrd
     class main
@@ -233,24 +236,28 @@ service vendor.panel-info /vendor/bin/init.panel_info.sh
     class core
     user root
     oneshot
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.power_off_alarm /vendor/bin/power_off_alarm
     class core
     group system
     disabled
     oneshot
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.qcom-post-boot /vendor/bin/init.qcom.post_boot.sh
     class late_start
     user root
     disabled
     oneshot
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.qcom-sh /vendor/bin/init.qcom.sh
     class late_start
     user root
     group root system radio
     oneshot
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.ril-daemon2 /vendor/bin/hw/rild -c 2
     class main
@@ -259,25 +266,26 @@ service vendor.ril-daemon2 /vendor/bin/hw/rild -c 2
     user radio
     group radio cache inet misc audio sdcard_r sdcard_rw diag log
     capabilities BLOCK_SUSPEND NET_ADMIN NET_RAW
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.rmt_storage /vendor/bin/rmt_storage
     class core
     user root
     shutdown critical
     ioprio rt 0
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.sensors /vendor/bin/sensors.qti
     class main
     user system
     group system
-    # Grants the ability for this daemon to bind IPC router ports so it can
-    # register QMI services
     capabilities NET_BIND_SERVICE
     writepid /dev/cpuset/system-background/tasks
 
 service vendor.tftp_server /vendor/bin/tftp_server
     class core
     user root
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.thermal-engine /vendor/bin/thermal-engine -T
     class main
@@ -287,6 +295,7 @@ service vendor.thermal-engine /vendor/bin/thermal-engine -T
     socket thermal-recv-passive-client stream 0666 system system
     socket thermal-send-rule stream 0660 system system
     group root
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.time_daemon /vendor/bin/time_daemon
     class main

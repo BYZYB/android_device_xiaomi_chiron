@@ -52,5 +52,3 @@ for memlat in /sys/class/devfreq/*qcom,memlat-cpu*; do
 done
 
 echo "cpufreq" >/sys/class/devfreq/soc:qcom,mincpubw/governor
-
-setprop vendor.post_boot.parsed 1
