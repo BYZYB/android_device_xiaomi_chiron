@@ -27,8 +27,9 @@
 
 # Sensors
 /(mnt/vendor)/persist/PRSensorData\.txt u:object_r:sensors_persist_file:s0
-/(vendor|system/vendor)/bin/init\.panel_info\.sh u:object_r:qti_init_shell_exec:s0
-/(vendor|system/vendor)/bin/init\.custom\.post_boot\.sh u:object_r:qti_init_shell_exec:s0
+
+# Shell files
+/(vendor|system/vendor)/bin/init\..*\.sh u:object_r:qti_init_shell_exec:s0
 
 # Thermal engine
 /data/decrypt\.txt u:object_r:thermal_decrypt_file:s0
