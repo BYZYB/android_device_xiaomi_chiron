@@ -104,9 +104,6 @@ PRODUCT_PACKAGES += \
     libqdMetaData.system \
     memtrack.msm8998
 
-# Doze
-PRODUCT_PACKAGES += XiaomiDoze
-
 # DPM
 PRODUCT_PACKAGES += libshim_dpmframework
 
