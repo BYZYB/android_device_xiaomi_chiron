@@ -6,6 +6,8 @@ if [ $(cat /data/adbroot/enabled) -gt 0 ]; then
 fi
 
 # Remove useless directories and files
+find /data/data/com.alibaba.android.rimet/files/dingTalkTheOne/* -mtime +3 -exec rm -rf {} \;
+find /data/data/com.alibaba.android.rimet/files/nebulaInstallApps/* -mtime +3 -exec rm -rf {} \;
 find /data/data/com.tencent.mm/MicroMsg/*/appbrand/* -mtime +3 -exec rm -rf {} \;
 find /data/data/com.tencent.mm/MicroMsg/*/avatar/* -mtime +3 -exec rm -rf {} \;
 find /data/data/com.tencent.mm/MicroMsg/*/image*/* -mtime +3 -exec rm -rf {} \;
