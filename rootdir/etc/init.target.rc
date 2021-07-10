@@ -170,6 +170,12 @@ on property:init.svc.vendor.per_mgr=stopped
     stop vendor.per_proxy
 
 on property:sys.boot_completed=1
+    # Hide sensitive IMEI and MEID properties
+    setprop persist.radio.imei ""
+    setprop persist.radio.imei1 ""
+    setprop persist.radio.imei2 ""
+    setprop persist.radio.meid ""
+
     # Used by sound trigger HAL
     chown media audio /sys/kernel/wdsp0/boot
     chown media audio /sys/kernel/wcd_cpe0/fw_name
