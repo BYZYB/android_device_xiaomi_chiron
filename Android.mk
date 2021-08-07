@@ -60,13 +60,6 @@ $(IMS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	$(hide) ln -sf /system/system_ext/lib64/$(notdir $@) $@
 ALL_DEFAULT_INSTALLED_MODULES += $(IMS_SYMLINKS)
 
-# libGLESv2_adreno.so symlinks
-EGL_SYMLINK := $(TARGET_OUT_VENDOR)/lib/libGLESv2_adreno.so
-$(EGL_SYMLINK): $(LOCAL_INSTALLED_MODULE)
-	@mkdir -p $(dir $@)
-	$(hide) ln -sf egl/$(notdir $@) $@
-ALL_DEFAULT_INSTALLED_MODULES += $(EGL_SYMLINK)
-
 # MPSS symlinks
 RFS_MSM_MPSS_SYMLINKS := $(TARGET_OUT_VENDOR)/rfs/msm/mpss/
 $(RFS_MSM_MPSS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
