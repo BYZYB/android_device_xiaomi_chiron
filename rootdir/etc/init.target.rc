@@ -28,8 +28,7 @@
 #
 
 on charger
-    # Disable all KTM features
-    write /sys/module/msm_thermal/core_control/enabled 0
+    # Disable basic KTM features
     write /sys/module/msm_thermal/parameters/enabled N
 
     # Configure governor settings
@@ -55,7 +54,6 @@ on charger
 
     start vendor.hvdcp_opti
     start vendor.power_off_alarm
-    start vendor.qcom-post-boot
 
 on init
     # QSEE rpmb listener need symlink for bootdevice
@@ -180,10 +178,6 @@ on property:sys.boot_completed=1
     chown media audio /sys/kernel/wdsp0/boot
     chown media audio /sys/kernel/wcd_cpe0/fw_name
 
-    # Disable KTM hotplug and bring CPU4 online
-    write /sys/module/msm_thermal/core_control/enabled 0
-    write /sys/devices/system/cpu/cpu4/online 1
-
     # Configure governor settings for little cluster
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
     write /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us 20000
@@ -193,9 +187,6 @@ on property:sys.boot_completed=1
     write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor "schedutil"
     write /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us 20000
     write /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us 500
-
-    # Enable KTM hotplug again
-    write /sys/module/msm_thermal/core_control/enabled 1
 
     # Set default schedtune value for foreground and top-app
     write /dev/stune/foreground/schedtune.prefer_idle 1
