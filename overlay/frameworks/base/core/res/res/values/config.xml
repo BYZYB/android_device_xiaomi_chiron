@@ -157,6 +157,8 @@
         <item>evdo:131072,262144,1048576,4096,16384,524288</item>
         <item>lte:524288,1048576,8388608,262144,524288,4194304</item>
     </string-array>
+    <!-- Whether WiFi display is supported by this device. There are many prerequisites for this feature to work correctly. -->
+    <bool name="config_enableWifiDisplay">true</bool>
     <!-- When true use the linux /dev/input/event subsystem to detect the switch changes on the headphone/microphone jack. When false use the older uevent framework. -->
     <bool name="config_useDevInputEventForAudioJack">true</bool>
     <!-- Flag indicating if the speed up audio on mt call code should be executed -->
