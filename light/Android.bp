@@ -18,6 +18,7 @@ cc_binary {
     name: "android.hardware.light@2.0-service.xiaomi_msm8998",
     proprietary: true,
     init_rc: ["android.hardware.light@2.0-service.xiaomi_msm8998.rc"],
+    vintf_fragments: ["android.hardware.light@2.0-service.xiaomi_msm8998.xml"],
     srcs: ["service.cpp", "Light.cpp"],
     shared_libs: [
         "libhardware",
