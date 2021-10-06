@@ -126,6 +126,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.camera.set.afd=4 \
     vidc.enc.dcvs.extra-buff-count=2
 
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+    vendor.camera.aux.packagelist=com.android.camera,org.lineageos.snap
+
 # Charger
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.charger.enable_suspend=true
@@ -152,7 +155,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # DPM
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.vendor.dpm.feature=1
+    persist.vendor.dpm.feature=11
 
 # FRP
 PRODUCT_PROPERTY_OVERRIDES += \
