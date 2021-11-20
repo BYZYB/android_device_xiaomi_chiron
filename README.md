@@ -1,26 +1,31 @@
-Copyright (C) 2017 The LineageOS Project
+TWRP configuration for Xiaomi Mi MIX 2
+===
 
-Device configuration for Xiaomi Mi 6
-=========================================
+Copyright 2012-2021 - The TeamWin Project
 
-The Xiaomi Mi 6 (codenamed _"Sagit"_) is a high-end smartphone from Xiaomi.
+## Build
 
-It was announced in April 2017. Release date was April 2017.
+export ALLOW_MISSING_DEPENDENCIES=true
+
+. build/envsetup.sh && lunch omni_chiron-eng && mka adbd recoveryimage
 
 ## Device specifications
 
-Basic   | Spec Sheet
--------:|:-------------------------
-CPU     | Quad-core 2.45 GHz Kryo 280 & Quad-core 1.9 GHz Kryo 280
+The Xiaomi Mi MIX 2 (chiron) is a high-end smartphone from Xiaomi, released in 2017.
+
+Basic | Spec Sheet
+---:|:---
 Chipset | Qualcomm MSM8998 Snapdragon 835
-GPU     | Adreno 540
-Memory  | 6 GB RAM
+CPU | Quad-core 2.45 GHz Kryo 280 + Quad-core 1.9 GHz Kryo 280
+GPU | Adreno 540
+Memory | 6 GB/8 GB
+Storage | 64 GB/128 GB/256 GB (UFS 2.1)
+Display | 1080 x 2160 pixels, 5.99", 60Hz
+Camera | 12 MP, f/2.0, phase detection autofocus, dual-LED (dual tone) flash
+Battery | 3350 mAh (non-removable, with QC 3.0)
 Shipped Android Version | 7.1.1
-Storage | 64/128 GB (UFS Flash)
-Battery | Non-removable Li-Po 3350 mAh (QC 3.0)
-Display | 1080 x 1920 pixels, 5.15 inches (~428 ppi pixel density)
-Camera  | Dual 12 MP, f/2.0, phase detection autofocus, dual-LED (dual tone) flash
+Release Date | September 2017
 
 ## Device picture
 
-![Xiaomi Mi 6](http://i8.mifile.cn/a1/pms_1492571518.47778002!560x560.jpg "Xiaomi Mi 6 in black")
+![Xiaomi Mi MIX 2](https://i8.mifile.cn/a1/pms_1505401464.03824312!560x560.jpg "Xiaomi Mi MIX 2 in black")
