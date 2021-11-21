@@ -28,13 +28,6 @@
 import /vendor/etc/init/hw/init.qcom.usb.rc
 import /vendor/etc/init/hw/init.target.rc
 
-on early-init
-    mount debugfs debugfs /sys/kernel/debug
-    chmod 0755 /sys/kernel/debug
-
-on post-fs
-    chmod 0755 /sys/kernel/debug/tracing
-
 on post-fs-data
     # Create directory for vendor misc files
     mkdir /data/vendor/misc 01771 system system
