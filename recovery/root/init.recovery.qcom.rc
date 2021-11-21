@@ -28,16 +28,38 @@
 on early-init
     mkdir /firmware 0771 system system
 
+on init
+    # Enable UFS powersaving
+    write /sys/devices/soc/1da4000.ufshc/clkgate_enable 1
+    write /sys/devices/soc/1da4000.ufshc/clkscale_enable 1
+
 on fs
     wait /dev/block/platform/soc/1da4000.ufshc
     symlink /dev/block/platform/soc/1da4000.ufshc /dev/block/bootdevice
     chmod 0660 /dev/qseecom
-    chown system drmrpc /dev/qseecom
     chmod 0664 /dev/ion
+    chown system drmrpc /dev/qseecom
     chown system system /dev/ion
     install_keyring
 
     setprop crypto.ready 1
+
+on boot
+    # Workaround for adb not coming up
+    setprop sys.usb.config mtp,adb
+
+    # Enable OTG
+    write /sys/devices/soc/800f000.qcom,spmi/spmi-0/spmi0-02/800f000.qcom,spmi:qcom,pmi8998@2:qcom,qpnp-smb2/power_supply/usb/otg_switch 1
+
+    # Configure governor settings for little cluster
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
+    write /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us 20000
+    write /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us 500
+
+    # Configure governor settings for big cluster
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor "schedutil"
+    write /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us 20000
+    write /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us 500
 
 # Separate copy needed to use /sbin/linker64 instead of /system/bin/linker64
 service sbinqseecomd /sbin/qseecomd
@@ -83,14 +105,6 @@ service keymaster-3-0 /sbin/android.hardware.keymaster@3.0-service
     group root
     disabled
     seclabel u:r:recovery:s0
-
-on boot
-    # Workaround for adb not coming up
-    setprop sys.usb.config mtp,adb
-    setprop sys.usb.config adb
-    
-    # Enable OTG
-    write /sys/devices/soc/800f000.qcom,spmi/spmi-0/spmi0-02/800f000.qcom,spmi:qcom,pmi8998@2:qcom,qpnp-smb2/power_supply/usb/otg_switch 1
 
 on property:crypto.ready=0
     stop sbinqseecomd

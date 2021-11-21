@@ -17,6 +17,6 @@
 PRODUCT_MAKEFILES := $(LOCAL_DIR)/omni_chiron.mk
 
 COMMON_LUNCH_CHOICES := \
-    lineage_chiron-eng \
-    lineage_chiron-user \
-    lineage_chiron-userdebug
+    omni_chiron-eng \
+    omni_chiron-user \
+    omni_chiron-userdebug

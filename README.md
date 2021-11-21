@@ -3,11 +3,11 @@ TWRP configuration for Xiaomi Mi MIX 2
 
 Copyright 2012-2021 - The TeamWin Project
 
+Forked from: [TeamWin/android_device_xiaomi_chiron](https://github.com/TeamWin/android_device_xiaomi_chiron)
+
 ## Build
 
-export ALLOW_MISSING_DEPENDENCIES=true
-
-. build/envsetup.sh && lunch omni_chiron-eng && mka adbd recoveryimage
+export ALLOW_MISSING_DEPENDENCIES=true && . build/envsetup.sh && lunch omni_chiron-eng && mka recoveryimage
 
 ## Device specifications
 
