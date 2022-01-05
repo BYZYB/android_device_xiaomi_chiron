@@ -29,4 +29,6 @@
     <string name="wifi_tether_configure_ssid_default" translatable="false">Mi MIX 2</string>
     <!-- Enable WPA2 to WPA3 auto-upgrade -->
     <bool translatable="false" name="config_wifiSaeUpgradeEnabled">false</bool>
+    <!-- Indicate the driver support NL80211_REG_CHANGED event. -->
+    <bool translatable="false" name="config_wifiDriverSupportedNl80211RegChangedEvent">true</bool>
 </resources>
