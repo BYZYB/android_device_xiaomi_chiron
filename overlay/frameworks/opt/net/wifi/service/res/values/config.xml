@@ -29,4 +29,6 @@
     <string name="config_wifi_tcp_buffers" translatable="false">524288,2097152,8388608,262144,524288,4194304</string>
     <!-- Default access point SSID used for tethering -->
     <string name="wifi_tether_configure_ssid_default" translatable="false">Xiaomi Mi MIX 2</string>
+    <!-- Enable WPA2 to WPA3 auto-upgrade -->
+    <bool translatable="false" name="config_wifiSaeUpgradeEnabled">false</bool>
 </resources>
