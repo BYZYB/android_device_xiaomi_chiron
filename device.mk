@@ -20,10 +20,6 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 # Additional native libraries
 PRODUCT_COPY_FILES += $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
 
-# Alipay
-PRODUCT_BOOT_JARS += org.ifaa.android.manager
-PRODUCT_PACKAGES += org.ifaa.android.manager
-
 # Audio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
@@ -159,6 +155,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/keylayout/synaptics_dsx.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/synaptics_dsx.kl \
     $(LOCAL_PATH)/configs/keylayout/uinput-fpc.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/uinput-fpc.kl \
     $(LOCAL_PATH)/configs/keylayout/uinput-goodix.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/uinput-goodix.kl
+
+# IFAA manager
+PRODUCT_PACKAGES += IFAAService
 
 # IMS
 PRODUCT_PACKAGES += \
