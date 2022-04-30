@@ -127,7 +127,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vidc.enc.dcvs.extra-buff-count=2
 
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-    vendor.camera.aux.packagelist=com.android.camera,org.lineageos.snap
+    vendor.camera.aux.packagelist=com.android.camera,com.android.camera2
 
 # Charger
 PRODUCT_PRODUCT_PROPERTIES += \
