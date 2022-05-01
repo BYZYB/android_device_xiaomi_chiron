@@ -133,6 +133,11 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.charger.enable_suspend=true
 
+# Chipset
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.soc.manufacturer=Qualcomm \
+    ro.soc.model=MSM8998
+
 # CNE
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.cne.feature=1
