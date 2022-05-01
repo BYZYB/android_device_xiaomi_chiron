@@ -168,6 +168,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     ims_ext_common.xml \
     ims-ext-common \
+    libgui_shim \
     libui_shim
 
 # IRQ
