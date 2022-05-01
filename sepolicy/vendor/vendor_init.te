@@ -3,6 +3,5 @@ typeattribute vendor_init data_between_core_and_vendor_violators;
 allow vendor_init {system_data_file thermal_data_file }:dir create_dir_perms;
 
 set_prop(vendor_init, camera_prop)
-set_prop(vendor_init, vendor_persist_dpm_prop)
 set_prop(vendor_init, vendor_qcom_ims_prop)
 set_prop(vendor_init, vendor_sensors_prop)
