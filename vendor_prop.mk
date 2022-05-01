@@ -145,6 +145,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Display
 PRODUCT_PROPERTY_OVERRIDES += \
     debug.cpurend.vsync=false \
+    debug.renderengine.backend=threaded \
     debug.sf.enable_hwc_vds=1 \
     debug.sf.hw=1 \
     ro.opengles.version=196610 \
