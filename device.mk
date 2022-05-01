@@ -64,6 +64,7 @@ PRODUCT_PACKAGES += \
 # Bluetooth
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth.audio@2.0-impl:32 \
+    android.hardware.bluetooth@1.0.vendor \
     audio.bluetooth.default \
     vendor.qti.hardware.btconfigstore@1.0.vendor
 
@@ -74,6 +75,7 @@ TARGET_SCREEN_WIDTH := 1080
 # Camera
 PRODUCT_PACKAGES += \
     android.frameworks.displayservice@1.0_32 \
+    android.frameworks.displayservice@1.0.vendor \
     android.hardware.camera.device@3.5:64 \
     android.hardware.camera.provider@2.4-impl:32 \
     android.hardware.camera.provider@2.4-service \
@@ -105,6 +107,7 @@ PRODUCT_PACKAGES += libshim_dpmframework
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.0-impl:64 \
     android.hardware.drm@1.0-service \
+    android.hardware.drm@1.1.vendor \
     android.hardware.drm@1.4-service.clearkey
 
 # Fingerprint sensor
@@ -143,6 +146,8 @@ PRODUCT_PACKAGES += \
 
 # HIDL
 PRODUCT_PACKAGES += \
+    android.hidl.allocator@1.0.vendor \
+    android.hidl.memory@1.0.vendor \
     libhidltransport \
     libhidltransport.vendor \
     libhwbinder \
@@ -189,6 +194,7 @@ PRODUCT_COPY_FILES += \
 # Net
 PRODUCT_PACKAGES += \
     android.system.net.netd@1.0 \
+    android.system.net.netd@1.1.vendor \
     libandroid_net \
     netutils-wrapper-1.0
 
@@ -284,7 +290,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/system_ext-privapp-permissions-qti.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-qti.xml
 
 # QMI
-PRODUCT_PACKAGES += libjson
+PRODUCT_PACKAGES += \
+    libjson \
+    libjson.vendor
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
@@ -300,6 +308,9 @@ PRODUCT_COPY_FILES += \
 
 # RIL
 PRODUCT_PACKAGES += \
+    android.hardware.radio.config@1.0.vendor \
+    android.hardware.radio@1.0.vendor \
+    android.hardware.secure_element@1.0.vendor \
     libril-wrapper \
     librmnetctl
 
