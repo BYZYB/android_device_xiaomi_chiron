@@ -1,4 +1,4 @@
-<compatibility-matrix version="1.0" type="device">
+<compatibility-matrix version="2.0" type="device">
     <hal format="hidl" optional="false">
         <name>android.frameworks.schedulerservice</name>
         <version>1.0</version>
@@ -57,15 +57,7 @@
     </hal>
     <hal format="native" optional="false">
         <name>netutils-wrapper</name>
-        <!--
-            netutils-wrapper should only list a single version x.0.
-            netutils-wrapper next version has less functionalities than
-            previous versions, so unlike a HAL, netutils-wrapper are not
-            backwards compatible. Hence the major version must be bumped for
-            each update.
-            Vendor code should switch to (x+1).0 completely before when the
-            requirement is updated here.
-        -->
+        <!-- netutils-wrapper should only list a single version x.0. netutils-wrapper next version has less functionalities than previous versions, so unlike a HAL, netutils-wrapper are not backwards compatible. Hence the major version must be bumped for each update. Vendor code should switch to (x+1).0 completely before when the requirement is updated here. -->
         <version>1.0</version>
     </hal>
 </compatibility-matrix>
