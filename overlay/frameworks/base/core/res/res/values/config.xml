@@ -185,42 +185,22 @@
     <bool name="config_sustainedPerformanceModeSupported">true</bool>
     <!-- Default list of files pinned by the Pinner Service -->
     <string-array translatable="false" name="config_defaultPinnerServiceFiles">
-        <item>"/apex/com.android.art/javalib/arm64/boot-core-libart.art"</item>
-        <item>"/apex/com.android.art/javalib/arm64/boot-core-libart.oat"</item>
         <item>"/apex/com.android.art/javalib/arm64/boot-core-libart.vdex"</item>
-        <item>"/apex/com.android.art/javalib/arm64/boot.art"</item>
-        <item>"/apex/com.android.art/javalib/arm64/boot.oat"</item>
         <item>"/apex/com.android.art/javalib/arm64/boot.vdex"</item>
         <item>"/apex/com.android.art/javalib/core-libart.jar"</item>
         <item>"/apex/com.android.art/javalib/core-oj.jar"</item>
         <item>"/apex/com.android.media/javalib/updatable-media.jar"</item>
-        <item>"/system_ext/priv-app/SystemUI/oat/arm64/SystemUI.odex"</item>
         <item>"/system_ext/priv-app/SystemUI/oat/arm64/SystemUI.vdex"</item>
         <item>"/system_ext/priv-app/SystemUI/SystemUI.apk"</item>
-        <item>"/system/framework/arm64/boot-framework.art"</item>
-        <item>"/system/framework/arm64/boot-framework.oat"</item>
+        <item>"/system/bin/surfaceflinger"</item>
         <item>"/system/framework/boot-framework.vdex"</item>
         <item>"/system/framework/framework.jar"</item>
-        <item>"/system/framework/oat/arm64/services.art"</item>
-        <item>"/system/framework/oat/arm64/services.odex"</item>
         <item>"/system/framework/oat/arm64/services.vdex"</item>
         <item>"/system/framework/services.jar.prof"</item>
         <item>"/system/framework/services.jar"</item>
-        <item>"/system/bin/surfaceflinger"</item>
     </string-array>
     <!-- Should the pinner service pin the Home application? -->
     <bool name="config_pinnerHomeApp">true</bool>
-    <!-- List of files pinned by the Pinner Service with the JIT Zygote boot image b/119800099 -->
-    <string-array translatable="false" name="config_jitzygoteBootImagePinnerServiceFiles">
-        <item>"/apex/com.android.art/javalib/core-libart.jar"</item>
-        <item>"/apex/com.android.art/javalib/core-oj.jar"</item>
-        <item>"/apex/com.android.media/javalib/updatable-media.jar"</item>
-        <item>"/system_ext/priv-app/SystemUI/SystemUI.apk"</item>
-        <item>"/system/framework/framework.jar"</item>
-        <item>"/system/framework/services.jar.prof"</item>
-        <item>"/system/framework/services.jar"</item>
-        <item>"/system/bin/surfaceflinger"</item>
-    </string-array>
     <!-- List of biometric sensors on the device, in decreasing strength. Consumed by AuthService when registering authenticators with BiometricService. Format must be ID:Modality:Strength, where: IDs are unique per device, Modality as defined in BiometricAuthenticator.java, and Strength as defined in Authenticators.java -->
     <string-array name="config_biometric_sensors" translatable="false">
         <item>0:2:15</item>
