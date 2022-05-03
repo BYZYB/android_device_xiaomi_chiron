@@ -1,0 +1,1113 @@
+project build/make/
+diff --git a/core/Makefile b/core/Makefile
+index 327f080..0f45650 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -2115,16 +2115,6 @@ endif
+ #      install
+ #      (BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT = true).
+
+-ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS_BOOT) \
+-  $(BOARD_BUILD_SYSTEM_ROOT_IMAGE) $(BOARD_INCLUDE_RECOVERY_DTBO) $(BOARD_INCLUDE_RECOVERY_ACPIO) \
+-  $(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT) $(BOARD_RAMDISK_USE_LZ4) $(BOARD_RAMDISK_USE_XZ)))
+-# Named '.dat' so we don't attempt to use imgdiff for patching it.
+-RECOVERY_RESOURCE_ZIP := $(TARGET_OUT_VENDOR)/etc/recovery-resource.dat
+-ALL_DEFAULT_INSTALLED_MODULES += $(RECOVERY_RESOURCE_ZIP)
+-else
+-RECOVERY_RESOURCE_ZIP :=
+-endif
+-
+ INSTALLED_RECOVERY_BUILD_PROP_TARGET := $(TARGET_RECOVERY_ROOT_OUT)/prop.default
+
+ $(INSTALLED_RECOVERY_BUILD_PROP_TARGET): PRIVATE_RECOVERY_UI_PROPERTIES := \
+@@ -5409,15 +5399,11 @@ name := $(product_name)-ota-$(FILE_NAME_TAG)
+ INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
+ INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
+
+-ifeq ($(TARGET_BUILD_VARIANT),user)
+-    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
+-else
+ ifneq ($(LINEAGE_BUILD),)
+     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
+ else
+     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
+ endif
+-endif
+
+ $(INTERNAL_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
+ $(INTERNAL_OTA_PACKAGE_TARGET): .KATI_IMPLICIT_OUTPUTS := $(INTERNAL_OTA_METADATA)
+
+diff --git a/core/java.mk b/core/java.mk
+index 123cbe8..b794fd7 100644
+--- a/core/java.mk
++++ b/core/java.mk
+@@ -216,7 +216,7 @@ $(full_classes_compiled_jar): PRIVATE_WARNINGS_ENABLE := $(LOCAL_WARNINGS_ENABLE
+ # available via JDWP.
+ ifneq (,$(PRODUCT_MINIMIZE_JAVA_DEBUG_INFO))
+ ifneq (,$(filter userdebug user,$(TARGET_BUILD_VARIANT)))
+-LOCAL_JAVACFLAGS+= -g:source,lines
++LOCAL_JAVACFLAGS+= -g:none
+ endif
+ endif
+
+diff --git a/core/main.mk b/core/main.mk
+index 2398219..76d1e1f 100644
+--- a/core/main.mk
++++ b/core/main.mk
+@@ -391,8 +391,6 @@ ifneq (,$(user_variant))
+   ADDITIONAL_SYSTEM_PROPERTIES += ro.allow.mock.location=0
+
+ else # !user_variant
+-  # Turn on checkjni for non-user builds.
+-  ADDITIONAL_SYSTEM_PROPERTIES += ro.kernel.android.checkjni=1
+   # Set device insecure for non-user builds.
+   ADDITIONAL_SYSTEM_PROPERTIES += ro.secure=0
+   # Allow mock locations by default for non user builds
+@@ -402,8 +400,6 @@ endif # !user_variant
+ ifeq (true,$(strip $(enable_target_debugging)))
+   # Target is more debuggable and adbd is on by default
+   ADDITIONAL_SYSTEM_PROPERTIES += ro.debuggable=1
+-  # Enable Dalvik lock contention logging.
+-  ADDITIONAL_SYSTEM_PROPERTIES += dalvik.vm.lockprof.threshold=500
+ else # !enable_target_debugging
+   # Target is less debuggable and adbd is off by default
+   ADDITIONAL_SYSTEM_PROPERTIES += ro.debuggable=0
+
+diff --git a/core/product.mk b/core/product.mk
+index c4446f3..c63fb08 100644
+--- a/core/product.mk
++++ b/core/product.mk
+@@ -596,9 +596,14 @@ _readonly_late_variables := \
+ _readonly_late_variables += \
+   PRODUCT_CFI_INCLUDE_PATHS \
+   PRODUCT_COPY_FILES \
+-  PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
+   PRODUCT_DEX_PREOPT_BOOT_FLAGS \
+-  PRODUCT_SOONG_NAMESPACES
++  PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER \
++  PRODUCT_DEX_PREOPT_DEFAULT_FLAGS \
++  PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
++  PRODUCT_OTHER_JAVA_DEBUG_INFO \
++  PRODUCT_SOONG_NAMESPACES \
++  PRODUCT_SYSTEM_SERVER_COMPILER_FILTER \
++  PRODUCT_SYSTEM_SERVER_DEBUG_INFO
+
+ _readonly_early_variables := $(filter-out $(_readonly_late_variables),$(_product_var_list))
+
+diff --git a/target/product/base_system.mk b/target/product/base_system.mk
+index b5b41f3..c5f3dea 100644
+--- a/target/product/base_system.mk
++++ b/target/product/base_system.mk
+@@ -32,9 +32,7 @@ PRODUCT_PACKAGES += \
+     appops \
+     app_process \
+     appwidget \
+-    atrace \
+     audioserver \
+-    BackupRestoreConfirmation \
+     bcc \
+     blank_screen \
+     blkid \
+@@ -44,8 +42,6 @@ PRODUCT_PACKAGES += \
+     boringssl_self_test \
+     bpfloader \
+     bu \
+-    bugreport \
+-    bugreportz \
+     cgroups.json \
+     charger \
+     cmd \
+@@ -70,9 +66,6 @@ PRODUCT_PACKAGES += \
+     com.android.wifi \
+     ContactsProvider \
+     content \
+-    CtsShimPrebuilt \
+-    CtsShimPrivPrebuilt \
+-    debuggerd\
+     device_config \
+     dmctl \
+     dnsmasq \
+@@ -80,7 +73,6 @@ PRODUCT_PACKAGES += \
+     dpm \
+     dumpstate \
+     dumpsys \
+-    DynamicSystemInstallationService \
+     e2fsck \
+     ExtShared \
+     flags_health_check \
+@@ -95,7 +87,6 @@ PRODUCT_PACKAGES += \
+     group_system \
+     gsid \
+     gsi_tool \
+-    heapprofd \
+     heapprofd_client \
+     gatekeeperd \
+     gpuservice \
+@@ -261,9 +252,6 @@ PRODUCT_PACKAGES += \
+     tc \
+     telecom \
+     telephony-common \
+-    tombstoned \
+-    traced \
+-    traced_probes \
+     tune2fs \
+     tzdatacheck \
+     uiautomator \
+@@ -274,7 +262,6 @@ PRODUCT_PACKAGES += \
+     viewcompiler \
+     voip-common \
+     vold \
+-    WallpaperBackup \
+     watchdogd \
+     wificond \
+     wifi.rc \
+@@ -353,9 +340,6 @@ PRODUCT_COPY_FILES += \
+ PRODUCT_COPY_FILES += system/core/rootdir/init.zygote32.rc:system/etc/init/hw/init.zygote32.rc
+ PRODUCT_VENDOR_PROPERTIES += ro.zygote?=zygote32
+
+-PRODUCT_SYSTEM_PROPERTIES += debug.atrace.tags.enableflags=0
+-PRODUCT_SYSTEM_PROPERTIES += persist.traced.enable=1
+-
+ # Packages included only for eng or userdebug builds, previously debug tagged
+ PRODUCT_PACKAGES_DEBUG := \
+     adb_keys \
+@@ -393,8 +377,7 @@ endif
+
+ # The set of packages whose code can be loaded by the system server.
+ PRODUCT_SYSTEM_SERVER_APPS += \
+-    SettingsProvider \
+-    WallpaperBackup
++    SettingsProvider
+
+ PRODUCT_PACKAGES_DEBUG_JAVA_COVERAGE := \
+     libdumpcoverage
+
+diff --git a/target/product/full_base.mk b/target/product/full_base.mk
+index ee04627..f5e4b50 100644
+--- a/target/product/full_base.mk
++++ b/target/product/full_base.mk
+@@ -25,7 +25,6 @@ PRODUCT_PACKAGES := \
+
+ PRODUCT_PACKAGES += \
+     LiveWallpapersPicker \
+-    PhotoTable \
+     preinstalled-packages-platform-full-base.xml
+
+ # Bluetooth:
+
+diff --git a/target/product/handheld_product.mk b/target/product/handheld_product.mk
+index 968d150..e326fed 100644
+--- a/target/product/handheld_product.mk
++++ b/target/product/handheld_product.mk
+@@ -32,13 +32,9 @@ PRODUCT_PACKAGES += \
+     OneTimeInitializer \
+     preinstalled-packages-platform-handheld-product.xml \
+     QuickSearchBox \
+-    SettingsIntelligence \
+-    frameworks-base-overlays
++    SettingsIntelligence
+
+ ifeq ($(LINEAGE_BUILD),)
+ PRODUCT_PACKAGES += \
+     LatinIME
+ endif
+-
+-PRODUCT_PACKAGES_DEBUG += \
+-    frameworks-base-overlays-debug
+
+diff --git a/target/product/handheld_system.mk b/target/product/handheld_system.mk
+index 2c217cb..ff76ed8 100644
+--- a/target/product/handheld_system.mk
++++ b/target/product/handheld_system.mk
+@@ -32,12 +32,9 @@ $(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
+ $(call inherit-product-if-exists, frameworks/webview/chromium/chromium.mk)
+
+ PRODUCT_PACKAGES += \
+-    BasicDreams \
+     BlockedNumberProvider \
+     Bluetooth \
+     BluetoothMidiService \
+-    BookmarkProvider \
+-    BuiltInPrintService \
+     CalendarProvider \
+     cameraserver \
+     CameraExtensionsProxy \
+@@ -46,7 +43,6 @@ PRODUCT_PACKAGES += \
+     clatd \
+     DocumentsUI \
+     DownloadProviderUi \
+-    EasterEgg \
+     ExternalStorageProvider \
+     FusedLocation \
+     InputDevices \
+@@ -58,13 +54,10 @@ PRODUCT_PACKAGES += \
+     MusicFX \
+     NfcNci \
+     PacProcessor \
+-    PrintRecommendationService \
+     PrintSpooler \
+     ProxyHandler \
+     screenrecord \
+     SecureElement \
+-    SharedStorageBackup \
+-    SimAppDialog \
+     Telecom \
+     TelephonyProvider \
+     TeleService \
+@@ -86,7 +79,3 @@ PRODUCT_VENDOR_PROPERTIES += \
+     ro.carrier?=unknown \
+     ro.config.notification_sound?=OnTheHunt.ogg \
+     ro.config.alarm_alert?=Alarm_Classic.ogg
+-
+-# Traceur for debug only
+-PRODUCT_PACKAGES_ENG += \
+-    Traceur
+
+diff --git a/target/product/handheld_system_ext.mk b/target/product/handheld_system_ext.mk
+index d935fbf..b588d1e 100644
+--- a/target/product/handheld_system_ext.mk
++++ b/target/product/handheld_system_ext.mk
+@@ -26,5 +26,4 @@ PRODUCT_PACKAGES += \
+     Provision \
+     Settings \
+     StorageManager \
+-    SystemUI \
+-    WallpaperCropper \
++    SystemUI
+
+diff --git a/target/product/media_system.mk b/target/product/media_system.mk
+index 25303c1..b589b5f 100644
+--- a/target/product/media_system.mk
++++ b/target/product/media_system.mk
+@@ -66,16 +66,6 @@ PRODUCT_COPY_FILES += $(call add-to-product-copy-files-if-exists,\
+ PRODUCT_COPY_FILES += $(call add-to-product-copy-files-if-exists,\
+     frameworks/base/dirty-image-objects-phone:system/etc/dirty-image-objects)
+
+-# On userdebug builds, collect more tombstones by default.
+-ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
+-PRODUCT_VENDOR_PROPERTIES += \
+-    tombstoned.max_tombstone_count?=50
+-endif
+-
+-PRODUCT_VENDOR_PROPERTIES += \
+-    ro.logd.size.stats=64K \
+-    log.tag.stats_log=I
+-
+ # Enable CFI for security-sensitive components
+ $(call inherit-product, $(SRC_TARGET_DIR)/product/cfi-common.mk)
+ $(call inherit-product-if-exists, vendor/google/products/cfi-vendor.mk)
+
+diff --git a/target/product/runtime_libart.mk b/target/product/runtime_libart.mk
+index b511aa6..c46296d 100644
+--- a/target/product/runtime_libart.mk
++++ b/target/product/runtime_libart.mk
+@@ -99,12 +99,12 @@ PRODUCT_SYSTEM_PROPERTIES += \
+ # On eng builds, make "boot" reasons only extract for faster turnaround.
+ ifeq (eng,$(TARGET_BUILD_VARIANT))
+     PRODUCT_SYSTEM_PROPERTIES += \
+-        pm.dexopt.first-boot?=extract \
+-        pm.dexopt.boot-after-ota?=extract
++        pm.dexopt.first-boot?=everything \
++        pm.dexopt.boot-after-ota?=everything
+ else
+     PRODUCT_SYSTEM_PROPERTIES += \
+-        pm.dexopt.first-boot?=verify \
+-        pm.dexopt.boot-after-ota?=verify
++        pm.dexopt.first-boot?=everything \
++        pm.dexopt.boot-after-ota?=everything
+ endif
+
+ # The install filter is speed-profile in order to enable the use of
+@@ -114,18 +114,18 @@ endif
+ # of compilation reason in the platform (as we have a unified, single path,
+ # without exceptions).
+ PRODUCT_SYSTEM_PROPERTIES += \
+-    pm.dexopt.post-boot?=extract \
+-    pm.dexopt.install?=speed-profile \
+-    pm.dexopt.install-fast?=skip \
+-    pm.dexopt.install-bulk?=speed-profile \
+-    pm.dexopt.install-bulk-secondary?=verify \
+-    pm.dexopt.install-bulk-downgraded?=verify \
+-    pm.dexopt.install-bulk-secondary-downgraded?=extract \
+-    pm.dexopt.bg-dexopt?=speed-profile \
+-    pm.dexopt.ab-ota?=speed-profile \
+-    pm.dexopt.inactive?=verify \
+-    pm.dexopt.cmdline?=verify \
+-    pm.dexopt.shared?=speed
++    pm.dexopt.post-boot?=everything \
++    pm.dexopt.install?=everything \
++    pm.dexopt.install-fast?=everything \
++    pm.dexopt.install-bulk?=everything \
++    pm.dexopt.install-bulk-secondary?=everything \
++    pm.dexopt.install-bulk-downgraded?=everything \
++    pm.dexopt.install-bulk-secondary-downgraded?=everything \
++    pm.dexopt.bg-dexopt?=everything \
++    pm.dexopt.ab-ota?=everything \
++    pm.dexopt.inactive?=everything \
++    pm.dexopt.cmdline?=everything \
++    pm.dexopt.shared?=everything
+
+ # Pass file with the list of updatable boot class path packages to dex2oat.
+ PRODUCT_SYSTEM_PROPERTIES += \
+@@ -139,11 +139,6 @@ PRODUCT_SYSTEM_PROPERTIES += \
+ PRODUCT_SYSTEM_PROPERTIES += \
+     dalvik.vm.dex2oat-max-image-block-size=524288
+
+-# Enable minidebuginfo generation unless overridden.
+-PRODUCT_SYSTEM_PROPERTIES += \
+-    dalvik.vm.minidebuginfo=true \
+-    dalvik.vm.dex2oat-minidebuginfo=true
+-
+ # Two other device configs are added to IORap besides "ro.iorapd.enable".
+ # IORap by default is off and starts when
+ # (https://source.corp.google.com/android/system/iorap/iorapd.rc?q=iorapd.rc)
+
+diff --git a/target/product/telephony_system.mk b/target/product/telephony_system.mk
+index ef48719..27c0b66 100644
+--- a/target/product/telephony_system.mk
++++ b/target/product/telephony_system.mk
+@@ -19,9 +19,4 @@
+
+ PRODUCT_PACKAGES := \
+     ONS \
+-    CarrierDefaultApp \
+-    CallLogBackup \
+-    com.android.cellbroadcast \
+-    CellBroadcastLegacyApp \
+-
+-PRODUCT_COPY_FILES := \
++    CarrierDefaultApp
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index 6e3cd70..532fad2 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -3539,7 +3539,6 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
+
+     d = Difference(recovery_img, boot_img, diff_program=diff_program)
+     _, _, patch = d.ComputePatch()
+-    output_sink("recovery-from-boot.p", patch)
+
+   try:
+     # The following GetTypeAndDevice()s need to use the path in the target
+@@ -3594,10 +3593,6 @@ fi
+        'recovery_device': recovery_device + '$(getprop ro.boot.slot_suffix)',
+        'bonus_args': bonus_args}
+
+-  # The install script location moved from /system/etc to /system/bin in the L
+-  # release. In the R release it is in VENDOR/bin or SYSTEM/vendor/bin.
+-  output_sink("bin/install-recovery.sh", sh.encode())
+-
+
+ class DynamicPartitionUpdate(object):
+   def __init__(self, src_group=None, tgt_group=None, progress=None,
+
+diff --git a/tools/releasetools/non_ab_ota.py b/tools/releasetools/non_ab_ota.py
+index 8134e24..2169f98 100644
+--- a/tools/releasetools/non_ab_ota.py
++++ b/tools/releasetools/non_ab_ota.py
+@@ -156,8 +156,6 @@ def WriteFullOTAPackage(input_zip, output_file):
+       metadata=metadata,
+       info_dict=OPTIONS.info_dict)
+
+-  assert HasRecoveryPatch(input_zip, info_dict=OPTIONS.info_dict)
+-
+   # Assertions (e.g. downgrade check, device properties check).
+   #ts = target_info.GetBuildProp("ro.build.date.utc")
+   #ts_text = target_info.GetBuildProp("ro.build.date")
+@@ -191,10 +189,6 @@ def WriteFullOTAPackage(input_zip, output_file):
+   #    complete script normally
+   #    (allow recovery to mark itself finished and reboot)
+
+-  recovery_img = common.GetBootableImage("recovery.img", "recovery.img",
+-                                         OPTIONS.input_tmp, "RECOVERY")
+-  common.CheckSize(recovery_img.data, "recovery.img", target_info)
+-  common.ZipWriteStr(output_zip, "recovery.img", recovery_img.data)
+   if OPTIONS.two_step:
+     if not target_info.get("multistage_support"):
+       assert False, "two-step packages not supported by this build"
+
+project external/bash/
+diff --git a/Android.mk b/Android.mk
+deleted file mode 100644
+index ffab6a0..0000000
+--- a/Android.mk
++++ /dev/null
+
+project external/nano/
+diff --git a/Android.mk b/Android.mk
+deleted file mode 100644
+index 86bd183..0000000
+--- a/Android.mk
++++ /dev/null
+
+project external/noto-fonts/
+diff --git a/cjk/Android.bp b/cjk/Android.bp
+index 1fc3d00..19db091 100644
+--- a/cjk/Android.bp
++++ b/cjk/Android.bp
+@@ -47,8 +47,13 @@ license {
+ }
+
+ prebuilt_font {
+-    name: "NotoSansCJK-Regular.ttc",
+-    src: "NotoSansCJK-Regular.ttc",
++    name: "NotoSansCJK.ttc",
++    src: "NotoSansCJK.ttc",
++}
++
++prebuilt_font {
++    name: "NotoSerifCJK-Bold.ttc",
++    src: "NotoSerifCJK-Bold.ttc",
+ }
+
+ prebuilt_font {
+
+diff --git a/cjk/NotoSansCJK-Regular.ttc b/cjk/NotoSansCJK-Regular.ttc
+index a0d8773..a2033d0 100644
+Binary files a/cjk/NotoSansCJK-Regular.ttc and b/cjk/NotoSansCJK-Regular.ttc differ
+
+diff --git a/cjk/NotoSerifCJK-Regular.ttc b/cjk/NotoSerifCJK-Regular.ttc
+index 2820fc9..3269d9e 100644
+Binary files a/cjk/NotoSerifCJK-Regular.ttc and b/cjk/NotoSerifCJK-Regular.ttc differ
+
+diff --git a/cjk/subset_noto_cjk.py b/cjk/subset_noto_cjk.py
+index f69248b..adfb330 100755
+--- a/cjk/subset_noto_cjk.py
++++ b/cjk/subset_noto_cjk.py
+@@ -80,7 +80,7 @@ CONTROL_CHARS = tool_utils.parse_int_ranges('0000-001F')
+
+ EXCLUDED_CODEPOINTS = sorted(EMOJI_IN_CJK | ANDROID_EMOJI | CONTROL_CHARS)
+
+-TTC_NAMES = ('NotoSansCJK-Regular.ttc', 'NotoSerifCJK-Regular.ttc')
++TTC_NAMES = ('NotoSansCJK.ttc', 'NotoSansCJK-Regular.ttc', 'NotoSerifCJK-Bold.ttc', 'NotoSerifCJK-Regular.ttc')
+
+
+ def remove_from_cmap(infile, outfile, exclude=frozenset()):
+
+diff --git a/fonts.mk b/fonts.mk
+index 67d4e30..7437755 100644
+--- a/fonts.mk
++++ b/fonts.mk
+@@ -44,7 +44,7 @@ PRODUCT_PACKAGES := \
+     NotoSansCham-Bold.ttf \
+     NotoSansCham-Regular.ttf \
+     NotoSansCherokee-Regular.ttf \
+-    NotoSansCJK-Regular.ttc \
++    NotoSansCJK.ttc \
+     NotoSansCoptic-Regular.ttf \
+     NotoSansCuneiform-Regular.ttf \
+     NotoSansCypriot-Regular.ttf \
+@@ -182,6 +182,7 @@ PRODUCT_PACKAGES := \
+     NotoSerif-Regular.ttf \
+     NotoSerifArmenian-VF.ttf \
+     NotoSerifBengali-VF.ttf \
++    NotoSerifCJK-Bold.ttc \
+     NotoSerifCJK-Regular.ttc \
+     NotoSerifDevanagari-VF.ttf \
+     NotoSerifDogra-Regular.ttf \
+
+project external/vim/
+diff --git a/Android.mk b/Android.mk
+deleted file mode 100644
+index 108d71d..0000000
+--- a/Android.mk
++++ /dev/null
+
+project frameworks/base/
+diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
+index b7dd36e2..e8592c85 100755
+--- a/core/java/android/os/Build.java
++++ b/core/java/android/os/Build.java
+@@ -1223,19 +1223,6 @@ public class Build {
+         // Don't care on eng builds.  Incremental build may trigger false negative.
+         if (IS_ENG) return true;
+
+-        if (IS_TREBLE_ENABLED) {
+-            // If we can run this code, the device should already pass AVB.
+-            // So, we don't need to check AVB here.
+-            int result = VintfObject.verifyWithoutAvb();
+-
+-            if (result != 0) {
+-                Slog.e(TAG, "Vendor interface is incompatible, error="
+-                        + String.valueOf(result));
+-            }
+-
+-            return result == 0;
+-        }
+-
+         final String system = SystemProperties.get("ro.system.build.fingerprint");
+         final String vendor = SystemProperties.get("ro.vendor.build.fingerprint");
+         final String bootimage = SystemProperties.get("ro.bootimage.build.fingerprint");
+
+diff --git a/data/fonts/fonts.xml b/data/fonts/fonts.xml
+index 48da31b9..ab48e290 100644
+--- a/data/fonts/fonts.xml
++++ b/data/fonts/fonts.xml
+@@ -1301,36 +1301,48 @@
+         <font weight="400" style="normal">NotoSansSymbols-Regular-Subsetted.ttf</font>
+     </family>
+     <family lang="zh-Hans">
+-        <font weight="400" style="normal" index="2" postScriptName="NotoSansCJKjp-Regular">
+-            NotoSansCJK-Regular.ttc
+-        </font>
+-        <font weight="400" style="normal" index="2" fallbackFor="serif"
+-              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
+-        </font>
++        <font weight="100" style="normal" index="2" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="300" style="normal" index="7" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="350" style="normal" index="12" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="27" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="500" style="normal" index="17" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="700" style="normal" index="37" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="900" style="normal" index="22" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="2" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
++        <font weight="700" style="normal" index="2" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
+     </family>
+     <family lang="zh-Hant,zh-Bopo">
+-        <font weight="400" style="normal" index="3" postScriptName="NotoSansCJKjp-Regular">
+-            NotoSansCJK-Regular.ttc
+-        </font>
+-        <font weight="400" style="normal" index="3" fallbackFor="serif"
+-              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
+-        </font>
++        <font weight="100" style="normal" index="3" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="300" style="normal" index="8" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="350" style="normal" index="13" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="28" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="500" style="normal" index="18" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="700" style="normal" index="38" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="900" style="normal" index="23" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="3" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
++        <font weight="700" style="normal" index="3" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
+     </family>
+     <family lang="ja">
+-        <font weight="400" style="normal" index="0" postScriptName="NotoSansCJKjp-Regular">
+-            NotoSansCJK-Regular.ttc
+-        </font>
+-        <font weight="400" style="normal" index="0" fallbackFor="serif"
+-              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
+-        </font>
++        <font weight="100" style="normal" index="0" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="300" style="normal" index="5" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="350" style="normal" index="10" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="25" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="500" style="normal" index="15" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="700" style="normal" index="35" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="900" style="normal" index="20" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="0" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
++        <font weight="700" style="normal" index="0" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
+     </family>
+     <family lang="ko">
+-        <font weight="400" style="normal" index="1" postScriptName="NotoSansCJKjp-Regular">
+-            NotoSansCJK-Regular.ttc
+-        </font>
+-        <font weight="400" style="normal" index="1" fallbackFor="serif"
+-              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
+-        </font>
++        <font weight="100" style="normal" index="1" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="300" style="normal" index="6" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="350" style="normal" index="11" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="26" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="500" style="normal" index="16" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="700" style="normal" index="36" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="900" style="normal" index="21" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
++        <font weight="400" style="normal" index="1" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
++        <font weight="700" style="normal" index="1" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
+     </family>
+     <family lang="und-Zsye">
+         <font weight="400" style="normal">NotoColorEmoji.ttf</font>
+
+project frameworks/native/
+diff --git a/cmds/atrace/Android.bp b/cmds/atrace/Android.bp
+index aa0ef25..1031c83 100644
+--- a/cmds/atrace/Android.bp
++++ b/cmds/atrace/Android.bp
+@@ -36,12 +36,4 @@ cc_binary {
+         "libpdx_default_transport",
+         "android.hardware.atrace@1.0",
+     ],
+-
+-    init_rc: ["atrace.rc"],
+-
+-    product_variables: {
+-        debuggable: {
+-            init_rc: ["atrace_userdebug.rc"],
+-        },
+-    },
+ }
+
+project system/core/
+diff --git a/init/Android.bp b/init/Android.bp
+index 00ac6a7..95d6ce6 100644
+--- a/init/Android.bp
++++ b/init/Android.bp
+@@ -123,7 +123,7 @@ libinit_cc_defaults {
+         "-Wthread-safety",
+         "-DALLOW_FIRST_STAGE_CONSOLE=0",
+         "-DALLOW_LOCAL_PROP_OVERRIDE=0",
+-        "-DALLOW_PERMISSIVE_SELINUX=0",
++        "-DALLOW_PERMISSIVE_SELINUX=1",
+         "-DREBOOT_BOOTLOADER_ON_PANIC=0",
+         "-DWORLD_WRITABLE_KMSG=0",
+         "-DDUMP_ON_UMOUNT_FAILURE=0",
+@@ -351,7 +351,7 @@ cc_binary {
+         "-Werror",
+         "-DALLOW_FIRST_STAGE_CONSOLE=0",
+         "-DALLOW_LOCAL_PROP_OVERRIDE=0",
+-        "-DALLOW_PERMISSIVE_SELINUX=0",
++        "-DALLOW_PERMISSIVE_SELINUX=1",
+         "-DREBOOT_BOOTLOADER_ON_PANIC=0",
+         "-DWORLD_WRITABLE_KMSG=0",
+         "-DDUMP_ON_UMOUNT_FAILURE=0",
+
+diff --git a/init/Android.mk b/init/Android.mk
+index 3c7d95a..9d88552 100644
+--- a/init/Android.mk
++++ b/init/Android.mk
+@@ -18,7 +18,7 @@ else
+ init_options += \
+     -DALLOW_FIRST_STAGE_CONSOLE=0 \
+     -DALLOW_LOCAL_PROP_OVERRIDE=0 \
+-    -DALLOW_PERMISSIVE_SELINUX=0 \
++    -DALLOW_PERMISSIVE_SELINUX=1 \
+     -DREBOOT_BOOTLOADER_ON_PANIC=0 \
+     -DWORLD_WRITABLE_KMSG=0 \
+     -DDUMP_ON_UMOUNT_FAILURE=0
+
+diff --git a/libcutils/trace-dev.cpp b/libcutils/trace-dev.cpp
+index 1ab63dc..080e671 100644
+--- a/libcutils/trace-dev.cpp
++++ b/libcutils/trace-dev.cpp
+@@ -24,23 +24,14 @@ static pthread_once_t atrace_once_control = PTHREAD_ONCE_INIT;
+ // the Zygote process from tracing.
+ void atrace_set_tracing_enabled(bool enabled)
+ {
++    enabled = false;
+     atomic_store_explicit(&atrace_is_enabled, enabled, memory_order_release);
+     atrace_update_tags();
+ }
+
+ static void atrace_init_once()
+ {
+-    atrace_marker_fd = open("/sys/kernel/tracing/trace_marker", O_WRONLY | O_CLOEXEC);
+-    if (atrace_marker_fd == -1) {
+-        atrace_marker_fd = open("/sys/kernel/debug/tracing/trace_marker", O_WRONLY | O_CLOEXEC);
+-    }
+-
+-    if (atrace_marker_fd == -1) {
+-        ALOGE("Error opening trace file: %s (%d)", strerror(errno), errno);
+-        atrace_enabled_tags = 0;
+-    } else {
+-      atrace_enabled_tags = atrace_get_property();
+-    }
++    atrace_enabled_tags = 0;
+ }
+
+ static void atrace_seq_number_changed(uint32_t prev_seq_no, uint32_t seq_no) {
+
+diff --git a/libcutils/trace-dev.inc b/libcutils/trace-dev.inc
+index 3b459e0..28d96d6 100644
+--- a/libcutils/trace-dev.inc
++++ b/libcutils/trace-dev.inc
+@@ -52,7 +52,7 @@ constexpr uint32_t kSeqNoNotInit = static_cast<uint32_t>(-1);
+ atomic_bool              atrace_is_ready      = ATOMIC_VAR_INIT(false);
+ int                      atrace_marker_fd     = -1;
+ uint64_t                 atrace_enabled_tags  = ATRACE_TAG_NOT_READY;
+-static atomic_bool       atrace_is_enabled    = ATOMIC_VAR_INIT(true);
++static atomic_bool       atrace_is_enabled    = ATOMIC_VAR_INIT(false);
+ static pthread_mutex_t   atrace_tags_mutex    = PTHREAD_MUTEX_INITIALIZER;
+
+ /**
+
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index 5116c0f..e1743cc 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -633,11 +633,6 @@ on post-fs-data
+     # Make sure we have the device encryption key.
+     installkey /data
+
+-    # Start bootcharting as soon as possible after the data partition is
+-    # mounted to collect more data.
+-    mkdir /data/bootchart 0755 shell shell encryption=Require
+-    bootchart start
+-
+     # Avoid predictable entropy pool. Carry over entropy from previous boot.
+     copy /data/system/entropy.dat /dev/urandom
+
+@@ -646,13 +641,6 @@ on post-fs-data
+     mkdir /data/vendor_de 0771 root root encryption=None
+     mkdir /data/vendor/hardware 0771 root root
+
+-    # Start tombstoned early to be able to store tombstones.
+-    mkdir /data/anr 0775 system system encryption=Require
+-    mkdir /data/tombstones 0771 system system encryption=Require
+-    mkdir /data/vendor/tombstones 0771 root root
+-    mkdir /data/vendor/tombstones/wifi 0771 wifi wifi
+-    start tombstoned
+-
+     # Make sure that apexd is started in the default namespace
+     enter_default_mount_ns
+
+@@ -742,38 +730,24 @@ on post-fs-data
+     mkdir /data/misc/audioserver 0700 audioserver audioserver
+     mkdir /data/misc/cameraserver 0700 cameraserver cameraserver
+     mkdir /data/misc/vold 0700 root root
+-    mkdir /data/misc/boottrace 0771 system shell
+-    mkdir /data/misc/update_engine 0700 root root
+-    mkdir /data/misc/update_engine_log 02750 root log
+-    mkdir /data/misc/trace 0700 root root
+-    # create location to store surface and window trace files
+-    mkdir /data/misc/wmtrace 0700 system system
+     # create location to store accessibility trace files
+     mkdir /data/misc/a11ytrace 0700 system system
+     # profile file layout
+     mkdir /data/misc/profiles 0771 system system
+     mkdir /data/misc/profiles/cur 0771 system system
+     mkdir /data/misc/profiles/ref 0771 system system
+-    mkdir /data/misc/profman 0770 system shell
+-    mkdir /data/misc/gcov 0770 root root
+     mkdir /data/misc/installd 0700 root root
+     mkdir /data/misc/apexdata 0711 root root
+     mkdir /data/misc/apexrollback 0700 root root
+     mkdir /data/misc/appcompat/ 0700 system system
+-    mkdir /data/misc/snapshotctl_log 0755 root root
+-    # create location to store pre-reboot information
+-    mkdir /data/misc/prereboot 0700 system system
+     # directory used for on-device refresh metrics file.
+     mkdir /data/misc/odrefresh 0777 system system
+     # directory used for on-device signing key blob
+     mkdir /data/misc/odsign 0700 root root
+
+-    mkdir /data/preloads 0775 system system encryption=None
+-
+     # For security reasons, /data/local/tmp should always be empty.
+     # Do not place files or directories in /data/local/tmp
+     mkdir /data/local/tmp 0771 shell shell
+-    mkdir /data/local/traces 0777 shell shell
+     mkdir /data/data 0771 system system encryption=None
+     mkdir /data/app-private 0771 system system encryption=Require
+     mkdir /data/app-ephemeral 0771 system system encryption=Require
+@@ -787,23 +761,8 @@ on post-fs-data
+     mkdir /data/fonts/files 0771 system system
+     mkdir /data/fonts/config 0770 system system
+
+-    # Create directories to push tests to for each linker namespace.
+-    # Create the subdirectories in case the first test is run as root
+-    # so it doesn't end up owned by root.
+-    mkdir /data/local/tests 0700 shell shell
+-    mkdir /data/local/tests/product 0700 shell shell
+-    mkdir /data/local/tests/system 0700 shell shell
+-    mkdir /data/local/tests/unrestricted 0700 shell shell
+-    mkdir /data/local/tests/vendor 0700 shell shell
+-
+     # create dalvik-cache, so as to enforce our permissions
+     mkdir /data/dalvik-cache 0771 root root encryption=Require
+-    # create the A/B OTA directory, so as to enforce our permissions
+-    mkdir /data/ota 0771 root root encryption=Require
+-
+-    # create the OTA package directory. It will be accessed by GmsCore (cache
+-    # group), update_engine and update_verifier.
+-    mkdir /data/ota_package 0770 system cache encryption=Require
+
+     # create resource-cache and double-check the perms
+     mkdir /data/resource-cache 0771 system system encryption=Require
+@@ -828,14 +787,11 @@ on post-fs-data
+     # Create all remaining /data root dirs so that they are made through init
+     # and get proper encryption policy installed
+     mkdir /data/backup 0700 system system encryption=Require
+-    mkdir /data/ss 0700 system system encryption=Require
+
+     mkdir /data/system 0775 system system encryption=Require
+     mkdir /data/system/environ 0700 system system
+     # b/183861600 attempt to fix selinux label before running derive_classpath service
+     restorecon /data/system/environ
+-    mkdir /data/system/dropbox 0700 system system
+-    mkdir /data/system/heapdump 0700 system system
+     mkdir /data/system/users 0775 system system
+
+     mkdir /data/system_de 0770 system system encryption=None
+@@ -875,18 +831,7 @@ on post-fs-data
+     mkdir /data_mirror/ref_profiles 0700 root root
+     mount none /data/misc/profiles/ref /data_mirror/ref_profiles bind rec
+
+-    mkdir /data/cache 0770 system cache encryption=Require
+-    mkdir /data/cache/recovery 0770 system cache
+-    mkdir /data/cache/backup_stage 0700 system system
+-    mkdir /data/cache/backup 0700 system system
+-
+-    # Delete these if need be, per b/139193659
+-    mkdir /data/rollback 0700 system system encryption=DeleteIfNecessary
+-    mkdir /data/rollback-observer 0700 system system encryption=DeleteIfNecessary
+-    mkdir /data/rollback-history 0700 system system encryption=DeleteIfNecessary
+-
+-    # Create root dir for Incremental Service
+-    mkdir /data/incremental 0771 system system encryption=Require
++    symlink /cache /data/cache
+
+     # Create directories for statsd
+     mkdir /data/misc/stats-active-metric/ 0770 statsd system
+@@ -1142,12 +1087,6 @@ on property:vold.decrypt=trigger_shutdown_framework
+     class_reset_post_data core
+     class_reset_post_data hal
+
+-on property:sys.boot_completed=1
+-    bootchart stop
+-    # Setup per_boot directory so other .rc could start to use it on boot_completed
+-    exec - system system -- /bin/rm -rf /data/per_boot
+-    mkdir /data/per_boot 0700 system system encryption=Require key=per_boot_ref
+-
+ # system server cannot write to /proc/sys files,
+ # and chown/chmod does not work for /proc/sys/ entries.
+ # So proxy writes through init.
+@@ -1220,15 +1159,6 @@ service console /system/bin/sh
+     seclabel u:r:shell:s0
+     setenv HOSTNAME console
+
+-on property:ro.debuggable=1
+-    # Give writes to anyone for the trace folder on debug builds.
+-    # The folder is used to store method traces.
+-    chmod 0773 /data/misc/trace
+-    # Give reads to anyone for the window trace folder on debug builds.
+-    chmod 0775 /data/misc/wmtrace
+-    # Give reads to anyone for the accessibility trace folder on debug builds.
+-    chmod 0775 /data/misc/a11ytrace
+-
+ on init && property:ro.debuggable=1
+     start console
+
+project system/sepolicy/
+diff --git a/Android.mk b/Android.mk
+index 4f595f5..1ebea6a 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -140,10 +140,12 @@ else
+ mixed_sepolicy_build :=
+ endif
+
+-NEVERALLOW_ARG :=
++# Hacks to keep SELinux permissive in user builds
++SELINUX_IGNORE_NEVERALLOWS := true
++
+ ifeq ($(SELINUX_IGNORE_NEVERALLOWS),true)
+ ifeq ($(TARGET_BUILD_VARIANT),user)
+-$(error SELINUX_IGNORE_NEVERALLOWS := true cannot be used in user builds)
++$(warning SELINUX_IGNORE_NEVERALLOWS := true cannot be used in user builds)
+ endif
+ $(warning Be careful when using the SELINUX_IGNORE_NEVERALLOWS flag. \
+           It does not work in user builds and using it will \
+@@ -1052,10 +1054,9 @@ $(built_sepolicy_neverallows)
+ 	$(hide) $(HOST_OUT_EXECUTABLES)/sepolicy-analyze $@.tmp permissive > $@.permissivedomains
+ 	$(hide) if [ "$(TARGET_BUILD_VARIANT)" = "user" -a -s $@.permissivedomains ]; then \
+ 		echo "==========" 1>&2; \
+-		echo "ERROR: permissive domains not allowed in user builds" 1>&2; \
++		echo "WARNING: permissive domains not allowed in user builds" 1>&2; \
+ 		echo "List of invalid domains:" 1>&2; \
+ 		cat $@.permissivedomains 1>&2; \
+-		exit 1; \
+ 		fi
+ 	$(hide) mv $@.tmp $@
+
+@@ -1113,10 +1114,9 @@ $(LOCAL_BUILT_MODULE): $(sepolicy.recovery.conf) $(HOST_OUT_EXECUTABLES)/checkpo
+ 	$(hide) $(HOST_OUT_EXECUTABLES)/sepolicy-analyze $@.tmp permissive > $@.permissivedomains
+ 	$(hide) if [ "$(TARGET_BUILD_VARIANT)" = "user" -a -s $@.permissivedomains ]; then \
+ 		echo "==========" 1>&2; \
+-		echo "ERROR: permissive domains not allowed in user builds" 1>&2; \
++		echo "WARNING: permissive domains not allowed in user builds" 1>&2; \
+ 		echo "List of invalid domains:" 1>&2; \
+ 		cat $@.permissivedomains 1>&2; \
+-		exit 1; \
+ 		fi
+ 	$(hide) mv $@.tmp $@
+
+project vendor/lineage/
+diff --git a/config/common.mk b/config/common.mk
+index 913d36f..930cc29 100644
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -107,65 +107,21 @@ PRODUCT_RESTRICT_VENDOR_FILES := false
+ # Bootanimation
+ TARGET_SCREEN_WIDTH ?= 1080
+ TARGET_SCREEN_HEIGHT ?= 1920
+-PRODUCT_PACKAGES += \
+-    bootanimation.zip
+
+ # Lineage packages
+ PRODUCT_PACKAGES += \
+     LineageParts \
+     LineageSettingsProvider \
+-    LineageSetupWizard \
+-    Updater
+-
+-PRODUCT_COPY_FILES += \
+-    vendor/lineage/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
++    LineageSetupWizard
+
+ # Themes
+ PRODUCT_PACKAGES += \
+-    LineageThemesStub \
+     ThemePicker
+
+ # Config
+ PRODUCT_PACKAGES += \
+     SimpleDeviceConfig
+
+-# Extra tools in Lineage
+-PRODUCT_PACKAGES += \
+-    7z \
+-    bash \
+-    curl \
+-    getcap \
+-    htop \
+-    lib7z \
+-    nano \
+-    pigz \
+-    setcap \
+-    unrar \
+-    vim \
+-    zip
+-
+-PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+-    system/bin/curl \
+-    system/bin/getcap \
+-    system/bin/setcap
+-
+-# Openssh
+-PRODUCT_PACKAGES += \
+-    scp \
+-    sftp \
+-    ssh \
+-    sshd \
+-    sshd_config \
+-    ssh-keygen \
+-    start-ssh
+-
+-PRODUCT_COPY_FILES += \
+-    vendor/lineage/prebuilt/common/etc/init/init.openssh.rc:$(TARGET_COPY_OUT_PRODUCT)/etc/init/init.openssh.rc
+-
+-# rsync
+-PRODUCT_PACKAGES += \
+-    rsync
+-
+ # Storage manager
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+     ro.storage_manager.enabled=true
+
+diff --git a/config/common_full.mk b/config/common_full.mk
+index 8371d3c..67bfa73 100644
+--- a/config/common_full.mk
++++ b/config/common_full.mk
+@@ -3,16 +3,6 @@ $(call inherit-product, vendor/lineage/config/common_mobile.mk)
+
+ PRODUCT_SIZE := full
+
+-# Include {Lato,Rubik} fonts
+-$(call inherit-product-if-exists, external/google-fonts/lato/fonts.mk)
+-$(call inherit-product-if-exists, external/google-fonts/rubik/fonts.mk)
+-
+-# Fonts
+-PRODUCT_PACKAGES += \
+-    fonts_customization.xml \
+-    FontLatoOverlay \
+-    FontRubikOverlay
+-
+ # Recorder
+ PRODUCT_PACKAGES += \
+     Recorder
+
+diff --git a/config/common_mobile.mk b/config/common_mobile.mk
+index e55a046..e0249e3 100644
+--- a/config/common_mobile.mk
++++ b/config/common_mobile.mk
+@@ -12,14 +12,7 @@ PRODUCT_PACKAGES += \
+     Eleven \
+     Etar \
+     ExactCalculator \
+-    Jelly \
+-    Profiles \
+-    Seedvault
+-
+-ifneq ($(TARGET_EXCLUDES_AUDIOFX),true)
+-PRODUCT_PACKAGES += \
+-    AudioFX
+-endif
++    Jelly
+
+ ifeq ($(PRODUCT_TYPE), go)
+ PRODUCT_PACKAGES += \
+@@ -46,15 +39,11 @@ endif
+
+ # Customizations
+ PRODUCT_PACKAGES += \
+-    IconShapePebbleOverlay \
+-    IconShapeRoundedRectOverlay \
+-    IconShapeSquareOverlay \
+-    IconShapeSquircleOverlay \
+-    IconShapeTaperedRectOverlay \
+-    IconShapeTeardropOverlay \
+-    IconShapeVesselOverlay \
+     LineageNavigationBarNoHint \
+-    NavigationBarMode2ButtonOverlay
++    NavigationBarMode2ButtonOverlay \
++    NavigationBarMode3ButtonOverlay \
++    NavigationBarModeGesturalOverlay \
++    OneHandedModeGesturalOverlay
+
+ # Media
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+
+diff --git a/config/data_only.mk b/config/data_only.mk
+index 5ff877c..ab70301 100644
+--- a/config/data_only.mk
++++ b/config/data_only.mk
+@@ -1,7 +1,3 @@
+ # World APN list
+ PRODUCT_PACKAGES += \
+     apns-conf.xml
+-
+-# Telephony packages
+-PRODUCT_PACKAGES += \
+-    Stk
+
+diff --git a/config/telephony.mk b/config/telephony.mk
+index 6adf48d..e63b320 100644
+--- a/config/telephony.mk
++++ b/config/telephony.mk
+@@ -8,8 +8,7 @@ PRODUCT_PACKAGES += \
+
+ # Telephony packages
+ PRODUCT_PACKAGES += \
+-    messaging \
+-    Stk
++    messaging
+
+ # Default ringtone
+ PRODUCT_PRODUCT_PROPERTIES += \
+
+diff --git a/prebuilt/common/etc/init/init.lineage-system_ext.rc b/prebuilt/common/etc/init/init.lineage-system_ext.rc
+index fdee7ea..d75d559 100644
+--- a/prebuilt/common/etc/init/init.lineage-system_ext.rc
++++ b/prebuilt/common/etc/init/init.lineage-system_ext.rc
+@@ -1,9 +1,3 @@
+ # LineageOS core functionality
+ on init
+     export TERMINFO /system_ext/etc/terminfo
+-
+-# bugreport is triggered by holding down volume down, volume up and power
+-service bugreport /system/bin/dumpstate -d -p -z
+-    oneshot
+-    disabled
+-    keycodes 114 115 116
+
+diff --git a/prebuilt/common/etc/init/init.lineage-updater.rc b/prebuilt/common/etc/init/init.lineage-updater.rc
+deleted file mode 100644
+index f1bed8d..0000000
+--- a/prebuilt/common/etc/init/init.lineage-updater.rc
++++ /dev/null
+
+diff --git a/prebuilt/common/etc/init/init.openssh.rc b/prebuilt/common/etc/init/init.openssh.rc
+deleted file mode 100644
+index f3613c3..0000000
+--- a/prebuilt/common/etc/init/init.openssh.rc
++++ /dev/null
