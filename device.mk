@@ -194,7 +194,9 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml
 
 # Mlipay
-PRODUCT_PACKAGES += vendor.xiaomi.hardware.mlipay@1.1.vendor:64
+PRODUCT_PACKAGES += \
+    vendor.xiaomi.hardware.mlipay@1.1.vendor:64 \
+    vendor.xiaomi.hardware.mtdservice@1.0.vendor:64
 
 # Net
 PRODUCT_PACKAGES += \
