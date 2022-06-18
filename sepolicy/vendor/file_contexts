@@ -31,10 +31,6 @@
 # Shell files
 /(vendor|system/vendor)/bin/init\..*\.sh u:object_r:qti_init_shell_exec:s0
 
-# Thermal engine
-/data/decrypt\.txt u:object_r:thermal_decrypt_file:s0
-/data/vendor/thermal(/.*)? u:object_r:thermal_data_file:s0
-
 # Ultrasound
 /dev/elliptic(.*)? u:object_r:sound_device:s0
 
