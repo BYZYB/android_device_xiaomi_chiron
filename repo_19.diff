@@ -1,41 +1,27 @@
 project build/make/
 diff --git a/core/Makefile b/core/Makefile
-index 327f080..0f45650 100644
+index e69b5af..6c9b412 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -2115,16 +2115,6 @@ endif
- #      install
- #      (BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT = true).
-
--ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS_BOOT) \
--  $(BOARD_BUILD_SYSTEM_ROOT_IMAGE) $(BOARD_INCLUDE_RECOVERY_DTBO) $(BOARD_INCLUDE_RECOVERY_ACPIO) \
--  $(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT) $(BOARD_RAMDISK_USE_LZ4) $(BOARD_RAMDISK_USE_XZ)))
--# Named '.dat' so we don't attempt to use imgdiff for patching it.
+@@ -2119,8 +2119,7 @@ ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS
+   $(BOARD_BUILD_SYSTEM_ROOT_IMAGE) $(BOARD_INCLUDE_RECOVERY_DTBO) $(BOARD_INCLUDE_RECOVERY_ACPIO) \
+   $(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT) $(BOARD_RAMDISK_USE_LZ4) $(BOARD_RAMDISK_USE_XZ)))
+ # Named '.dat' so we don't attempt to use imgdiff for patching it.
 -RECOVERY_RESOURCE_ZIP := $(TARGET_OUT_VENDOR)/etc/recovery-resource.dat
 -ALL_DEFAULT_INSTALLED_MODULES += $(RECOVERY_RESOURCE_ZIP)
--else
--RECOVERY_RESOURCE_ZIP :=
--endif
--
- INSTALLED_RECOVERY_BUILD_PROP_TARGET := $(TARGET_RECOVERY_ROOT_OUT)/prop.default
-
- $(INSTALLED_RECOVERY_BUILD_PROP_TARGET): PRIVATE_RECOVERY_UI_PROPERTIES := \
-@@ -5409,15 +5399,11 @@ name := $(product_name)-ota-$(FILE_NAME_TAG)
- INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
++RECOVERY_RESOURCE_ZIP :=
+ else
+ RECOVERY_RESOURCE_ZIP :=
+ endif
+@@ -5411,7 +5410,7 @@ INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
  INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
 
--ifeq ($(TARGET_BUILD_VARIANT),user)
+ ifeq ($(TARGET_BUILD_VARIANT),user)
 -    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
--else
++    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
+ else
  ifneq ($(LINEAGE_BUILD),)
      $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
- else
-     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
- endif
--endif
-
- $(INTERNAL_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
- $(INTERNAL_OTA_PACKAGE_TARGET): .KATI_IMPLICIT_OUTPUTS := $(INTERNAL_OTA_METADATA)
 
 diff --git a/core/java.mk b/core/java.mk
 index 123cbe8..b794fd7 100644
@@ -50,52 +36,26 @@ index 123cbe8..b794fd7 100644
  endif
  endif
 
-diff --git a/core/main.mk b/core/main.mk
-index 2398219..76d1e1f 100644
---- a/core/main.mk
-+++ b/core/main.mk
-@@ -391,8 +391,6 @@ ifneq (,$(user_variant))
-   ADDITIONAL_SYSTEM_PROPERTIES += ro.allow.mock.location=0
-
- else # !user_variant
--  # Turn on checkjni for non-user builds.
--  ADDITIONAL_SYSTEM_PROPERTIES += ro.kernel.android.checkjni=1
-   # Set device insecure for non-user builds.
-   ADDITIONAL_SYSTEM_PROPERTIES += ro.secure=0
-   # Allow mock locations by default for non user builds
-@@ -402,8 +400,6 @@ endif # !user_variant
- ifeq (true,$(strip $(enable_target_debugging)))
-   # Target is more debuggable and adbd is on by default
-   ADDITIONAL_SYSTEM_PROPERTIES += ro.debuggable=1
--  # Enable Dalvik lock contention logging.
--  ADDITIONAL_SYSTEM_PROPERTIES += dalvik.vm.lockprof.threshold=500
- else # !enable_target_debugging
-   # Target is less debuggable and adbd is off by default
-   ADDITIONAL_SYSTEM_PROPERTIES += ro.debuggable=0
-
 diff --git a/core/product.mk b/core/product.mk
-index c4446f3..c63fb08 100644
+index c4446f3..b6d7327 100644
 --- a/core/product.mk
 +++ b/core/product.mk
-@@ -596,9 +596,14 @@ _readonly_late_variables := \
- _readonly_late_variables += \
-   PRODUCT_CFI_INCLUDE_PATHS \
+@@ -598,7 +598,12 @@ _readonly_late_variables += \
    PRODUCT_COPY_FILES \
--  PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
+   PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
    PRODUCT_DEX_PREOPT_BOOT_FLAGS \
 -  PRODUCT_SOONG_NAMESPACES
++  PRODUCT_SOONG_NAMESPACES \
 +  PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER \
 +  PRODUCT_DEX_PREOPT_DEFAULT_FLAGS \
-+  PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
 +  PRODUCT_OTHER_JAVA_DEBUG_INFO \
-+  PRODUCT_SOONG_NAMESPACES \
 +  PRODUCT_SYSTEM_SERVER_COMPILER_FILTER \
 +  PRODUCT_SYSTEM_SERVER_DEBUG_INFO
 
  _readonly_early_variables := $(filter-out $(_readonly_late_variables),$(_product_var_list))
 
 diff --git a/target/product/base_system.mk b/target/product/base_system.mk
-index b5b41f3..c5f3dea 100644
+index b5b41f3..40fdcb8 100644
 --- a/target/product/base_system.mk
 +++ b/target/product/base_system.mk
 @@ -32,9 +32,7 @@ PRODUCT_PACKAGES += \
@@ -171,13 +131,11 @@ index b5b41f3..c5f3dea 100644
  # Packages included only for eng or userdebug builds, previously debug tagged
  PRODUCT_PACKAGES_DEBUG := \
      adb_keys \
-@@ -393,8 +377,7 @@ endif
-
+@@ -394,7 +378,6 @@ endif
  # The set of packages whose code can be loaded by the system server.
  PRODUCT_SYSTEM_SERVER_APPS += \
--    SettingsProvider \
+     SettingsProvider \
 -    WallpaperBackup
-+    SettingsProvider
 
  PRODUCT_PACKAGES_DEBUG_JAVA_COVERAGE := \
      libdumpcoverage
@@ -196,27 +154,20 @@ index ee04627..f5e4b50 100644
  # Bluetooth:
 
 diff --git a/target/product/handheld_product.mk b/target/product/handheld_product.mk
-index 968d150..e326fed 100644
+index 968d150..bffcad7 100644
 --- a/target/product/handheld_product.mk
 +++ b/target/product/handheld_product.mk
-@@ -32,13 +32,9 @@ PRODUCT_PACKAGES += \
-     OneTimeInitializer \
+@@ -33,7 +33,6 @@ PRODUCT_PACKAGES += \
      preinstalled-packages-platform-handheld-product.xml \
      QuickSearchBox \
--    SettingsIntelligence \
+     SettingsIntelligence \
 -    frameworks-base-overlays
-+    SettingsIntelligence
 
  ifeq ($(LINEAGE_BUILD),)
  PRODUCT_PACKAGES += \
-     LatinIME
- endif
--
--PRODUCT_PACKAGES_DEBUG += \
--    frameworks-base-overlays-debug
 
 diff --git a/target/product/handheld_system.mk b/target/product/handheld_system.mk
-index 2c217cb..ff76ed8 100644
+index 2c217cb..e4cc4af 100644
 --- a/target/product/handheld_system.mk
 +++ b/target/product/handheld_system.mk
 @@ -32,12 +32,9 @@ $(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
@@ -254,41 +205,25 @@ index 2c217cb..ff76ed8 100644
      Telecom \
      TelephonyProvider \
      TeleService \
-@@ -86,7 +79,3 @@ PRODUCT_VENDOR_PROPERTIES += \
-     ro.carrier?=unknown \
-     ro.config.notification_sound?=OnTheHunt.ogg \
-     ro.config.alarm_alert?=Alarm_Classic.ogg
--
--# Traceur for debug only
--PRODUCT_PACKAGES_ENG += \
--    Traceur
 
 diff --git a/target/product/handheld_system_ext.mk b/target/product/handheld_system_ext.mk
-index d935fbf..b588d1e 100644
+index d935fbf..8406fee 100644
 --- a/target/product/handheld_system_ext.mk
 +++ b/target/product/handheld_system_ext.mk
-@@ -26,5 +26,4 @@ PRODUCT_PACKAGES += \
-     Provision \
+@@ -27,4 +27,3 @@ PRODUCT_PACKAGES += \
      Settings \
      StorageManager \
--    SystemUI \
+     SystemUI \
 -    WallpaperCropper \
-+    SystemUI
 
 diff --git a/target/product/media_system.mk b/target/product/media_system.mk
-index 25303c1..b589b5f 100644
+index 25303c1..d73fcd2 100644
 --- a/target/product/media_system.mk
 +++ b/target/product/media_system.mk
-@@ -66,16 +66,6 @@ PRODUCT_COPY_FILES += $(call add-to-product-copy-files-if-exists,\
- PRODUCT_COPY_FILES += $(call add-to-product-copy-files-if-exists,\
-     frameworks/base/dirty-image-objects-phone:system/etc/dirty-image-objects)
+@@ -72,10 +72,6 @@ PRODUCT_VENDOR_PROPERTIES += \
+     tombstoned.max_tombstone_count?=50
+ endif
 
--# On userdebug builds, collect more tombstones by default.
--ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
--PRODUCT_VENDOR_PROPERTIES += \
--    tombstoned.max_tombstone_count?=50
--endif
--
 -PRODUCT_VENDOR_PROPERTIES += \
 -    ro.logd.size.stats=64K \
 -    log.tag.stats_log=I
@@ -298,17 +233,11 @@ index 25303c1..b589b5f 100644
  $(call inherit-product-if-exists, vendor/google/products/cfi-vendor.mk)
 
 diff --git a/target/product/runtime_libart.mk b/target/product/runtime_libart.mk
-index b511aa6..c46296d 100644
+index b511aa6..4fc2e44 100644
 --- a/target/product/runtime_libart.mk
 +++ b/target/product/runtime_libart.mk
-@@ -99,12 +99,12 @@ PRODUCT_SYSTEM_PROPERTIES += \
- # On eng builds, make "boot" reasons only extract for faster turnaround.
- ifeq (eng,$(TARGET_BUILD_VARIANT))
-     PRODUCT_SYSTEM_PROPERTIES += \
--        pm.dexopt.first-boot?=extract \
--        pm.dexopt.boot-after-ota?=extract
-+        pm.dexopt.first-boot?=everything \
-+        pm.dexopt.boot-after-ota?=everything
+@@ -103,8 +103,8 @@ ifeq (eng,$(TARGET_BUILD_VARIANT))
+         pm.dexopt.boot-after-ota?=extract
  else
      PRODUCT_SYSTEM_PROPERTIES += \
 -        pm.dexopt.first-boot?=verify \
@@ -363,20 +292,18 @@ index b511aa6..c46296d 100644
  # (https://source.corp.google.com/android/system/iorap/iorapd.rc?q=iorapd.rc)
 
 diff --git a/target/product/telephony_system.mk b/target/product/telephony_system.mk
-index ef48719..27c0b66 100644
+index ef48719..4b76ad5 100644
 --- a/target/product/telephony_system.mk
 +++ b/target/product/telephony_system.mk
-@@ -19,9 +19,4 @@
-
+@@ -20,8 +20,5 @@
  PRODUCT_PACKAGES := \
      ONS \
--    CarrierDefaultApp \
+     CarrierDefaultApp \
 -    CallLogBackup \
 -    com.android.cellbroadcast \
 -    CellBroadcastLegacyApp \
--
--PRODUCT_COPY_FILES := \
-+    CarrierDefaultApp
+
+ PRODUCT_COPY_FILES := \
 
 diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
 index 6e3cd70..532fad2 100644
@@ -620,22 +547,71 @@ index 48da31b9..ab48e290 100644
 
 project frameworks/native/
 diff --git a/cmds/atrace/Android.bp b/cmds/atrace/Android.bp
-index aa0ef25..1031c83 100644
+index aa0ef25..9ba95ee 100644
 --- a/cmds/atrace/Android.bp
 +++ b/cmds/atrace/Android.bp
-@@ -36,12 +36,4 @@ cc_binary {
-         "libpdx_default_transport",
+@@ -37,8 +37,6 @@ cc_binary {
          "android.hardware.atrace@1.0",
      ],
--
+
 -    init_rc: ["atrace.rc"],
 -
--    product_variables: {
--        debuggable: {
--            init_rc: ["atrace_userdebug.rc"],
--        },
--    },
- }
+     product_variables: {
+         debuggable: {
+             init_rc: ["atrace_userdebug.rc"],
+
+project packages/modules/adb/
+diff --git a/daemon/main.cpp b/daemon/main.cpp
+index e2ecf96..614c0fd 100644
+--- a/daemon/main.cpp
++++ b/daemon/main.cpp
+@@ -74,17 +74,13 @@ static bool should_drop_privileges() {
+     //
+     // ro.secure:
+     //   Drop privileges by default. Set to 1 on userdebug and user builds.
+-    bool ro_secure = android::base::GetBoolProperty("ro.secure", true);
+-    bool ro_debuggable = __android_log_is_debuggable();
+-
+-    // Drop privileges if ro.secure is set...
+-    bool drop = ro_secure;
++    bool drop = false;
+
+     // ... except "adb root" lets you keep privileges in a debuggable build.
+     std::string prop = android::base::GetProperty("service.adb.root", "");
+     bool adb_root = (prop == "1");
+     bool adb_unroot = (prop == "0");
+-    if (ro_debuggable && adb_root) {
++    if (adb_root) {
+         drop = false;
+     }
+     // ... and "adb unroot" lets you explicitly drop privileges.
+@@ -121,12 +117,6 @@ static void drop_privileges(int server_port) {
+     // Don't listen on a port (default 5037) if running in secure mode.
+     // Don't run as root if running in secure mode.
+     if (should_drop_privileges()) {
+-        const bool should_drop_caps = !__android_log_is_debuggable();
+-
+-        if (should_drop_caps) {
+-            minijail_use_caps(jail.get(), CAP_TO_MASK(CAP_SETUID) | CAP_TO_MASK(CAP_SETGID));
+-        }
+-
+         minijail_change_gid(jail.get(), AID_SHELL);
+         minijail_change_uid(jail.get(), AID_SHELL);
+         // minijail_enter() will abort if any priv-dropping step fails.
+
+diff --git a/sockets.cpp b/sockets.cpp
+index 33b9524..4478ba8 100644
+--- a/sockets.cpp
++++ b/sockets.cpp
+@@ -416,7 +416,7 @@ asocket* create_local_service_socket(std::string_view name, atransport* transpor
+     LOG(VERBOSE) << "LS(" << s->id << "): bound to '" << name << "' via " << fd_value;
+
+ #if !ADB_HOST
+-    if ((name.starts_with("root:") && getuid() != 0 && __android_log_is_debuggable()) ||
++    if ((name.starts_with("root:") && getuid() != 0) ||
+         (name.starts_with("unroot:") && getuid() == 0) || name.starts_with("usb:") ||
+         name.starts_with("tcpip:")) {
+         D("LS(%d): enabling exit_on_close", s->id);
 
 project system/core/
 diff --git a/init/Android.bp b/init/Android.bp
@@ -721,10 +697,10 @@ index 3b459e0..28d96d6 100644
  /**
 
 diff --git a/rootdir/init.rc b/rootdir/init.rc
-index 5116c0f..e1743cc 100644
+index 8a38559..1ec0a6c 100644
 --- a/rootdir/init.rc
 +++ b/rootdir/init.rc
-@@ -633,11 +633,6 @@ on post-fs-data
+@@ -685,11 +685,6 @@ on post-fs-data
      # Make sure we have the device encryption key.
      installkey /data
 
@@ -736,7 +712,7 @@ index 5116c0f..e1743cc 100644
      # Avoid predictable entropy pool. Carry over entropy from previous boot.
      copy /data/system/entropy.dat /dev/urandom
 
-@@ -646,13 +641,6 @@ on post-fs-data
+@@ -698,13 +693,6 @@ on post-fs-data
      mkdir /data/vendor_de 0771 root root encryption=None
      mkdir /data/vendor/hardware 0771 root root
 
@@ -750,7 +726,7 @@ index 5116c0f..e1743cc 100644
      # Make sure that apexd is started in the default namespace
      enter_default_mount_ns
 
-@@ -742,38 +730,24 @@ on post-fs-data
+@@ -794,38 +782,24 @@ on post-fs-data
      mkdir /data/misc/audioserver 0700 audioserver audioserver
      mkdir /data/misc/cameraserver 0700 cameraserver cameraserver
      mkdir /data/misc/vold 0700 root root
@@ -789,7 +765,7 @@ index 5116c0f..e1743cc 100644
      mkdir /data/data 0771 system system encryption=None
      mkdir /data/app-private 0771 system system encryption=Require
      mkdir /data/app-ephemeral 0771 system system encryption=Require
-@@ -787,23 +761,8 @@ on post-fs-data
+@@ -839,23 +813,8 @@ on post-fs-data
      mkdir /data/fonts/files 0771 system system
      mkdir /data/fonts/config 0770 system system
 
@@ -813,7 +789,7 @@ index 5116c0f..e1743cc 100644
 
      # create resource-cache and double-check the perms
      mkdir /data/resource-cache 0771 system system encryption=Require
-@@ -828,14 +787,11 @@ on post-fs-data
+@@ -880,14 +839,11 @@ on post-fs-data
      # Create all remaining /data root dirs so that they are made through init
      # and get proper encryption policy installed
      mkdir /data/backup 0700 system system encryption=Require
@@ -828,7 +804,7 @@ index 5116c0f..e1743cc 100644
      mkdir /data/system/users 0775 system system
 
      mkdir /data/system_de 0770 system system encryption=None
-@@ -875,18 +831,7 @@ on post-fs-data
+@@ -927,18 +883,7 @@ on post-fs-data
      mkdir /data_mirror/ref_profiles 0700 root root
      mount none /data/misc/profiles/ref /data_mirror/ref_profiles bind rec
 
@@ -848,7 +824,7 @@ index 5116c0f..e1743cc 100644
 
      # Create directories for statsd
      mkdir /data/misc/stats-active-metric/ 0770 statsd system
-@@ -1142,12 +1087,6 @@ on property:vold.decrypt=trigger_shutdown_framework
+@@ -1194,12 +1139,6 @@ on property:vold.decrypt=trigger_shutdown_framework
      class_reset_post_data core
      class_reset_post_data hal
 
@@ -861,7 +837,7 @@ index 5116c0f..e1743cc 100644
  # system server cannot write to /proc/sys files,
  # and chown/chmod does not work for /proc/sys/ entries.
  # So proxy writes through init.
-@@ -1220,15 +1159,6 @@ service console /system/bin/sh
+@@ -1272,15 +1211,6 @@ service console /system/bin/sh
      seclabel u:r:shell:s0
      setenv HOSTNAME console
 
@@ -923,10 +899,10 @@ index 4f595f5..1ebea6a 100644
 
 project vendor/lineage/
 diff --git a/config/common.mk b/config/common.mk
-index 913d36f..930cc29 100644
+index d689a7e..2f34548 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -107,65 +107,21 @@ PRODUCT_RESTRICT_VENDOR_FILES := false
+@@ -103,66 +103,21 @@ PRODUCT_RESTRICT_VENDOR_FILES := false
  # Bootanimation
  TARGET_SCREEN_WIDTH ?= 1080
  TARGET_SCREEN_HEIGHT ?= 1920
@@ -937,15 +913,15 @@ index 913d36f..930cc29 100644
  PRODUCT_PACKAGES += \
      LineageParts \
      LineageSettingsProvider \
--    LineageSetupWizard \
+     LineageSetupWizard \
 -    Updater
 -
 -PRODUCT_COPY_FILES += \
 -    vendor/lineage/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
-+    LineageSetupWizard
 
  # Themes
  PRODUCT_PACKAGES += \
+-    LineageBlackTheme \
 -    LineageThemesStub \
      ThemePicker
 
@@ -1017,14 +993,13 @@ index 8371d3c..67bfa73 100644
      Recorder
 
 diff --git a/config/common_mobile.mk b/config/common_mobile.mk
-index e55a046..e0249e3 100644
+index e55a046..deb6469 100644
 --- a/config/common_mobile.mk
 +++ b/config/common_mobile.mk
-@@ -12,14 +12,7 @@ PRODUCT_PACKAGES += \
-     Eleven \
+@@ -13,13 +13,6 @@ PRODUCT_PACKAGES += \
      Etar \
      ExactCalculator \
--    Jelly \
+     Jelly \
 -    Profiles \
 -    Seedvault
 -
@@ -1032,7 +1007,6 @@ index e55a046..e0249e3 100644
 -PRODUCT_PACKAGES += \
 -    AudioFX
 -endif
-+    Jelly
 
  ifeq ($(PRODUCT_TYPE), go)
  PRODUCT_PACKAGES += \
@@ -1057,30 +1031,15 @@ index e55a046..e0249e3 100644
  # Media
  PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 
-diff --git a/config/data_only.mk b/config/data_only.mk
-index 5ff877c..ab70301 100644
---- a/config/data_only.mk
-+++ b/config/data_only.mk
-@@ -1,7 +1,3 @@
- # World APN list
- PRODUCT_PACKAGES += \
-     apns-conf.xml
--
--# Telephony packages
--PRODUCT_PACKAGES += \
--    Stk
-
 diff --git a/config/telephony.mk b/config/telephony.mk
-index 6adf48d..e63b320 100644
+index 6adf48d..355cf57 100644
 --- a/config/telephony.mk
 +++ b/config/telephony.mk
-@@ -8,8 +8,7 @@ PRODUCT_PACKAGES += \
-
+@@ -9,7 +9,6 @@ PRODUCT_PACKAGES += \
  # Telephony packages
  PRODUCT_PACKAGES += \
--    messaging \
+     messaging \
 -    Stk
-+    messaging
 
  # Default ringtone
  PRODUCT_PRODUCT_PROPERTIES += \
