@@ -129,8 +129,6 @@
     </integer-array>
     <!-- Amount of time it takes for the light sensor to warm up in milliseconds. For this time after the screen turns on, the Power Manager will not debounce light sensor readings -->
     <integer name="config_lightSensorWarmupTime">200</integer>
-    <!-- Boolean indicating if current platform supports BLE peripheral mode -->
-    <bool name="config_bluetooth_le_peripheral_mode_supported">true</bool>
     <!-- Operating volatage for bluetooth controller. 0 by default -->
     <integer name="config_bluetooth_operating_voltage_mv">3300</integer>
     <!-- Boolean indicating if restoring network selection should be skipped -->
