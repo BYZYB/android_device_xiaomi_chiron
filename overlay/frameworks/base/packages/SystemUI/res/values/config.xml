@@ -8,4 +8,6 @@
     <bool name="config_showActivity">true</bool>
     <!-- Smart replies in notifications: Whether we disable the feature unless the app targets P -->
     <bool name="config_smart_replies_in_notifications_requires_targeting_p">false</bool>
+    <!-- Default rounded corner curve (a Bezier). Must match (the curved path in) rounded.xml. Note that while rounded.xml includes the entire path (including the horizontal and vertical corner edges), this pulls out just the curve. -->
+    <string name="config_rounded_mask" translatable="false">M0,50V0H50A50,50 0,0 0,0 50Z</string>
 </resources>
