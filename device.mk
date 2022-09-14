@@ -107,7 +107,7 @@ PRODUCT_PACKAGES += libcutils_shim
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.1.vendor \
-    android.hardware.drm@1.4-service.clearkey
+    android.hardware.drm-service.clearkey
 
 # Fingerprint sensor
 PRODUCT_PACKAGES += android.hardware.biometrics.fingerprint@2.1-service.xiaomi_msm8998
