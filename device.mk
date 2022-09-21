@@ -168,7 +168,7 @@ PRODUCT_PACKAGES += \
     ims_ext_common.xml \
     ims-ext-common \
     libgui_shim \
-    libui_shim
+    libui_shim:64
 
 # IRQ
 PRODUCT_COPY_FILES += $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
