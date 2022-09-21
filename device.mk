@@ -105,7 +105,7 @@ PRODUCT_PACKAGES += \
     memtrack.msm8998
 
 # DPM
-PRODUCT_PACKAGES += libshim_dpmframework
+PRODUCT_PACKAGES += libcutils_shim
 
 # DRM
 PRODUCT_PACKAGES += \
