@@ -7,7 +7,7 @@ Forked from: [TeamWin/android_device_xiaomi_chiron](https://github.com/TeamWin/a
 
 ## Build
 
-export ALLOW_MISSING_DEPENDENCIES=true && . build/envsetup.sh && lunch omni_chiron-eng && mka recoveryimage
+export ALLOW_MISSING_DEPENDENCIES=true && . build/envsetup.sh && lunch twrp_chiron-eng && mka recoveryimage
 
 ## Device specifications
 

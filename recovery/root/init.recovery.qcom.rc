@@ -28,11 +28,6 @@
 on early-init
     mkdir /firmware 0771 system system
 
-on init
-    # Enable UFS powersaving
-    write /sys/devices/soc/1da4000.ufshc/clkgate_enable 1
-    write /sys/devices/soc/1da4000.ufshc/clkscale_enable 1
-
 on fs
     wait /dev/block/platform/soc/1da4000.ufshc
     symlink /dev/block/platform/soc/1da4000.ufshc /dev/block/bootdevice
@@ -42,7 +37,6 @@ on fs
     chown system drmrpc /dev/qseecom
     chown system system /dev/ion
     install_keyring
-
     setprop crypto.ready 1
 
 on boot
@@ -62,7 +56,6 @@ on boot
     write /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us 20000
     write /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us 500
 
-# Separate copy needed to use /sbin/linker64 instead of /system/bin/linker64
 service sbinqseecomd /sbin/qseecomd
     user root
     group root

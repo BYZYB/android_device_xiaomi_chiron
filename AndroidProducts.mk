@@ -14,9 +14,9 @@
 # limitations under the License.
 #
 
-PRODUCT_MAKEFILES := $(LOCAL_DIR)/omni_chiron.mk
+PRODUCT_MAKEFILES := $(LOCAL_DIR)/twrp_chiron.mk
 
 COMMON_LUNCH_CHOICES := \
-    omni_chiron-eng \
-    omni_chiron-user \
-    omni_chiron-userdebug
+    twrp_chiron-eng \
+    twrp_chiron-user \
+    twrp_chiron-userdebug
