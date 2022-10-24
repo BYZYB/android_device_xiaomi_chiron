@@ -294,8 +294,7 @@ PRODUCT_COPY_FILES += \
 
 # QMI
 PRODUCT_PACKAGES += \
-    libjson \
-    libjson.vendor
+    libjson
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
@@ -351,7 +350,6 @@ PRODUCT_PACKAGES += vendor.qti.hardware.vibrator.service
 
 # VNDK
 PRODUCT_PACKAGES += \
-    android.frameworks.bufferhub@1.0.vendor_32 \
     android.hardware.power-V2-cpp.vendor \
     audioclient-types-aidl-cpp.vendor \
     audioflinger-aidl-cpp.vendor \
