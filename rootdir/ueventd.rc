@@ -117,6 +117,9 @@ firmware_directories /vendor/firmware_mnt/image/
 # SSR devices
 /dev/subsys_* 0640 system system
 
+# Ultrasound device
+/dev/usf1 0660 system system
+
 # Ramdump devices
 /dev/ramdump* 0640 system system
 
@@ -130,8 +133,8 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/peel_ir 0660 system system
 
 # Elliptic
-/dev/elliptic0 0660 system system
-/dev/elliptic1 0660 system system
+/dev/elliptic0 0666 system system
+/dev/elliptic1 0666 system system
 /dev/i2c-10 0660 system system
 
 # Amplifier
