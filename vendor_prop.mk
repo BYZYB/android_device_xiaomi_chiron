@@ -218,6 +218,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.sensors.iod=false \
     ro.vendor.sensors.mot_detect=true \
     ro.vendor.sensors.multishake=true \
+    ro.vendor.sensors.noneui=true \
     ro.vendor.sensors.pmd=false \
     ro.vendor.sensors.pug=true \
     ro.vendor.sensors.spg=false \
