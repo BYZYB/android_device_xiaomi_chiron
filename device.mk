@@ -79,6 +79,7 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl:32 \
     android.hardware.camera.provider@2.4-service \
     android.hardware.camera.provider@2.5:64 \
+    libpiex_shim \
     vendor.qti.hardware.camera.device@1.0:64
 
 # Control groups and task profiles
@@ -349,8 +350,6 @@ PRODUCT_PACKAGES += android.hardware.usb@1.0-service
 PRODUCT_PACKAGES += vendor.qti.hardware.vibrator.service
 
 # VNDK
-PRODUCT_COPY_FILES += prebuilts/vndk/v29/arm/arch-arm-armv7-a-neon/shared/vndk-core/libpiex.so:$(TARGET_COPY_OUT_VENDOR)/lib/libpiex-v29.so
-
 PRODUCT_PACKAGES += \
     android.hardware.power-V2-cpp.vendor \
     audioclient-types-aidl-cpp.vendor \
