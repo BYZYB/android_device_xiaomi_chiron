@@ -83,7 +83,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.audio.feature.hwdep_cal.enable=false \
     vendor.audio.feature.incall_music.enable=false \
     vendor.audio.feature.keep_alive.enable=false \
-    vendor.audio.feature.kpi_optimize.enable=true \
     vendor.audio.feature.maxx_audio.enable=false \
     vendor.audio.feature.multi_voice_session.enable=true \
     vendor.audio.feature.ras.enable=true \
@@ -185,8 +184,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Perf
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.extension_library=libqti-perfd-client.so \
-    ro.vendor.qti.am.reschedule_service=true \
-    ro.vendor.qti.sys.fw.bg_apps_limit=60
+    ro.vendor.qti.am.reschedule_service=true
 
 # Radio
 PRODUCT_PROPERTY_OVERRIDES += \
