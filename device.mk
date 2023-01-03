@@ -351,18 +351,8 @@ PRODUCT_PACKAGES += vendor.qti.hardware.vibrator.service
 
 # VNDK
 PRODUCT_PACKAGES += \
-    android.hardware.power-V2-cpp.vendor \
-    audioclient-types-aidl-cpp.vendor \
-    audioflinger-aidl-cpp.vendor \
-    audiopolicy-aidl-cpp.vendor \
-    av-types-aidl-cpp.vendor \
-    libandroid_runtime_lazy.vendor \
-    libaudioclient_aidl_conversion.vendor \
-    libaudiofoundation.vendor \
     libdng_sdk.vendor_32 \
-    libstdc++.vendor \
-    mediametricsservice-aidl-cpp.vendor \
-    vndk-ext
+    libstdc++.vendor
 
 # Trust HAL
 PRODUCT_PACKAGES += vendor.lineage.trust@1.0-service
