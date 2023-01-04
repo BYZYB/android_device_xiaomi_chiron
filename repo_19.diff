@@ -1,6 +1,6 @@
 project build/make/
 diff --git a/core/Makefile b/core/Makefile
-index e69b5af..6c9b412 100644
+index fc4cbd3..3a81a61 100644
 --- a/core/Makefile
 +++ b/core/Makefile
 @@ -2119,8 +2119,7 @@ ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS
@@ -599,6 +599,19 @@ index e2ecf96..614c0fd 100644
          minijail_change_uid(jail.get(), AID_SHELL);
          // minijail_enter() will abort if any priv-dropping step fails.
 
+diff --git a/root/adbroot_service.cpp b/root/adbroot_service.cpp
+index d622fdd..153076d 100644
+--- a/root/adbroot_service.cpp
++++ b/root/adbroot_service.cpp
+@@ -67,7 +67,7 @@ ndk::ScopedAStatus ADBRootService::isSupported(bool* _aidl_return) {
+     }
+
+     AutoMutex _l(lock_);
+-    *_aidl_return = __android_log_is_debuggable();
++    *_aidl_return = true;
+     return ndk::ScopedAStatus::ok();
+ }
+
 diff --git a/sockets.cpp b/sockets.cpp
 index 33b9524..4478ba8 100644
 --- a/sockets.cpp
@@ -899,10 +912,10 @@ index 4f595f5..1ebea6a 100644
 
 project vendor/lineage/
 diff --git a/config/common.mk b/config/common.mk
-index d689a7e..2f34548 100644
+index 82e3e9f..1cd993b 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -103,66 +103,21 @@ PRODUCT_RESTRICT_VENDOR_FILES := false
+@@ -103,49 +103,21 @@ PRODUCT_RESTRICT_VENDOR_FILES := false
  # Bootanimation
  TARGET_SCREEN_WIDTH ?= 1080
  TARGET_SCREEN_HEIGHT ?= 1920
@@ -949,6 +962,13 @@ index d689a7e..2f34548 100644
 -    system/bin/getcap \
 -    system/bin/setcap
 -
+ # Filesystems tools
+ PRODUCT_PACKAGES += \
+     fsck.ntfs \
+@@ -159,23 +131,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+     system/%/libfuse-lite.so \
+     system/%/libntfs-3g.so
+
 -# Openssh
 -PRODUCT_PACKAGES += \
 -    scp \
