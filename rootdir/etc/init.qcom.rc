@@ -25,7 +25,6 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-import /vendor/etc/init/hw/init.fingerprint.rc
 import /vendor/etc/init/hw/init.qcom.usb.rc
 import /vendor/etc/init/hw/init.target.rc
 
@@ -87,9 +86,12 @@ on post-fs-data
     chown root system /mnt/vendor/persist/sensors/sns.reg
     chown system system /mnt/vendor/persist/PRSensorData.txt
 
-    # Create PERFD deamon related dirs
-    mkdir /data/vendor/perfd 2770 root system
-    rm /data/vendor/perfd/default_values
+    # Create fingerprint sensor related dirs
+    mkdir /data/vendor/fpc 0770 system system
+    mkdir /data/vendor/goodix 0770 system system
+    mkdir /mnt/vendor/persist/fpc 0770 system system
+    chmod 0600 /data/vendor/fpc/calibration_image.pndat
+    chown system system /data/vendor/fpc/calibration_image.pndat
 
     # Mark the copy complete flag to not completed
     write /data/vendor/radio/copy_complete 0
