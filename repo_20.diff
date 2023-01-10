@@ -808,31 +808,33 @@ index c56f860..b368b7a 100644
      start console
 
 project system/sepolicy/
-diff --git a/Android.mk b/Android.mk
-index 50c265d..e8d6fc4 100644
---- a/Android.mk
-+++ b/Android.mk
-@@ -79,10 +79,12 @@ else
- mixed_sepolicy_build :=
- endif
-
--NEVERALLOW_ARG :=
-+# Hacks to keep SELinux permissive in user builds
-+SELINUX_IGNORE_NEVERALLOWS := true
-+
- ifeq ($(SELINUX_IGNORE_NEVERALLOWS),true)
- ifeq ($(TARGET_BUILD_VARIANT),user)
--$(error SELINUX_IGNORE_NEVERALLOWS := true cannot be used in user builds)
-+$(warning SELINUX_IGNORE_NEVERALLOWS := true cannot be used in user builds)
- endif
- $(warning Be careful when using the SELINUX_IGNORE_NEVERALLOWS flag. \
-           It does not work in user builds and using it will \
-
 diff --git a/build/soong/policy.go b/build/soong/policy.go
-index b1840da..f60b522 100644
+index b1840da..fee9a0e 100644
 --- a/build/soong/policy.go
 +++ b/build/soong/policy.go
-@@ -510,7 +510,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -379,9 +379,7 @@ func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Pat
+ 			FlagWithArg("-o ", os.DevNull).
+ 			FlagWithArg("-f ", os.DevNull)
+
+-		if proptools.BoolDefault(c.properties.Ignore_neverallow, ctx.Config().SelinuxIgnoreNeverallows()) {
+-			secilcCmd.Flag("-N")
+-		}
++		secilcCmd.Flag("-N")
+ 	}
+
+ 	rule.Build("cil", "Building cil for "+ctx.ModuleName())
+@@ -494,9 +492,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+ 		FlagWithOutput("-o ", bin).
+ 		FlagWithArg("-f ", os.DevNull)
+
+-	if proptools.BoolDefault(c.properties.Ignore_neverallow, ctx.Config().SelinuxIgnoreNeverallows()) {
+-		secilcCmd.Flag("-N")
+-	}
++	secilcCmd.Flag("-N")
+ 	rule.Temporary(bin)
+
+ 	// permissive check is performed only in user build (not debuggable).
+@@ -510,7 +506,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
  		rule.Temporary(permissiveDomains)
 
  		msg := `==========\n` +
@@ -841,7 +843,7 @@ index b1840da..f60b522 100644
  			`List of invalid domains:`
 
  		rule.Command().Text("if test").
-@@ -520,7 +520,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -520,7 +516,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
  			Text(`"` + msg + `"`).
  			Text("&& cat ").
  			Input(permissiveDomains).
