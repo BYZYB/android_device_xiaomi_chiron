@@ -179,8 +179,6 @@
     <bool name="config_sustainedPerformanceModeSupported">true</bool>
     <!-- Default list of files pinned by the Pinner Service -->
     <string-array translatable="false" name="config_defaultPinnerServiceFiles">
-        <item>"/apex/com.android.art/javalib/arm64/boot-core-libart.vdex"</item>
-        <item>"/apex/com.android.art/javalib/arm64/boot.vdex"</item>
         <item>"/apex/com.android.art/javalib/core-libart.jar"</item>
         <item>"/apex/com.android.art/javalib/core-oj.jar"</item>
         <item>"/system_ext/priv-app/SystemUI/oat/arm64/SystemUI.vdex"</item>
