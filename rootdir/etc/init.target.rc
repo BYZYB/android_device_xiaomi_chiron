@@ -56,6 +56,10 @@ on charger
     start vendor.power_off_alarm
 
 on init
+    # Disable UFS powersaving
+    write /sys/devices/soc/1da4000.ufshc/clkgate_enable 0
+    write /sys/devices/soc/1da4000.ufshc/clkscale_enable 0
+
     # QSEE rpmb listener need symlink for bootdevice
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
@@ -72,10 +76,6 @@ on init
 
     # Enable TCP Fast Open by default
     write /proc/sys/net/ipv4/tcp_fastopen 3
-
-    # Enable UFS powersaving
-    write /sys/devices/soc/1da4000.ufshc/clkgate_enable 1
-    write /sys/devices/soc/1da4000.ufshc/clkscale_enable 1
 
     # Update cpuset for foreground and background apps
     write /dev/cpuset/background/cpus 0-1
@@ -175,9 +175,17 @@ on property:sys.boot_completed=1
     setprop persist.radio.imei2 ""
     setprop persist.radio.meid ""
 
-    # Used by sound trigger HAL
-    chown media audio /sys/kernel/wdsp0/boot
-    chown media audio /sys/kernel/wcd_cpe0/fw_name
+    # Enable UFS powersaving
+    write /sys/devices/soc/1da4000.ufshc/clkgate_enable 1
+    write /sys/devices/soc/1da4000.ufshc/clkscale_enable 1
+
+    # Tune FS for runtime
+    write /sys/block/sda/queue/read_ahead_kb 128
+    write /sys/block/sdb/queue/read_ahead_kb 128
+    write /sys/block/sdc/queue/read_ahead_kb 128
+    write /sys/block/sdd/queue/read_ahead_kb 128
+    write /sys/block/sde/queue/read_ahead_kb 128
+    write /sys/block/sdf/queue/read_ahead_kb 128
 
     # Configure governor settings for little cluster
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
@@ -186,7 +194,7 @@ on property:sys.boot_completed=1
 
     # Configure governor settings for big cluster
     write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor "schedutil"
-    write /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us 10000
+    write /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us 20000
     write /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us 500
 
     # Set default schedtune value for foreground and top-app
