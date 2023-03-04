@@ -1,7 +1,7 @@
 TWRP configuration for Xiaomi Mi MIX 2
 ===
 
-Copyright 2012-2021 - The TeamWin Project
+Copyright 2012-2023 - The TeamWin Project
 
 Forked from: [TeamWin/android_device_xiaomi_chiron](https://github.com/TeamWin/android_device_xiaomi_chiron)
 

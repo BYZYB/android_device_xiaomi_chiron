@@ -11,10 +11,10 @@
 /persist ext4 /dev/block/bootdevice/by-name/persist flags=display="Persist";backup=1
 /persist_image emmc /dev/block/bootdevice/by-name/persist flags=display="Persist";flashimg=1
 /recovery emmc /dev/block/bootdevice/by-name/recovery flags=backup=1
-/system_root ext4 /dev/block/bootdevice/by-name/system flags=display="System"
-/system_image emmc /dev/block/bootdevice/by-name/system
-/vendor ext4 /dev/block/bootdevice/by-name/cust flags=backup=1;wipeingui
-/vendor_image emmc /dev/block/bootdevice/by-name/cust flags=backup=1
+/system_root ext4 /dev/block/bootdevice/by-name/system flags=display="System";fsflags="discard";wipeingui
+/system_image emmc /dev/block/bootdevice/by-name/system flags=display="System";backup=1;flashimg=1
+/vendor ext4 /dev/block/bootdevice/by-name/cust flags=display="Vendor";fsflags="discard";wipeingui
+/vendor_image emmc /dev/block/bootdevice/by-name/cust flags=display="Vendor";backup=1;flashimg=1
 
 # Removable storage
 /usb_otg auto /dev/block/sdg1 /dev/block/sdg flags=display="USB-OTG";storage;wipeingui;removable
