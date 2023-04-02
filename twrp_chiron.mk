@@ -27,10 +27,6 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 # Inherit from twrp custom product configuration
 $(call inherit-product, vendor/twrp/config/common.mk)
 
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.hardware.gatekeeper=msm8998 \
-    ro.hardware.keystore=msm8998
-
 # Device identifier. This must come after all inclusions
 PRODUCT_BRAND := Xiaomi
 PRODUCT_DEVICE := $(PRODUCT_RELEASE_NAME)
