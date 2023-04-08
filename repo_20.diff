@@ -55,7 +55,7 @@ index 272c543..1e5af74 100644
  _readonly_early_variables := $(filter-out $(_readonly_late_variables),$(_product_var_list))
 
 diff --git a/target/product/base_system.mk b/target/product/base_system.mk
-index 50e0a0f..9e2a73d 100644
+index d8c8da6..ffcac6a 100644
 --- a/target/product/base_system.mk
 +++ b/target/product/base_system.mk
 @@ -32,9 +32,7 @@ PRODUCT_PACKAGES += \
@@ -103,7 +103,7 @@ index 50e0a0f..9e2a73d 100644
      heapprofd_client \
      gatekeeperd \
      gpuservice \
-@@ -270,9 +261,6 @@ PRODUCT_PACKAGES += \
+@@ -271,9 +262,6 @@ PRODUCT_PACKAGES += \
      tc \
      telecom \
      telephony-common \
@@ -113,7 +113,7 @@ index 50e0a0f..9e2a73d 100644
      tune2fs \
      tzdatacheck \
      uiautomator \
-@@ -283,7 +271,6 @@ PRODUCT_PACKAGES += \
+@@ -284,7 +272,6 @@ PRODUCT_PACKAGES += \
      viewcompiler \
      voip-common \
      vold \
@@ -121,7 +121,7 @@ index 50e0a0f..9e2a73d 100644
      watchdogd \
      wificond \
      wifi.rc \
-@@ -364,9 +351,6 @@ PRODUCT_COPY_FILES += \
+@@ -365,9 +352,6 @@ PRODUCT_COPY_FILES += \
  PRODUCT_COPY_FILES += system/core/rootdir/init.zygote32.rc:system/etc/init/hw/init.zygote32.rc
  PRODUCT_VENDOR_PROPERTIES += ro.zygote?=zygote32
 
@@ -131,7 +131,7 @@ index 50e0a0f..9e2a73d 100644
  # Packages included only for eng or userdebug builds, previously debug tagged
  PRODUCT_PACKAGES_DEBUG := \
      adb_keys \
-@@ -404,8 +388,7 @@ endif
+@@ -405,8 +389,7 @@ endif
 
  # The set of packages whose code can be loaded by the system server.
  PRODUCT_SYSTEM_SERVER_APPS += \
@@ -171,7 +171,7 @@ index 81735af..cdc6d54 100644
  PRODUCT_PACKAGES += \
 
 diff --git a/target/product/handheld_system.mk b/target/product/handheld_system.mk
-index 653bd69..b406978 100644
+index 653bd69..f65561c 100644
 --- a/target/product/handheld_system.mk
 +++ b/target/product/handheld_system.mk
 @@ -32,11 +32,8 @@ $(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
@@ -194,8 +194,11 @@ index 653bd69..b406978 100644
      ExternalStorageProvider \
      FusedLocation \
      InputDevices \
-@@ -56,13 +52,10 @@ PRODUCT_PACKAGES += \
-     MusicFX \
+@@ -53,16 +49,12 @@ PRODUCT_PACKAGES += \
+     ManagedProvisioning \
+     MmsService \
+     MtpService \
+-    MusicFX \
      NfcNci \
      PacProcessor \
 -    PrintRecommendationService \
@@ -359,20 +362,6 @@ index ad9cbcc..74877fe 100644
      if not target_info.get("multistage_support"):
        assert False, "two-step packages not supported by this build"
 
-project external/bash/
-diff --git a/Android.mk b/Android.mk
-deleted file mode 100644
-index ffab6a0..0000000
---- a/Android.mk
-+++ /dev/null
-
-project external/nano/
-diff --git a/Android.mk b/Android.mk
-deleted file mode 100644
-index 86bd183..0000000
---- a/Android.mk
-+++ /dev/null
-
 project external/noto-fonts/
 diff --git a/cjk/Android.bp b/cjk/Android.bp
 index 9d9b188..748ffe2 100644
@@ -439,14 +428,32 @@ index 286c5aa..69b2dae 100644
      NotoSerifDevanagari-VF.ttf \
      NotoSerifDogra-Regular.ttf \
 
-project external/vim/
-diff --git a/Android.mk b/Android.mk
-deleted file mode 100644
-index 108d71d..0000000
---- a/Android.mk
-+++ /dev/null
-
 project frameworks/base/
+diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
+index 0b956f8b..8c4a862c 100755
+--- a/core/java/android/os/Build.java
++++ b/core/java/android/os/Build.java
+@@ -1251,19 +1251,6 @@ public class Build {
+         // Don't care on eng builds.  Incremental build may trigger false negative.
+         if (IS_ENG) return true;
+
+-        if (IS_TREBLE_ENABLED) {
+-            // If we can run this code, the device should already pass AVB.
+-            // So, we don't need to check AVB here.
+-            int result = VintfObject.verifyWithoutAvb();
+-
+-            if (result != 0) {
+-                Slog.e(TAG, "Vendor interface is incompatible, error="
+-                        + String.valueOf(result));
+-            }
+-
+-            return result == 0;
+-        }
+-
+         final String system = SystemProperties.get("ro.system.build.fingerprint");
+         final String vendor = SystemProperties.get("ro.vendor.build.fingerprint");
+         final String bootimage = SystemProperties.get("ro.bootimage.build.fingerprint");
+
 diff --git a/data/fonts/fonts.xml b/data/fonts/fonts.xml
 index 8e2a59cd..d0a7835a 100644
 --- a/data/fonts/fonts.xml
@@ -676,7 +683,7 @@ index 94945ec..74bf493 100644
  /**
 
 diff --git a/rootdir/init.rc b/rootdir/init.rc
-index c56f860..b368b7a 100644
+index 02e51d2..7ec0811 100644
 --- a/rootdir/init.rc
 +++ b/rootdir/init.rc
 @@ -675,11 +675,6 @@ on post-fs-data
@@ -771,7 +778,7 @@ index c56f860..b368b7a 100644
      mkdir /data/system/users 0775 system system
 
      mkdir /data/system_de 0770 system system encryption=None
-@@ -942,10 +901,7 @@ on post-fs-data
+@@ -948,10 +907,7 @@ on post-fs-data
      mkdir /data_mirror/ref_profiles 0700 root root
      mount none /data/misc/profiles/ref /data_mirror/ref_profiles bind rec
 
@@ -783,7 +790,7 @@ index c56f860..b368b7a 100644
 
      # Delete these if need be, per b/139193659
      mkdir /data/rollback 0700 system system encryption=DeleteIfNecessary
-@@ -1185,7 +1141,6 @@ on charger
+@@ -1191,7 +1147,6 @@ on charger
      class_start charger
 
  on property:sys.boot_completed=1
@@ -791,7 +798,7 @@ index c56f860..b368b7a 100644
      # Setup per_boot directory so other .rc could start to use it on boot_completed
      exec - system system -- /bin/rm -rf /data/per_boot
      mkdir /data/per_boot 0700 system system encryption=Require key=per_boot_ref
-@@ -1262,15 +1217,6 @@ service console /system/bin/sh
+@@ -1268,15 +1223,6 @@ service console /system/bin/sh
      seclabel u:r:shell:s0
      setenv HOSTNAME console
 
@@ -808,6 +815,32 @@ index c56f860..b368b7a 100644
      start console
 
 project system/sepolicy/
+diff --git a/Android.bp b/Android.bp
+index 8e2a966..e99fb54 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -868,7 +868,6 @@ precompiled_se_policy_binary {
+     },
+     required: [
+         "sepolicy_neverallows",
+-        "sepolicy_neverallows_vendor",
+     ],
+     dist: {
+         targets: ["base-sepolicy-files-for-mapping"],
+
+diff --git a/Android.mk b/Android.mk
+index 50c265d..f743552 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -540,7 +540,6 @@ endif # ifdef HAS_PRODUCT_SEPOLICY
+
+ built_sepolicy := $(call intermediates-dir-for,ETC,precompiled_sepolicy)/precompiled_sepolicy
+ built_sepolicy_neverallows := $(call intermediates-dir-for,ETC,sepolicy_neverallows)/sepolicy_neverallows
+-built_sepolicy_neverallows += $(call intermediates-dir-for,ETC,sepolicy_neverallows_vendor)/sepolicy_neverallows_vendor
+
+ #################################
+ # sepolicy is also built with Android.bp.
+
 diff --git a/build/soong/policy.go b/build/soong/policy.go
 index b1840da..fee9a0e 100644
 --- a/build/soong/policy.go
@@ -854,11 +887,22 @@ index b1840da..fee9a0e 100644
  	out := android.PathForModuleOut(ctx, c.stem())
 
 project vendor/lineage/
+diff --git a/bootanimation/Android.mk b/bootanimation/Android.mk
+index df4d9ad..ecc569c 100644
+--- a/bootanimation/Android.mk
++++ b/bootanimation/Android.mk
+@@ -62,5 +62,3 @@ BOOTANIMATION_SYMLINK := $(TARGET_OUT_PRODUCT)/media/bootanimation-dark.zip
+ $(BOOTANIMATION_SYMLINK): $(LOCAL_INSTALLED_MODULE)
+ 	@mkdir -p $(dir $@)
+ 	$(hide) ln -sf bootanimation.zip $@
+-
+-ALL_DEFAULT_INSTALLED_MODULES += $(BOOTANIMATION_SYMLINK)
+
 diff --git a/config/common.mk b/config/common.mk
-index bbcd309..2896f9c 100644
+index 7048c9c..18205f4 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -108,44 +108,21 @@ endif
+@@ -102,38 +102,17 @@ endif
  # Bootanimation
  TARGET_SCREEN_WIDTH ?= 1080
  TARGET_SCREEN_HEIGHT ?= 1920
@@ -875,12 +919,6 @@ index bbcd309..2896f9c 100644
 -PRODUCT_COPY_FILES += \
 -    vendor/lineage/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
 +    LineageSetupWizard
-
- # Themes
- PRODUCT_PACKAGES += \
--    LineageBlackTheme \
--    LineageThemesStub \
-     ThemePicker
 
  # Config
  PRODUCT_PACKAGES += \
@@ -904,7 +942,7 @@ index bbcd309..2896f9c 100644
  # Filesystems tools
  PRODUCT_PACKAGES += \
      fsck.ntfs \
-@@ -159,19 +136,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+@@ -147,23 +126,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
      system/%/libfuse-lite.so \
      system/%/libntfs-3g.so
 
@@ -921,23 +959,13 @@ index bbcd309..2896f9c 100644
 -PRODUCT_COPY_FILES += \
 -    vendor/lineage/prebuilt/common/etc/init/init.openssh.rc:$(TARGET_COPY_OUT_PRODUCT)/etc/init/init.openssh.rc
 -
+-# rsync
+-PRODUCT_PACKAGES += \
+-    rsync
+-
  # Storage manager
  PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
      ro.storage_manager.enabled=true
-@@ -195,13 +159,6 @@ PRODUCT_PACKAGES += \
- endif
- endif
-
--# SystemUI
--PRODUCT_DEXPREOPT_SPEED_APPS += \
--    SystemUI
--
--PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
--    dalvik.vm.systemuicompilerfilter=speed
--
- PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/lineage/overlay/no-rro
- PRODUCT_PACKAGE_OVERLAYS += \
-     vendor/lineage/overlay/common \
 
 diff --git a/config/common_full.mk b/config/common_full.mk
 index 8371d3c..67bfa73 100644
@@ -962,10 +990,10 @@ index 8371d3c..67bfa73 100644
      Recorder
 
 diff --git a/config/common_mobile.mk b/config/common_mobile.mk
-index 547804c..7631e67 100644
+index 42acb95..604f040 100644
 --- a/config/common_mobile.mk
 +++ b/config/common_mobile.mk
-@@ -13,14 +13,7 @@ PRODUCT_PACKAGES += \
+@@ -19,14 +19,7 @@ PRODUCT_PACKAGES += \
      Eleven \
      Etar \
      ExactCalculator \
@@ -981,10 +1009,34 @@ index 547804c..7631e67 100644
 
  ifeq ($(PRODUCT_TYPE), go)
  PRODUCT_PACKAGES += \
-@@ -48,15 +41,10 @@ endif
+@@ -54,37 +47,8 @@ endif
 
  # Customizations
  PRODUCT_PACKAGES += \
+-    IconPackCircularAndroidOverlay \
+-    IconPackCircularLauncherOverlay \
+-    IconPackCircularSettingsOverlay \
+-    IconPackCircularSystemUIOverlay \
+-    IconPackFilledAndroidOverlay \
+-    IconPackFilledLauncherOverlay \
+-    IconPackFilledSettingsOverlay \
+-    IconPackFilledSystemUIOverlay \
+-    IconPackKaiAndroidOverlay \
+-    IconPackKaiLauncherOverlay \
+-    IconPackKaiSettingsOverlay \
+-    IconPackKaiSystemUIOverlay \
+-    IconPackRoundedAndroidOverlay \
+-    IconPackRoundedLauncherOverlay \
+-    IconPackRoundedSettingsOverlay \
+-    IconPackRoundedSystemUIOverlay \
+-    IconPackSamAndroidOverlay \
+-    IconPackSamLauncherOverlay \
+-    IconPackSamSettingsOverlay \
+-    IconPackSamSystemUIOverlay \
+-    IconPackVictorAndroidOverlay \
+-    IconPackVictorLauncherOverlay \
+-    IconPackVictorSettingsOverlay \
+-    IconPackVictorSystemUIOverlay \
 -    IconShapePebbleOverlay \
 -    IconShapeRoundedRectOverlay \
 -    IconShapeSquareOverlay \
@@ -992,14 +1044,19 @@ index 547804c..7631e67 100644
 -    IconShapeTaperedRectOverlay \
 -    IconShapeTeardropOverlay \
 -    IconShapeVesselOverlay \
-     LineageNavigationBarNoHint \
--    NavigationBarMode2ButtonOverlay
-+    NavigationBarMode2ButtonOverlay \
 +    NavigationBarMode3ButtonOverlay \
-+    NavigationBarModeGesturalOverlay
++    NavigationBarModeGesturalOverlay \
+     LineageNavigationBarNoHint
 
  # Media
- PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+@@ -97,6 +61,4 @@ PRODUCT_PACKAGES += \
+
+ # Themes
+ PRODUCT_PACKAGES += \
+-    LineageBlackTheme \
+-    ThemePicker \
+-    ThemesStub
++    ThemePicker
 
 diff --git a/config/telephony.mk b/config/telephony.mk
 index 6adf48d..e63b320 100644
