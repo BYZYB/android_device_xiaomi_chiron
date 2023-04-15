@@ -29,6 +29,9 @@ import /vendor/etc/init/hw/init.qcom.usb.rc
 import /vendor/etc/init/hw/init.target.rc
 
 on post-fs-data
+    # Create directory for vendor time daemon
+    mkdir /data/vendor/time 0770 system net_raw
+
     # Create directory for vendor misc files
     mkdir /data/vendor/misc 01771 system system
 
@@ -286,8 +289,9 @@ service vendor.tftp_server /vendor/bin/tftp_server
 
 service vendor.time_daemon /vendor/bin/time_daemon
     class main
-    user root
-    group root
+    user system
+    group net_raw
+    capabilities SYS_TIME
     writepid /dev/cpuset/system-background/tasks
 
 on property:ro.vendor.ril.mbn_copy_completed=1
