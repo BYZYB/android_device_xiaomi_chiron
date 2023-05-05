@@ -294,6 +294,9 @@ service vendor.time_daemon /vendor/bin/time_daemon
     capabilities SYS_TIME
     writepid /dev/cpuset/system-background/tasks
 
+on property:persist.sys.xtra-daemon.enabled=*
+    restart vendor.loc_launcher
+
 on property:ro.vendor.ril.mbn_copy_completed=1
     write /data/vendor/radio/copy_complete 1
 
