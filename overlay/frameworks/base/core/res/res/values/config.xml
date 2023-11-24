@@ -51,10 +51,6 @@
         <item>28</item>
         <item>8</item>
     </integer-array>
-    <!-- Vibrator pattern for a very short but reliable vibration for soft keyboard tap -->
-    <integer-array name="config_keyboardTapVibePattern">
-        <item>28</item>
-    </integer-array>
     <!-- Default value for led color when battery is low on charge -->
     <integer name="config_notificationsBatteryLowARGB">0xFFFFFFFF</integer>
     <!-- Default value for led color when battery is medium charged -->
