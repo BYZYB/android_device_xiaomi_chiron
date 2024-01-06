@@ -1,7 +1,4 @@
-#define LOG_TAG "libqti-perfd-client"
-
 #include <stdint.h>
-#include <log/log.h>
 
 void perf_get_feedback() {}
 

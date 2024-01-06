@@ -1,7 +1,7 @@
 Copyright 2021 - The LineageOS Project
 
 Here are all changes outside this repo, some of them should be necessary:
-* [Local changes](https://github.com/BYZYB/android_device_xiaomi_chiron/blob/lineage-18.1/repo_18.diff)
+* [Local changes](https://github.com/BYZYB/android_device_xiaomi_chiron/blob/lineage-20/repo_20.diff)
 
 Device configuration for Xiaomi Mi MIX 2
 ===
