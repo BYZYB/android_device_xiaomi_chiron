@@ -1,10 +1,10 @@
 project build/make/
 diff --git a/core/Makefile b/core/Makefile
-index c19b075..ed9a611 100644
+index 3ed8504..a825a6b 100644
 --- a/core/Makefile
 +++ b/core/Makefile
 @@ -2374,8 +2374,7 @@ ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS
-   $(BOARD_BUILD_SYSTEM_ROOT_IMAGE) $(BOARD_INCLUDE_RECOVERY_DTBO) $(BOARD_INCLUDE_RECOVERY_ACPIO) \
+   $(BOARD_INCLUDE_RECOVERY_DTBO) $(BOARD_INCLUDE_RECOVERY_ACPIO) \
    $(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT) $(BOARD_RAMDISK_USE_LZ4) $(BOARD_RAMDISK_USE_XZ)))
  # Named '.dat' so we don't attempt to use imgdiff for patching it.
 -RECOVERY_RESOURCE_ZIP := $(TARGET_OUT_VENDOR)/etc/recovery-resource.dat
@@ -13,7 +13,7 @@ index c19b075..ed9a611 100644
  else
  RECOVERY_RESOURCE_ZIP :=
  endif
-@@ -6264,7 +6263,7 @@ INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
+@@ -6413,7 +6412,7 @@ INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
  $(call declare-0p-target,$(INTERNAL_OTA_METADATA))
 
  ifeq ($(TARGET_BUILD_VARIANT),user)
@@ -24,10 +24,10 @@ index c19b075..ed9a611 100644
      $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
 
 diff --git a/core/java.mk b/core/java.mk
-index a29f820..49bcc39 100644
+index b13ef4d..69ccf8a 100644
 --- a/core/java.mk
 +++ b/core/java.mk
-@@ -216,7 +216,7 @@ $(full_classes_compiled_jar): PRIVATE_WARNINGS_ENABLE := $(LOCAL_WARNINGS_ENABLE
+@@ -212,7 +212,7 @@ $(full_classes_compiled_jar): PRIVATE_WARNINGS_ENABLE := $(LOCAL_WARNINGS_ENABLE
  # available via JDWP.
  ifneq (,$(PRODUCT_MINIMIZE_JAVA_DEBUG_INFO))
  ifneq (,$(filter userdebug user,$(TARGET_BUILD_VARIANT)))
@@ -37,10 +37,10 @@ index a29f820..49bcc39 100644
  endif
 
 diff --git a/core/product.mk b/core/product.mk
-index 88c3470..86e2dad 100644
+index 0938926..46afcbd 100644
 --- a/core/product.mk
 +++ b/core/product.mk
-@@ -488,7 +488,12 @@ _readonly_late_variables += \
+@@ -527,7 +527,12 @@ _readonly_late_variables += \
    PRODUCT_COPY_FILES \
    PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
    PRODUCT_DEX_PREOPT_BOOT_FLAGS \
@@ -55,7 +55,7 @@ index 88c3470..86e2dad 100644
  _readonly_early_variables := $(filter-out $(_readonly_late_variables),$(_product_var_list))
 
 diff --git a/target/product/base_system.mk b/target/product/base_system.mk
-index d8c8da6..ffcac6a 100644
+index ba239a2..38294f6 100644
 --- a/target/product/base_system.mk
 +++ b/target/product/base_system.mk
 @@ -32,9 +32,7 @@ PRODUCT_PACKAGES += \
@@ -77,7 +77,7 @@ index d8c8da6..ffcac6a 100644
      cgroups.json \
      charger \
      cmd \
-@@ -74,9 +70,6 @@ PRODUCT_PACKAGES += \
+@@ -79,9 +75,6 @@ PRODUCT_PACKAGES += \
      com.android.wifi \
      ContactsProvider \
      content \
@@ -87,7 +87,7 @@ index d8c8da6..ffcac6a 100644
      device_config \
      dmctl \
      dnsmasq \
-@@ -86,7 +79,6 @@ PRODUCT_PACKAGES += \
+@@ -91,7 +84,6 @@ PRODUCT_PACKAGES += \
      dump.erofs \
      dumpstate \
      dumpsys \
@@ -95,7 +95,7 @@ index d8c8da6..ffcac6a 100644
      e2fsck \
      ExtShared \
      flags_health_check \
-@@ -102,7 +94,6 @@ PRODUCT_PACKAGES += \
+@@ -107,7 +99,6 @@ PRODUCT_PACKAGES += \
      group_system \
      gsid \
      gsi_tool \
@@ -103,7 +103,7 @@ index d8c8da6..ffcac6a 100644
      heapprofd_client \
      gatekeeperd \
      gpuservice \
-@@ -271,9 +262,6 @@ PRODUCT_PACKAGES += \
+@@ -278,9 +269,6 @@ PRODUCT_PACKAGES += \
      tc \
      telecom \
      telephony-common \
@@ -111,17 +111,21 @@ index d8c8da6..ffcac6a 100644
 -    traced \
 -    traced_probes \
      tune2fs \
-     tzdatacheck \
      uiautomator \
-@@ -284,7 +272,6 @@ PRODUCT_PACKAGES += \
-     viewcompiler \
-     voip-common \
-     vold \
--    WallpaperBackup \
-     watchdogd \
-     wificond \
-     wifi.rc \
-@@ -365,9 +352,6 @@ PRODUCT_COPY_FILES += \
+     uinput \
+@@ -321,11 +309,6 @@ ifeq ($(EMMA_INSTRUMENT),true)
+   endif # EMMA_INSTRUMENT_STATIC
+ endif # EMMA_INSTRUMENT
+
+-ifeq (,$(DISABLE_WALLPAPER_BACKUP))
+-  PRODUCT_PACKAGES += \
+-    WallpaperBackup
+-endif
+-
+ # For testing purposes
+ ifeq ($(FORCE_AUDIO_SILENT), true)
+     PRODUCT_SYSTEM_PROPERTIES += ro.audio.silent=1
+@@ -377,9 +360,6 @@ PRODUCT_COPY_FILES += \
  PRODUCT_COPY_FILES += system/core/rootdir/init.zygote32.rc:system/etc/init/hw/init.zygote32.rc
  PRODUCT_VENDOR_PROPERTIES += ro.zygote?=zygote32
 
@@ -131,14 +135,15 @@ index d8c8da6..ffcac6a 100644
  # Packages included only for eng or userdebug builds, previously debug tagged
  PRODUCT_PACKAGES_DEBUG := \
      adb_keys \
-@@ -405,8 +389,7 @@ endif
-
- # The set of packages whose code can be loaded by the system server.
+@@ -421,11 +401,6 @@ endif
  PRODUCT_SYSTEM_SERVER_APPS += \
--    SettingsProvider \
--    WallpaperBackup
-+    SettingsProvider
+     SettingsProvider \
 
+-ifeq (,$(DISABLE_WALLPAPER_BACKUP))
+-  PRODUCT_SYSTEM_SERVER_APPS += \
+-    WallpaperBackup
+-endif
+-
  PRODUCT_PACKAGES_DEBUG_JAVA_COVERAGE := \
      libdumpcoverage
 
@@ -156,11 +161,11 @@ index 0b8d9c5..597863c 100644
  # Net:
 
 diff --git a/target/product/handheld_product.mk b/target/product/handheld_product.mk
-index 81735af..cdc6d54 100644
+index b2ce4c5..c60e773 100644
 --- a/target/product/handheld_product.mk
 +++ b/target/product/handheld_product.mk
-@@ -31,8 +31,7 @@ PRODUCT_PACKAGES += \
-     OneTimeInitializer \
+@@ -30,8 +30,7 @@ PRODUCT_PACKAGES += \
+     Music \
      preinstalled-packages-platform-handheld-product.xml \
      QuickSearchBox \
 -    SettingsIntelligence \
@@ -171,7 +176,7 @@ index 81735af..cdc6d54 100644
  PRODUCT_PACKAGES += \
 
 diff --git a/target/product/handheld_system.mk b/target/product/handheld_system.mk
-index 653bd69..f65561c 100644
+index d9edca6..f3f3d0a 100644
 --- a/target/product/handheld_system.mk
 +++ b/target/product/handheld_system.mk
 @@ -32,11 +32,8 @@ $(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
@@ -186,21 +191,22 @@ index 653bd69..f65561c 100644
      CalendarProvider \
      cameraserver \
      CameraExtensionsProxy \
-@@ -44,7 +41,6 @@ PRODUCT_PACKAGES += \
-     CertInstaller \
+@@ -46,7 +43,6 @@ PRODUCT_PACKAGES += \
+     DeviceAsWebcam \
      DocumentsUI \
      DownloadProviderUi \
 -    EasterEgg \
      ExternalStorageProvider \
      FusedLocation \
      InputDevices \
-@@ -53,16 +49,12 @@ PRODUCT_PACKAGES += \
+@@ -55,17 +51,13 @@ PRODUCT_PACKAGES += \
      ManagedProvisioning \
      MmsService \
      MtpService \
 -    MusicFX \
      NfcNci \
      PacProcessor \
+     preinstalled-packages-platform-handheld-system.xml \
 -    PrintRecommendationService \
      PrintSpooler \
      ProxyHandler \
@@ -213,17 +219,17 @@ index 653bd69..f65561c 100644
      TeleService \
 
 diff --git a/target/product/handheld_system_ext.mk b/target/product/handheld_system_ext.mk
-index d935fbf..8406fee 100644
+index 187b627..5d5f758 100644
 --- a/target/product/handheld_system_ext.mk
 +++ b/target/product/handheld_system_ext.mk
-@@ -27,4 +27,3 @@ PRODUCT_PACKAGES += \
+@@ -28,4 +28,3 @@ PRODUCT_PACKAGES += \
      Settings \
      StorageManager \
      SystemUI \
 -    WallpaperCropper \
 
 diff --git a/target/product/media_system.mk b/target/product/media_system.mk
-index 5f7d717..5901eba 100644
+index 94d9177..f51e20d 100644
 --- a/target/product/media_system.mk
 +++ b/target/product/media_system.mk
 @@ -70,10 +70,6 @@ PRODUCT_VENDOR_PROPERTIES += \
@@ -239,10 +245,10 @@ index 5f7d717..5901eba 100644
  $(call inherit-product-if-exists, vendor/google/products/cfi-vendor.mk)
 
 diff --git a/target/product/runtime_libart.mk b/target/product/runtime_libart.mk
-index b6560fc..18d6672 100644
+index 68ed249..32556aa 100644
 --- a/target/product/runtime_libart.mk
 +++ b/target/product/runtime_libart.mk
-@@ -111,8 +111,8 @@ ifeq (eng,$(TARGET_BUILD_VARIANT))
+@@ -110,8 +110,8 @@ ifeq (eng,$(TARGET_BUILD_VARIANT))
          pm.dexopt.boot-after-ota?=extract
  else
      PRODUCT_SYSTEM_PROPERTIES += \
@@ -253,11 +259,12 @@ index b6560fc..18d6672 100644
  endif
 
  # The install filter is speed-profile in order to enable the use of
-@@ -122,18 +122,18 @@ endif
+@@ -121,19 +121,19 @@ endif
  # of compilation reason in the platform (as we have a unified, single path,
  # without exceptions).
  PRODUCT_SYSTEM_PROPERTIES += \
 -    pm.dexopt.post-boot?=extract \
+-    pm.dexopt.boot-after-mainline-update?=verify \
 -    pm.dexopt.install?=speed-profile \
 -    pm.dexopt.install-fast?=skip \
 -    pm.dexopt.install-bulk?=speed-profile \
@@ -270,6 +277,7 @@ index b6560fc..18d6672 100644
 -    pm.dexopt.cmdline?=verify \
 -    pm.dexopt.shared?=speed
 +    pm.dexopt.post-boot?=everything \
++    pm.dexopt.boot-after-mainline-update?=everything \
 +    pm.dexopt.install?=everything \
 +    pm.dexopt.install-fast?=everything \
 +    pm.dexopt.install-bulk?=everything \
@@ -314,10 +322,10 @@ index ef48719..d910c6b 100644
  PRODUCT_COPY_FILES := \
 
 diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
-index 0785c74..cc7a7a6 100644
+index ebacd55..ab2bf8f 100644
 --- a/tools/releasetools/common.py
 +++ b/tools/releasetools/common.py
-@@ -3623,7 +3623,6 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
+@@ -3806,7 +3806,6 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
 
      d = Difference(recovery_img, boot_img, diff_program=diff_program)
      _, _, patch = d.ComputePatch()
@@ -325,7 +333,7 @@ index 0785c74..cc7a7a6 100644
 
    try:
      # The following GetTypeAndDevice()s need to use the path in the target
-@@ -3678,10 +3677,6 @@ fi
+@@ -3861,10 +3860,6 @@ fi
         'recovery_device': recovery_device + '$(getprop ro.boot.slot_suffix)',
         'bonus_args': bonus_args}
 
@@ -338,10 +346,10 @@ index 0785c74..cc7a7a6 100644
    def __init__(self, src_group=None, tgt_group=None, progress=None,
 
 diff --git a/tools/releasetools/non_ab_ota.py b/tools/releasetools/non_ab_ota.py
-index ad9cbcc..74877fe 100644
+index 6777697..ab02b80 100644
 --- a/tools/releasetools/non_ab_ota.py
 +++ b/tools/releasetools/non_ab_ota.py
-@@ -156,8 +156,6 @@ def WriteFullOTAPackage(input_zip, output_file):
+@@ -148,8 +148,6 @@ def WriteFullOTAPackage(input_zip, output_file):
        metadata=metadata,
        info_dict=OPTIONS.info_dict)
 
@@ -350,7 +358,7 @@ index ad9cbcc..74877fe 100644
    # Assertions (e.g. downgrade check, device properties check).
    #ts = target_info.GetBuildProp("ro.build.date.utc")
    #ts_text = target_info.GetBuildProp("ro.build.date")
-@@ -191,10 +189,6 @@ def WriteFullOTAPackage(input_zip, output_file):
+@@ -183,10 +181,6 @@ def WriteFullOTAPackage(input_zip, output_file):
    #    complete script normally
    #    (allow recovery to mark itself finished and reboot)
 
@@ -364,13 +372,13 @@ index ad9cbcc..74877fe 100644
 
 project build/soong/
 diff --git a/ui/build/finder.go b/ui/build/finder.go
-index 262de3d..0d70017 100644
+index 62079fe..6fab82e 100644
 --- a/ui/build/finder.go
 +++ b/ui/build/finder.go
-@@ -64,7 +64,7 @@ func NewSourceFinder(ctx Context, config Config) (f *finder.Finder) {
- 	cacheParams := finder.CacheParams{
+@@ -65,7 +65,7 @@ func NewSourceFinder(ctx Context, config Config) (f *finder.Finder) {
  		WorkingDirectory: dir,
- 		RootDirs:         []string{"."},
+ 		RootDirs:         androidBpSearchDirs(config),
+ 		FollowSymlinks:   config.environ.IsEnvTrue("ALLOW_BP_UNDER_SYMLINKS"),
 -		ExcludeDirs:      []string{".git", ".repo"},
 +		ExcludeDirs:      []string{".git", ".repo", "KernelSU"},
  		PruneFiles:       pruneFiles,
@@ -385,11 +393,33 @@ index 86bd183..0000000
 +++ /dev/null
 
 project external/noto-fonts/
-diff --git a/cjk/Android.bp b/cjk/Android.bp
-index 9d9b188..748ffe2 100644
---- a/cjk/Android.bp
-+++ b/cjk/Android.bp
-@@ -47,8 +47,13 @@ license {
+diff --git a/fonts.mk b/fonts.mk
+index 286c5aa..49ea65f 100644
+--- a/fonts.mk
++++ b/fonts.mk
+@@ -49,7 +49,7 @@ PRODUCT_PACKAGES := \
+     NotoSansCham-Bold.ttf \
+     NotoSansCham-Regular.ttf \
+     NotoSansCherokee-Regular.ttf \
+-    NotoSansCJK-Regular.ttc \
++    NotoSansCJK.ttc \
+     NotoSansCoptic-Regular.ttf \
+     NotoSansCuneiform-Regular.ttf \
+     NotoSansCypriot-Regular.ttf \
+@@ -188,6 +188,7 @@ PRODUCT_PACKAGES := \
+     NotoSerifArmenian-VF.ttf \
+     NotoSerifBengali-VF.ttf \
+     NotoSerifCJK-Regular.ttc \
++    NotoSerifCJK-Bold.ttc \
+     NotoSerifDevanagari-VF.ttf \
+     NotoSerifDogra-Regular.ttf \
+     NotoSerifEthiopic-VF.ttf \
+
+diff --git a/notosanscjk/Android.bp b/notosanscjk/Android.bp
+index a1f45f9..345d0be 100644
+--- a/notosanscjk/Android.bp
++++ b/notosanscjk/Android.bp
+@@ -46,6 +46,11 @@ license {
  }
 
  prebuilt_font {
@@ -404,20 +434,14 @@ index 9d9b188..748ffe2 100644
 +    src: "NotoSerifCJK-Bold.ttc",
  }
 
- prebuilt_font {
-
-diff --git a/cjk/NotoSansCJK-Regular.ttc b/cjk/NotoSansCJK-Regular.ttc
+diff --git a/notosanscjk/NotoSansCJK-Regular.ttc b/notosanscjk/NotoSansCJK-Regular.ttc
 index 31ab084..a2033d0 100644
-Binary files a/cjk/NotoSansCJK-Regular.ttc and b/cjk/NotoSansCJK-Regular.ttc differ
+Binary files a/notosanscjk/NotoSansCJK-Regular.ttc and b/notosanscjk/NotoSansCJK-Regular.ttc differ
 
-diff --git a/cjk/NotoSerifCJK-Regular.ttc b/cjk/NotoSerifCJK-Regular.ttc
-index 2820fc9..2ce7184 100644
-Binary files a/cjk/NotoSerifCJK-Regular.ttc and b/cjk/NotoSerifCJK-Regular.ttc differ
-
-diff --git a/cjk/subset_noto_cjk.py b/cjk/subset_noto_cjk.py
+diff --git a/scripts/subset_noto_cjk.py b/scripts/subset_noto_cjk.py
 index f69248b..adfb330 100755
---- a/cjk/subset_noto_cjk.py
-+++ b/cjk/subset_noto_cjk.py
+--- a/scripts/subset_noto_cjk.py
++++ b/scripts/subset_noto_cjk.py
 @@ -80,7 +80,7 @@ CONTROL_CHARS = tool_utils.parse_int_ranges('0000-001F')
 
  EXCLUDED_CODEPOINTS = sorted(EMOJI_IN_CJK | ANDROID_EMOJI | CONTROL_CHARS)
@@ -428,28 +452,6 @@ index f69248b..adfb330 100755
 
  def remove_from_cmap(infile, outfile, exclude=frozenset()):
 
-diff --git a/fonts.mk b/fonts.mk
-index 286c5aa..69b2dae 100644
---- a/fonts.mk
-+++ b/fonts.mk
-@@ -49,7 +49,7 @@ PRODUCT_PACKAGES := \
-     NotoSansCham-Bold.ttf \
-     NotoSansCham-Regular.ttf \
-     NotoSansCherokee-Regular.ttf \
--    NotoSansCJK-Regular.ttc \
-+    NotoSansCJK.ttc \
-     NotoSansCoptic-Regular.ttf \
-     NotoSansCuneiform-Regular.ttf \
-     NotoSansCypriot-Regular.ttf \
-@@ -187,6 +187,7 @@ PRODUCT_PACKAGES := \
-     NotoSerif-Regular.ttf \
-     NotoSerifArmenian-VF.ttf \
-     NotoSerifBengali-VF.ttf \
-+    NotoSerifCJK-Bold.ttc \
-     NotoSerifCJK-Regular.ttc \
-     NotoSerifDevanagari-VF.ttf \
-     NotoSerifDogra-Regular.ttf \
-
 project external/vim/
 diff --git a/Android.mk b/Android.mk
 deleted file mode 100644
@@ -459,10 +461,10 @@ index 108d71d..0000000
 
 project frameworks/base/
 diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
-index 0b956f8bf..8c4a862c8 100755
+index cd6acfe1..3f46b212 100755
 --- a/core/java/android/os/Build.java
 +++ b/core/java/android/os/Build.java
-@@ -1251,19 +1251,6 @@ public class Build {
+@@ -1307,19 +1307,6 @@ public class Build {
          // Don't care on eng builds.  Incremental build may trigger false negative.
          if (IS_ENG) return true;
 
@@ -484,10 +486,10 @@ index 0b956f8bf..8c4a862c8 100755
          final String bootimage = SystemProperties.get("ro.bootimage.build.fingerprint");
 
 diff --git a/data/fonts/fonts.xml b/data/fonts/fonts.xml
-index 8e2a59cd8..d0a7835a1 100644
+index 0563519f..a9496457 100644
 --- a/data/fonts/fonts.xml
 +++ b/data/fonts/fonts.xml
-@@ -1301,36 +1301,48 @@
+@@ -1304,36 +1304,48 @@
          <font weight="400" style="normal">NotoSansSymbols-Regular-Subsetted.ttf</font>
      </family>
      <family lang="zh-Hans">
@@ -563,30 +565,28 @@ index 8e2a59cd8..d0a7835a1 100644
 
 project frameworks/native/
 diff --git a/cmds/atrace/Android.bp b/cmds/atrace/Android.bp
-index aa0ef25..9ba95ee 100644
+index 1c4e63e..dcded49 100644
 --- a/cmds/atrace/Android.bp
 +++ b/cmds/atrace/Android.bp
-@@ -37,8 +37,6 @@ cc_binary {
+@@ -37,7 +37,6 @@ cc_binary {
          "android.hardware.atrace@1.0",
      ],
 
 -    init_rc: ["atrace.rc"],
--
+     required: ["ftrace_synthetic_events.conf"],
+
      product_variables: {
-         debuggable: {
-             init_rc: ["atrace_userdebug.rc"],
 
 project packages/apps/CarrierConfig/
 diff --git a/assets/carrier_config_carrierid_1435_China-Mobile.xml b/assets/carrier_config_carrierid_1435_China-Mobile.xml
-index f5fae85..545336a 100644
+index f5fae85..49ba309 100644
 --- a/assets/carrier_config_carrierid_1435_China-Mobile.xml
 +++ b/assets/carrier_config_carrierid_1435_China-Mobile.xml
-@@ -5,5 +5,6 @@
-     <boolean name="allow_add_call_during_video_call" value="false" />
+@@ -6,4 +6,5 @@
      <boolean name="allow_hold_video_call_bool" value="false" />
      <boolean name="support_video_conference_call_bool" value="false"/>
-+    <boolean name="hide_lte_plus_data_icon_bool" value="false" />
      <int name="default_mtu_int" value="1400"/>
++    <boolean name="hide_lte_plus_data_icon_bool" value="false" />
  </carrier_config>
 
 diff --git a/assets/carrier_config_carrierid_1436_China-Unicom.xml b/assets/carrier_config_carrierid_1436_China-Unicom.xml
@@ -615,10 +615,10 @@ index f398957..f512b1d 100644
 
 project packages/modules/adb/
 diff --git a/daemon/main.cpp b/daemon/main.cpp
-index 3280ac7..0eea9ac 100644
+index 0893372..3d70db2 100644
 --- a/daemon/main.cpp
 +++ b/daemon/main.cpp
-@@ -74,17 +74,13 @@ static bool should_drop_privileges() {
+@@ -75,17 +75,13 @@ static bool should_drop_privileges() {
      //
      // ro.secure:
      //   Drop privileges by default. Set to 1 on userdebug and user builds.
@@ -638,7 +638,7 @@ index 3280ac7..0eea9ac 100644
          drop = false;
      }
      // ... and "adb unroot" lets you explicitly drop privileges.
-@@ -121,12 +117,6 @@ static void drop_privileges(int server_port) {
+@@ -122,12 +118,6 @@ static void drop_privileges(int server_port) {
      // Don't listen on a port (default 5037) if running in secure mode.
      // Don't run as root if running in secure mode.
      if (should_drop_privileges()) {
@@ -652,24 +652,11 @@ index 3280ac7..0eea9ac 100644
          minijail_change_uid(jail.get(), AID_SHELL);
          // minijail_enter() will abort if any priv-dropping step fails.
 
-diff --git a/root/adbroot_service.cpp b/root/adbroot_service.cpp
-index 710a521..4f5aeb8 100644
---- a/root/adbroot_service.cpp
-+++ b/root/adbroot_service.cpp
-@@ -67,7 +67,7 @@ ndk::ScopedAStatus ADBRootService::isSupported(bool* _aidl_return) {
-     }
-
-     AutoMutex _l(lock_);
--    *_aidl_return = __android_log_is_debuggable();
-+    *_aidl_return = true;
-     return ndk::ScopedAStatus::ok();
- }
-
 diff --git a/sockets.cpp b/sockets.cpp
-index 33b9524..4478ba8 100644
+index 630a2eb..fa12e95 100644
 --- a/sockets.cpp
 +++ b/sockets.cpp
-@@ -416,7 +416,7 @@ asocket* create_local_service_socket(std::string_view name, atransport* transpor
+@@ -473,7 +473,7 @@ asocket* create_local_service_socket(std::string_view name, atransport* transpor
      LOG(VERBOSE) << "LS(" << s->id << "): bound to '" << name << "' via " << fd_value;
 
  #if !ADB_HOST
@@ -681,19 +668,19 @@ index 33b9524..4478ba8 100644
 
 project system/core/
 diff --git a/init/Android.bp b/init/Android.bp
-index 3df0e91..e4a3005 100644
+index e9d1298..32ebe5d 100644
 --- a/init/Android.bp
 +++ b/init/Android.bp
-@@ -123,7 +123,7 @@ libinit_cc_defaults {
-         "-Wthread-safety",
+@@ -119,7 +119,7 @@ libinit_cc_defaults {
+     cflags: [
          "-DALLOW_FIRST_STAGE_CONSOLE=0",
          "-DALLOW_LOCAL_PROP_OVERRIDE=0",
 -        "-DALLOW_PERMISSIVE_SELINUX=0",
 +        "-DALLOW_PERMISSIVE_SELINUX=1",
-         "-DREBOOT_BOOTLOADER_ON_PANIC=0",
-         "-DWORLD_WRITABLE_KMSG=0",
+         "-DANDROID_BASE_UNIQUE_FD_DISABLE_IMPLICIT_CONVERSION",
          "-DDUMP_ON_UMOUNT_FAILURE=0",
-@@ -381,7 +381,7 @@ cc_binary {
+         "-DINIT_FULL_SOURCES",
+@@ -394,7 +394,7 @@ cc_binary {
          "-Werror",
          "-DALLOW_FIRST_STAGE_CONSOLE=0",
          "-DALLOW_LOCAL_PROP_OVERRIDE=0",
@@ -704,7 +691,7 @@ index 3df0e91..e4a3005 100644
          "-DDUMP_ON_UMOUNT_FAILURE=0",
 
 diff --git a/libcutils/trace-dev.cpp b/libcutils/trace-dev.cpp
-index e9583fb..c78d988 100644
+index 1827e32..ddcb1a8 100644
 --- a/libcutils/trace-dev.cpp
 +++ b/libcutils/trace-dev.cpp
 @@ -24,23 +24,14 @@ static pthread_once_t atrace_once_control = PTHREAD_ONCE_INIT;
@@ -749,10 +736,10 @@ index 94945ec..74bf493 100644
  /**
 
 diff --git a/rootdir/init.rc b/rootdir/init.rc
-index 2b53d88..e0b8916 100644
+index 7da2646..6af8171 100644
 --- a/rootdir/init.rc
 +++ b/rootdir/init.rc
-@@ -676,11 +676,6 @@ on post-fs-data
+@@ -691,24 +691,12 @@ on post-fs-data
      # Make sure we have the device encryption key.
      installkey /data
 
@@ -764,8 +751,7 @@ index 2b53d88..e0b8916 100644
      # Avoid predictable entropy pool. Carry over entropy from previous boot.
      copy /data/system/entropy.dat /dev/urandom
 
-@@ -689,13 +684,6 @@ on post-fs-data
-     mkdir /data/vendor_de 0771 root root encryption=None
+     mkdir /data/vendor 0771 root root encryption=Require
      mkdir /data/vendor/hardware 0771 root root
 
 -    # Start tombstoned early to be able to store tombstones.
@@ -778,7 +764,7 @@ index 2b53d88..e0b8916 100644
      # Make sure that apexd is started in the default namespace
      enter_default_mount_ns
 
-@@ -772,7 +760,6 @@ on post-fs-data
+@@ -791,7 +779,6 @@ on post-fs-data
      mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
      mkdir /data/misc/bluetooth/logs 0770 bluetooth bluetooth
      mkdir /data/misc/nfc 0770 nfc nfc
@@ -786,7 +772,7 @@ index 2b53d88..e0b8916 100644
      mkdir /data/misc/credstore 0700 credstore credstore
      mkdir /data/misc/gatekeeper 0700 system system
      mkdir /data/misc/keychain 0771 system system
-@@ -801,14 +788,6 @@ on post-fs-data
+@@ -820,14 +807,6 @@ on post-fs-data
      mkdir /data/misc/audioserver 0700 audioserver audioserver
      mkdir /data/misc/cameraserver 0700 cameraserver cameraserver
      mkdir /data/misc/vold 0700 root root
@@ -801,7 +787,7 @@ index 2b53d88..e0b8916 100644
      # profile file layout
      mkdir /data/misc/profiles 0771 system system
      mkdir /data/misc/profiles/cur 0771 system system
-@@ -819,7 +798,6 @@ on post-fs-data
+@@ -838,7 +817,6 @@ on post-fs-data
      mkdir /data/misc/apexdata 0711 root root
      mkdir /data/misc/apexrollback 0700 root root
      mkdir /data/misc/appcompat/ 0700 system system
@@ -809,15 +795,15 @@ index 2b53d88..e0b8916 100644
      # create location to store pre-reboot information
      mkdir /data/misc/prereboot 0700 system system
      # directory used for on-device refresh metrics file.
-@@ -840,7 +818,6 @@ on post-fs-data
+@@ -861,7 +839,6 @@ on post-fs-data
      # For security reasons, /data/local/tmp should always be empty.
      # Do not place files or directories in /data/local/tmp
      mkdir /data/local/tmp 0771 shell shell
 -    mkdir /data/local/traces 0777 shell shell
-     mkdir /data/data 0771 system system encryption=None
      mkdir /data/app-private 0771 system system encryption=Require
      mkdir /data/app-ephemeral 0771 system system encryption=Require
-@@ -853,25 +830,8 @@ on post-fs-data
+     mkdir /data/app-asec 0700 root root encryption=Require
+@@ -873,25 +850,8 @@ on post-fs-data
      mkdir /data/fonts/files 0771 system system
      mkdir /data/fonts/config 0770 system system
 
@@ -843,16 +829,21 @@ index 2b53d88..e0b8916 100644
 
      # create resource-cache and double-check the perms
      mkdir /data/resource-cache 0771 system system encryption=Require
-@@ -902,8 +862,6 @@ on post-fs-data
+@@ -925,13 +885,7 @@ on post-fs-data
      mkdir /data/system/environ 0700 system system
      # b/183861600 attempt to fix selinux label before running derive_classpath service
      restorecon /data/system/environ
 -    mkdir /data/system/dropbox 0700 system system
 -    mkdir /data/system/heapdump 0700 system system
      mkdir /data/system/users 0775 system system
+-    # Mkdir and set SELinux security contexts for shutdown-checkpoints.
+-    # TODO(b/270286197): remove these after couple releases.
+-    mkdir /data/system/shutdown-checkpoints 0700 system system
+-    restorecon_recursive /data/system/shutdown-checkpoints
 
-     mkdir /data/system_de 0770 system system encryption=None
-@@ -949,10 +907,7 @@ on post-fs-data
+     # Create the parent directories of the user CE and DE storage directories.
+     # These parent directories must use encryption=None, since each of their
+@@ -984,10 +938,7 @@ on post-fs-data
      mkdir /data_mirror/ref_profiles 0700 root root
      mount none /data/misc/profiles/ref /data_mirror/ref_profiles bind rec
 
@@ -864,7 +855,7 @@ index 2b53d88..e0b8916 100644
 
      # Delete these if need be, per b/139193659
      mkdir /data/rollback 0700 system system encryption=DeleteIfNecessary
-@@ -1192,7 +1147,6 @@ on charger
+@@ -1222,7 +1173,6 @@ on charger
      class_start charger
 
  on property:sys.boot_completed=1
@@ -872,8 +863,8 @@ index 2b53d88..e0b8916 100644
      # Setup per_boot directory so other .rc could start to use it on boot_completed
      exec - system system -- /bin/rm -rf /data/per_boot
      mkdir /data/per_boot 0700 system system encryption=Require key=per_boot_ref
-@@ -1260,29 +1214,6 @@ service ueventd /system/bin/ueventd
-     seclabel u:r:ueventd:s0
+@@ -1291,30 +1241,6 @@ service ueventd /system/bin/ueventd
+     user root
      shutdown critical
 
 -service console /system/bin/sh
@@ -884,6 +875,7 @@ index 2b53d88..e0b8916 100644
 -    group shell log readproc
 -    seclabel u:r:shell:s0
 -    setenv HOSTNAME console
+-    shutdown critical
 -
 -on property:ro.debuggable=1
 -    # Give writes to the same group for the trace folder on debug builds,
@@ -905,10 +897,18 @@ index 2b53d88..e0b8916 100644
 
 project system/sepolicy/
 diff --git a/Android.bp b/Android.bp
-index 8e2a966..e99fb54 100644
+index 4028215..8861cf7 100644
 --- a/Android.bp
 +++ b/Android.bp
-@@ -868,7 +868,6 @@ precompiled_se_policy_binary {
+@@ -734,7 +734,6 @@ precompiled_se_policy_binary {
+     },
+     required: [
+         "sepolicy_neverallows",
+-        "sepolicy_neverallows_vendor",
+     ],
+     dist: {
+         targets: ["base-sepolicy-files-for-mapping"],
+@@ -778,7 +777,6 @@ precompiled_se_policy_binary {
      },
      required: [
          "sepolicy_neverallows",
@@ -918,10 +918,10 @@ index 8e2a966..e99fb54 100644
          targets: ["base-sepolicy-files-for-mapping"],
 
 diff --git a/Android.mk b/Android.mk
-index 50c265d..f743552 100644
+index 618f7f0..dbd4ef0 100644
 --- a/Android.mk
 +++ b/Android.mk
-@@ -540,7 +540,6 @@ endif # ifdef HAS_PRODUCT_SEPOLICY
+@@ -530,7 +530,6 @@ endif # ifdef HAS_PRODUCT_SEPOLICY
 
  built_sepolicy := $(call intermediates-dir-for,ETC,precompiled_sepolicy)/precompiled_sepolicy
  built_sepolicy_neverallows := $(call intermediates-dir-for,ETC,sepolicy_neverallows)/sepolicy_neverallows
@@ -931,10 +931,10 @@ index 50c265d..f743552 100644
  # sepolicy is also built with Android.bp.
 
 diff --git a/build/soong/policy.go b/build/soong/policy.go
-index b1840da..fee9a0e 100644
+index aea8e09..faee297 100644
 --- a/build/soong/policy.go
 +++ b/build/soong/policy.go
-@@ -379,9 +379,7 @@ func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Pat
+@@ -389,9 +389,7 @@ func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Pat
  			FlagWithArg("-o ", os.DevNull).
  			FlagWithArg("-f ", os.DevNull)
 
@@ -945,7 +945,7 @@ index b1840da..fee9a0e 100644
  	}
 
  	rule.Build("cil", "Building cil for "+ctx.ModuleName())
-@@ -494,9 +492,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -507,9 +505,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
  		FlagWithOutput("-o ", bin).
  		FlagWithArg("-f ", os.DevNull)
 
@@ -956,7 +956,7 @@ index b1840da..fee9a0e 100644
  	rule.Temporary(bin)
 
  	// permissive check is performed only in user build (not debuggable).
-@@ -510,7 +506,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -531,7 +527,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
  		rule.Temporary(permissiveDomains)
 
  		msg := `==========\n` +
@@ -965,7 +965,7 @@ index b1840da..fee9a0e 100644
  			`List of invalid domains:`
 
  		rule.Command().Text("if test").
-@@ -520,7 +516,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -541,7 +537,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
  			Text(`"` + msg + `"`).
  			Text("&& cat ").
  			Input(permissiveDomains).
@@ -988,10 +988,10 @@ index f58a850..853e770 100644
 -ALL_DEFAULT_INSTALLED_MODULES += $(BOOTANIMATION_SYMLINK)
 
 diff --git a/config/common.mk b/config/common.mk
-index 7947854..68faef2 100644
+index 554e9f2..af88aa0 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -102,8 +102,6 @@ endif
+@@ -98,8 +98,6 @@ endif
  # Bootanimation
  TARGET_SCREEN_WIDTH ?= 1080
  TARGET_SCREEN_HEIGHT ?= 1920
@@ -1000,7 +1000,7 @@ index 7947854..68faef2 100644
 
  # Build Manifest
  PRODUCT_PACKAGES += \
-@@ -113,31 +111,12 @@ PRODUCT_PACKAGES += \
+@@ -109,31 +107,12 @@ PRODUCT_PACKAGES += \
  PRODUCT_PACKAGES += \
      LineageParts \
      LineageSettingsProvider \
@@ -1033,7 +1033,7 @@ index 7947854..68faef2 100644
  # Filesystems tools
  PRODUCT_PACKAGES += \
      fsck.ntfs \
-@@ -151,23 +130,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+@@ -147,23 +126,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
      system/%/libfuse-lite.so \
      system/%/libntfs-3g.so
 
