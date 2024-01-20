@@ -184,13 +184,6 @@ on boot
     write /sys/class/devfreq/soc\:qcom,memlat-cpu4/polling_interval 10
     write /sys/class/devfreq/soc\:qcom,mincpubw/governor "cpufreq"
 
-service charger /system/bin/charger
-    class charger
-    user system
-    group system graphics input
-    capabilities SYS_BOOT
-    seclabel u:r:charger:s0
-
 service vendor.atfwd /vendor/bin/ATFWD-daemon
     class late_start
     user system
