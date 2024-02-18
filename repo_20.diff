@@ -576,43 +576,6 @@ index aa0ef25..9ba95ee 100644
          debuggable: {
              init_rc: ["atrace_userdebug.rc"],
 
-project packages/apps/CarrierConfig/
-diff --git a/assets/carrier_config_carrierid_1435_China-Mobile.xml b/assets/carrier_config_carrierid_1435_China-Mobile.xml
-index f5fae85..545336a 100644
---- a/assets/carrier_config_carrierid_1435_China-Mobile.xml
-+++ b/assets/carrier_config_carrierid_1435_China-Mobile.xml
-@@ -5,5 +5,6 @@
-     <boolean name="allow_add_call_during_video_call" value="false" />
-     <boolean name="allow_hold_video_call_bool" value="false" />
-     <boolean name="support_video_conference_call_bool" value="false"/>
-+    <boolean name="hide_lte_plus_data_icon_bool" value="false" />
-     <int name="default_mtu_int" value="1400"/>
- </carrier_config>
-
-diff --git a/assets/carrier_config_carrierid_1436_China-Unicom.xml b/assets/carrier_config_carrierid_1436_China-Unicom.xml
-index dcef691..8c186a0 100644
---- a/assets/carrier_config_carrierid_1436_China-Unicom.xml
-+++ b/assets/carrier_config_carrierid_1436_China-Unicom.xml
-@@ -1,4 +1,5 @@
- <?xml version="1.0" encoding="utf-8" standalone="yes"?>
- <carrier_config>
-     <boolean name="allow_emergency_numbers_in_call_log_bool" value="true"/>
-+    <boolean name="hide_lte_plus_data_icon_bool" value="false" />
- </carrier_config>
-
-diff --git a/assets/carrier_config_carrierid_2237_China-Telecom.xml b/assets/carrier_config_carrierid_2237_China-Telecom.xml
-index f398957..f512b1d 100644
---- a/assets/carrier_config_carrierid_2237_China-Telecom.xml
-+++ b/assets/carrier_config_carrierid_2237_China-Telecom.xml
-@@ -4,6 +4,7 @@
-     <boolean name="show_apn_setting_cdma_bool" value="true"/>
-     <string name="sim_country_iso_override_string">cn</string>
-     <boolean name="ascii_7_bit_support_for_long_message_bool" value="true"/>
-+    <boolean name="hide_lte_plus_data_icon_bool" value="false" />
-     <string-array name="telephony_network_capability_priorities_string_array" num="11">
-         <item value="eims:90"/>
-         <item value="supl:80"/>
-
 project packages/modules/adb/
 diff --git a/daemon/main.cpp b/daemon/main.cpp
 index 3280ac7..0eea9ac 100644
@@ -1101,7 +1064,7 @@ index f7eecd8..48dcf9b 100644
 -    FontRubikOverlay
 
 diff --git a/config/common_mobile.mk b/config/common_mobile.mk
-index a9a66ee..da2c8a8 100644
+index 28ebeef..8516170 100644
 --- a/config/common_mobile.mk
 +++ b/config/common_mobile.mk
 @@ -47,38 +47,9 @@ endif
@@ -1145,7 +1108,7 @@ index a9a66ee..da2c8a8 100644
      NavigationBarMode2ButtonOverlay
 
  # Media
-@@ -91,6 +62,4 @@ PRODUCT_PACKAGES += \
+@@ -91,8 +62,6 @@ PRODUCT_PACKAGES += \
 
  # Themes
  PRODUCT_PACKAGES += \
@@ -1153,6 +1116,8 @@ index a9a66ee..da2c8a8 100644
 -    ThemePicker \
 -    ThemesStub
 +    ThemePicker
+
+ PRODUCT_PACKAGE_OVERLAYS += vendor/lineage/overlay/mobile
 
 diff --git a/config/telephony.mk b/config/telephony.mk
 index be414ed..a75ba9a 100644
