@@ -43,13 +43,9 @@ BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO := true
 
 # Dexpreopt
-# All apps are pre-compiled with "everything" filter in this rom, which conflicts with the build rules and needs a patch to work.
-# Please refer to the part "diff --git a/core/product.mk b/core/product.mk" in "repo_18.diff" to resolve build errors.
-# The "everything" filter provides bettter performance, but also make app installation longer than defualt values.
-# If you got trouble with "everything" filter, try using the following one line instead:
-# WITH_DEXPREOPT_DEBUG_INFO := false
+# [NOTE] This section might assign to readonly variable of Android build system.
+# [NOTE] Please keep only WITH_DEXPREOPT_DEBUG_INFO then remove others, if no patch (repo_XX.diff) is applied.
 LOCAL_DEX_PREOPT := true
-PRODUCT_DEX_PREOPT_BOOT_FLAGS := --compiler-filter=everything
 PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := everything
 PRODUCT_DEX_PREOPT_DEFAULT_FLAGS := --compiler-filter=everything
 PRODUCT_OTHER_JAVA_DEBUG_INFO := false
