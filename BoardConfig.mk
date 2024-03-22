@@ -82,6 +82,7 @@ TARGET_KERNEL_CONFIG := chiron_defconfig
 TARGET_KERNEL_SOURCE := kernel/xiaomi/chiron
 
 # Packages
+DISABLE_WALLPAPER_BACKUP := true
 PRODUCT_NO_DYNAMIC_SYSTEM_UPDATE := true
 
 # Partitions
