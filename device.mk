@@ -346,7 +346,7 @@ PRODUCT_PACKAGES += \
     telephony-ext
 
 # USB
-PRODUCT_PACKAGES += android.hardware.usb@1.0-service
+PRODUCT_PACKAGES += android.hardware.usb@1.3-service.dual_role_usb
 
 # Vibrator
 PRODUCT_PACKAGES += vendor.qti.hardware.vibrator.service
@@ -360,9 +360,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     libdng_sdk.vendor_32 \
     libstdc++_vendor
-
-# Trust HAL
-PRODUCT_PACKAGES += vendor.lineage.trust@1.0-service
 
 # Wifi
 PRODUCT_COPY_FILES += \
