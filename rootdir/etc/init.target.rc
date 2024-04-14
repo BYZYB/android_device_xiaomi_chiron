@@ -111,33 +111,6 @@ service vendor.hvdcp_opti /vendor/bin/hvdcp_opti
     group system wakelock
     task_profiles ServiceCapacityLow
 
-service vendor.ims_rtp_daemon /vendor/bin/ims_rtp_daemon
-    class main
-    user radio
-    group radio vendor_qti_diag inet log
-    task_profiles ServiceCapacityLow
-
-service vendor.imsdatadaemon /vendor/bin/imsdatadaemon
-    class main
-    user radio
-    socket ims_datad stream 0660 system radio
-    group radio wifi inet log vendor_qti_diag
-    disabled
-    task_profiles ServiceCapacityLow
-
-service vendor.imsqmidaemon /vendor/bin/imsqmidaemon
-    class main
-    user radio
-    socket ims_qmid stream 0660 system radio
-    group radio log vendor_qti_diag
-    task_profiles ServiceCapacityLow
-
-service vendor.imsrcsservice /vendor/bin/imsrcsd
-    class main
-    user radio
-    group radio vendor_qti_diag inet log wakelock
-    task_profiles ServiceCapacityLow
-
 service vendor.per_mgr /vendor/bin/pm-service
     class core
     user system
@@ -200,9 +173,3 @@ on property:sys.boot_completed=1
     # Set default schedtune value for foreground and top-app
     write /dev/stune/foreground/schedtune.prefer_idle 1
     write /dev/stune/top-app/schedtune.prefer_idle 1
-
-on property:vendor.ims.DATA_DAEMON_STATUS=1
-    restart vendor.ims_rtp_daemon
-
-on property:vendor.ims.QMI_DAEMON_STATUS=1
-    start vendor.imsdatadaemon
