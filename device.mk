@@ -161,8 +161,7 @@ PRODUCT_PACKAGES += IFAAService
 PRODUCT_PACKAGES += \
     ims_ext_common.xml \
     ims-ext-common \
-    libgui_shim \
-    libui_shim:64
+    libgui_shim
 
 # IRQ
 PRODUCT_COPY_FILES += $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
@@ -312,10 +311,11 @@ PRODUCT_COPY_FILES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-    android.hardware.radio.config@1.0.vendor \
-    android.hardware.radio@1.0.vendor \
-    android.hardware.secure_element@1.0.vendor \
-    libril-wrapper \
+    android.hardware.radio.config@1.2.vendor \
+    android.hardware.radio.deprecated@1.0.vendor \
+    android.hardware.radio@1.5.vendor \
+    android.hardware.secure_element@1.2.vendor \
+    libavservices_minijail.vendor \
     librmnetctl
 
 # Seccomp policy
@@ -339,6 +339,8 @@ PRODUCT_SOONG_NAMESPACES += \
 # Telephony
 PRODUCT_BOOT_JARS += telephony-ext
 
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/configs/qmi_fw.conf:$(TARGET_COPY_OUT_VENDOR)/etc/qmi_fw.conf
+
 PRODUCT_PACKAGES += \
     qti_telephony_hidl_wrapper.xml \
     qti_telephony_utils.xml \
@@ -353,10 +355,6 @@ PRODUCT_PACKAGES += android.hardware.usb@1.3-service.dual_role_usb
 PRODUCT_PACKAGES += vendor.qti.hardware.vibrator.service
 
 # VNDK
-PRODUCT_COPY_FILES += \
-    prebuilts/vndk/v32/arm64/arch-arm64-armv8-a/shared/vndk-sp/libhidlbase.so:$(TARGET_COPY_OUT_SYSTEM_EXT)/lib64/libhidlbase-v32.so \
-    prebuilts/vndk/v32/arm64/arch-arm64-armv8-a/shared/vndk-sp/libhidlbase.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libhidlbase-v32.so
-
 PRODUCT_PACKAGES += \
     libdng_sdk.vendor_32 \
     libstdc++_vendor
