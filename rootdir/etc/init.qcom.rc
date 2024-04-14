@@ -179,6 +179,7 @@ on boot
     # Start qcrild services
     start vendor.qcrild
     start vendor.qcrild2
+    start vendor.dataqti
 
 service vendor.atfwd /vendor/bin/ATFWD-daemon
     class late_start
