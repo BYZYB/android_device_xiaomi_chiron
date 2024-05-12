@@ -278,6 +278,9 @@ service vendor.time_daemon /vendor/bin/time_daemon
     capabilities SYS_TIME
     task_profiles ServiceCapacityLow
 
+on property:init.svc.vendor.qcrild=stopped
+    stop vendor.radio-config-1-1-wrapper
+
 on property:persist.sys.xtra-daemon.enabled=*
     restart vendor.loc_launcher
 
