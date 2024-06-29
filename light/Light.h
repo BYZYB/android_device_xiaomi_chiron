@@ -1,76 +1,48 @@
 /*
- * Copyright (C) 2018 The LineageOS Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-FileCopyrightText: 2018-2024 The LineageOS Project
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ANDROID_HARDWARE_LIGHT_V2_0_LIGHT_H
-#define ANDROID_HARDWARE_LIGHT_V2_0_LIGHT_H
+#pragma once
 
-#include <android/hardware/light/2.0/ILight.h>
-#include <hardware/lights.h>
-#include <hidl/Status.h>
-#include <map>
+#include <aidl/android/hardware/light/BnLights.h>
+
 #include <mutex>
 #include <vector>
 
-using ::android::hardware::Return;
-using ::android::hardware::Void;
-using ::android::hardware::light::V2_0::Flash;
-using ::android::hardware::light::V2_0::ILight;
-using ::android::hardware::light::V2_0::LightState;
-using ::android::hardware::light::V2_0::Status;
-using ::android::hardware::light::V2_0::Type;
+using ::aidl::android::hardware::light::BnLights;
+using ::aidl::android::hardware::light::FlashMode;
+using ::aidl::android::hardware::light::HwLight;
+using ::aidl::android::hardware::light::HwLightState;
+using ::aidl::android::hardware::light::LightType;
 
-typedef void (*LightStateHandler)(const LightState &);
+typedef void (*LightStateHandler)(const HwLightState&);
 
-struct LightBackend
-{
-    Type type;
-    LightState state;
+struct LightBackend {
+    LightType type;
+    HwLightState state;
     LightStateHandler handler;
 
-    LightBackend(Type type, LightStateHandler handler) : type(type), handler(handler)
-    {
+    LightBackend(LightType type, LightStateHandler handler) : type(type), handler(handler) {
         this->state.color = 0xff000000;
     }
 };
 
-namespace android
-{
-    namespace hardware
-    {
-        namespace light
-        {
-            namespace V2_0
-            {
-                namespace implementation
-                {
+namespace aidl {
+namespace android {
+namespace hardware {
+namespace light {
 
-                    class Light : public ILight
-                    {
-                    public:
-                        Return<Status> setLight(Type type, const LightState &state) override;
-                        Return<void> getSupportedTypes(getSupportedTypes_cb _hidl_cb) override;
+class Lights : public BnLights {
+  public:
+    ndk::ScopedAStatus setLightState(int id, const HwLightState& state) override;
+    ndk::ScopedAStatus getLights(std::vector<HwLight>* types) override;
 
-                    private:
-                        std::mutex globalLock;
-                    };
+  private:
+    std::mutex globalLock;
+};
 
-                } // namespace implementation
-            }     // namespace V2_0
-        }         // namespace light
-    }             // namespace hardware
-} // namespace android
-
-#endif // ANDROID_HARDWARE_LIGHT_V2_0_LIGHT_H
+}  // namespace light
+}  // namespace hardware
+}  // namespace android
+}  // namespace aidl
