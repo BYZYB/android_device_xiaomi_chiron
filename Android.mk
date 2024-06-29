@@ -38,19 +38,6 @@ $(MODEM_FIRMWARE_MOUNT_POINT):
 	@mkdir -p $(TARGET_OUT_VENDOR)/firmware_mnt
 ALL_DEFAULT_INSTALLED_MODULES += $(MODEM_FIRMWARE_MOUNT_POINT)
 
-# ADSP symlinks
-RFS_MSM_ADSP_SYMLINKS := $(TARGET_OUT_VENDOR)/rfs/msm/adsp/
-$(RFS_MSM_ADSP_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@rm -rf $@/*
-	@mkdir -p $(dir $@)/readonly/vendor
-	$(hide) ln -sf /data/vendor/tombstones/rfs/lpass $@/ramdumps
-	$(hide) ln -sf /mnt/vendor/persist/hlos_rfs/shared $@/hlos
-	$(hide) ln -sf /mnt/vendor/persist/rfs/msm/adsp $@/readwrite
-	$(hide) ln -sf /mnt/vendor/persist/rfs/shared $@/shared
-	$(hide) ln -sf /vendor/firmware $@/readonly/vendor/firmware
-	$(hide) ln -sf /vendor/firmware_mnt $@/readonly/firmware
-ALL_DEFAULT_INSTALLED_MODULES += $(RFS_MSM_ADSP_SYMLINKS)
-
 # IMS symlinks
 IMS_LIBS := libimscamera_jni.so libimsmedia_jni.so
 IMS_SYMLINKS := $(addprefix $(TARGET_OUT_SYSTEM_EXT_APPS_PRIVILEGED)/ims/lib/arm64/,$(notdir $(IMS_LIBS)))
@@ -59,32 +46,6 @@ $(IMS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	@rm -rf $@
 	$(hide) ln -sf /system/system_ext/lib64/$(notdir $@) $@
 ALL_DEFAULT_INSTALLED_MODULES += $(IMS_SYMLINKS)
-
-# MPSS symlinks
-RFS_MSM_MPSS_SYMLINKS := $(TARGET_OUT_VENDOR)/rfs/msm/mpss/
-$(RFS_MSM_MPSS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@rm -rf $@/*
-	@mkdir -p $(dir $@)/readonly/vendor
-	$(hide) ln -sf /data/vendor/tombstones/rfs/modem $@/ramdumps
-	$(hide) ln -sf /mnt/vendor/persist/hlos_rfs/shared $@/hlos
-	$(hide) ln -sf /mnt/vendor/persist/rfs/msm/mpss $@/readwrite
-	$(hide) ln -sf /mnt/vendor/persist/rfs/shared $@/shared
-	$(hide) ln -sf /vendor/firmware $@/readonly/vendor/firmware
-	$(hide) ln -sf /vendor/firmware_mnt $@/readonly/firmware
-ALL_DEFAULT_INSTALLED_MODULES += $(RFS_MSM_MPSS_SYMLINKS)
-
-# SLPI symlinks
-RFS_MSM_SLPI_SYMLINKS := $(TARGET_OUT_VENDOR)/rfs/msm/slpi/
-$(RFS_MSM_SLPI_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@rm -rf $@/*
-	@mkdir -p $(dir $@)/readonly/vendor
-	$(hide) ln -sf /data/vendor/tombstones/rfs/slpi $@/ramdumps
-	$(hide) ln -sf /mnt/vendor/persist/hlos_rfs/shared $@/hlos
-	$(hide) ln -sf /mnt/vendor/persist/rfs/msm/slpi $@/readwrite
-	$(hide) ln -sf /mnt/vendor/persist/rfs/shared $@/shared
-	$(hide) ln -sf /vendor/firmware $@/readonly/vendor/firmware
-	$(hide) ln -sf /vendor/firmware_mnt $@/readonly/firmware
-ALL_DEFAULT_INSTALLED_MODULES += $(RFS_MSM_SLPI_SYMLINKS)
 
 # WCNSS_qcom_cfg.ini symlinks
 WCNSS_INI_SYMLINK := $(TARGET_OUT_VENDOR)/firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini
