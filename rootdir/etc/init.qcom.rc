@@ -181,12 +181,6 @@ on boot
     start vendor.qcrild2
     start vendor.dataqti
 
-service vendor.atfwd /vendor/bin/ATFWD-daemon
-    class late_start
-    user system
-    group system radio
-    task_profiles ServiceCapacityLow
-
 service vendor.audio-hal /vendor/bin/hw/android.hardware.audio.service
     override
     class hal
