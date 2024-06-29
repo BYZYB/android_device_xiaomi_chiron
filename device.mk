@@ -80,6 +80,7 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.6:64 \
     libcamera_shim \
     libpiex_shim \
+    libpng.vendor:32 \
     vendor.qti.hardware.camera.device@1.0:64
 
 # Configstore
@@ -148,6 +149,7 @@ PRODUCT_PACKAGES += \
 # HIDL
 PRODUCT_PACKAGES += \
     android.hidl.memory@1.0.vendor \
+    libhidlmemory.vendor:64 \
     libhidltransport \
     libhidltransport.vendor \
     libhwbinder \
@@ -166,7 +168,8 @@ PRODUCT_PACKAGES += IFAAService
 PRODUCT_PACKAGES += \
     ims_ext_common.xml \
     ims-ext-common \
-    libgui_shim
+    libgui_shim \
+    libion.vendor
 
 # IRQ
 PRODUCT_COPY_FILES += $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
@@ -321,7 +324,9 @@ PRODUCT_PACKAGES += \
     android.hardware.radio@1.5.vendor \
     android.hardware.secure_element@1.2.vendor \
     libavservices_minijail.vendor \
-    librmnetctl
+    libnetutils.vendor \
+    librmnetctl \
+    libsqlite.vendor:64
 
 PRODUCT_PACKAGES += \
     android.hardware.radio.c_shim@1.0 \
@@ -337,7 +342,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.sensors@1.0-impl:64 \
     android.hardware.sensors@1.0-service \
-    libnotifyaudiohal:64
+    libnotifyaudiohal:64 \
+    libpower.vendor
 
 # Sdcard support
 PRODUCT_CHARACTERISTICS := nosdcard
