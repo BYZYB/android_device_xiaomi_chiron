@@ -37,20 +37,4 @@ MODEM_FIRMWARE_MOUNT_POINT := $(TARGET_OUT_VENDOR)/firmware_mnt
 $(MODEM_FIRMWARE_MOUNT_POINT):
 	@mkdir -p $(TARGET_OUT_VENDOR)/firmware_mnt
 ALL_DEFAULT_INSTALLED_MODULES += $(MODEM_FIRMWARE_MOUNT_POINT)
-
-# WCNSS_qcom_cfg.ini symlinks
-WCNSS_INI_SYMLINK := $(TARGET_OUT_VENDOR)/firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini
-$(WCNSS_INI_SYMLINK): $(LOCAL_INSTALLED_MODULE)
-	@mkdir -p $(dir $@)
-	@rm -rf $@
-	$(hide) ln -sf /vendor/etc/wifi/$(notdir $@) $@
-ALL_DEFAULT_INSTALLED_MODULES += $(WCNSS_INI_SYMLINK)
-
-# wlan_mac.bin symlinks
-WCNSS_MAC_SYMLINK := $(TARGET_OUT_VENDOR)/firmware/wlan/qca_cld/wlan_mac.bin
-$(WCNSS_MAC_SYMLINK): $(LOCAL_INSTALLED_MODULE)
-	@mkdir -p $(dir $@)
-	@rm -rf $@
-	$(hide) ln -sf /mnt/vendor/persist/$(notdir $@) $@
-ALL_DEFAULT_INSTALLED_MODULES += $(WCNSS_MAC_SYMLINK)
 endif
