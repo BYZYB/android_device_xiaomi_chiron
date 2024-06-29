@@ -14,10 +14,6 @@
     <bool name="config_filterDisplayModes">true</bool>
     <!-- All the capabilities of the LEDs on this device, stored as a bit field. For example, a device with notification and battery lights that supports pulsating and RGB control would set this config to 75. -->
     <integer name="config_deviceLightCapabilities">232</integer>
-    <!-- Hardware keys present on the device, stored as a bit field. For example, a device with Home, Back and Menu keys would set this config to 7. -->
-    <integer name="config_deviceHardwareKeys">64</integer>
-    <!-- Hardware keys present on the device with the ability to wake, stored as a bit field. For example, a device with Home, Back and Menu keys would set this config to 7. -->
-    <integer name="config_deviceHardwareWakeKeys">64</integer>
     <!-- Whether device has screen with higher aspect ratio -->
     <bool name="config_haveHigherAspectRatioScreen">true</bool>
 </resources>
