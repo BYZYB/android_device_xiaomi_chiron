@@ -1,9 +1,9 @@
 project build/make/
 diff --git a/core/Makefile b/core/Makefile
-index 08dffd0..c3c40af 100644
+index fce4e6f..70aa520 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -6913,7 +6913,7 @@ INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
+@@ -6958,7 +6958,7 @@ INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
  $(call declare-0p-target,$(INTERNAL_OTA_METADATA))
 
  ifeq ($(TARGET_BUILD_VARIANT),user)
@@ -27,10 +27,10 @@ index 5fbc916..a68057d 100644
  endif
 
 diff --git a/core/product.mk b/core/product.mk
-index a730d64..9f05232 100644
+index 0411fe2..be10e7e 100644
 --- a/core/product.mk
 +++ b/core/product.mk
-@@ -566,7 +566,12 @@ _readonly_late_variables += \
+@@ -574,7 +574,12 @@ _readonly_late_variables += \
    PRODUCT_COPY_FILES \
    PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
    PRODUCT_DEX_PREOPT_BOOT_FLAGS \
@@ -44,11 +44,25 @@ index a730d64..9f05232 100644
 
  _readonly_early_variables := $(filter-out $(_readonly_late_variables),$(_product_var_list))
 
+diff --git a/core/sysprop.mk b/core/sysprop.mk
+index 0fcc92c..7bf2989 100644
+--- a/core/sysprop.mk
++++ b/core/sysprop.mk
+@@ -178,7 +178,7 @@ endif
+ # Both of these tags will be removed and replaced with "release-keys"
+ # when the target-files is signed in a post-build step.
+ ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/make/target/product/security/testkey)
+-BUILD_KEYS := test-keys
++BUILD_KEYS := release-keys
+ else
+ BUILD_KEYS := dev-keys
+ endif
+
 diff --git a/target/product/base_system.mk b/target/product/base_system.mk
-index c341ad7..130f7ce 100644
+index 0eded97..c545cd8 100644
 --- a/target/product/base_system.mk
 +++ b/target/product/base_system.mk
-@@ -29,9 +29,7 @@ PRODUCT_PACKAGES += \
+@@ -31,9 +31,7 @@ PRODUCT_PACKAGES += \
      appops \
      app_process \
      appwidget \
@@ -58,7 +72,7 @@ index c341ad7..130f7ce 100644
      bcc \
      blank_screen \
      blkid \
-@@ -41,8 +39,6 @@ PRODUCT_PACKAGES += \
+@@ -43,8 +41,6 @@ PRODUCT_PACKAGES += \
      boringssl_self_test \
      bpfloader \
      bu \
@@ -67,7 +81,7 @@ index c341ad7..130f7ce 100644
      cgroups.json \
      charger \
      cmd \
-@@ -76,9 +72,6 @@ PRODUCT_PACKAGES += \
+@@ -78,9 +74,6 @@ PRODUCT_PACKAGES += \
      com.android.wifi \
      ContactsProvider \
      content \
@@ -77,7 +91,7 @@ index c341ad7..130f7ce 100644
      device_config \
      dmctl \
      dnsmasq \
-@@ -106,7 +99,6 @@ PRODUCT_PACKAGES += \
+@@ -109,7 +102,6 @@ PRODUCT_PACKAGES += \
      group_system \
      gsid \
      gsi_tool \
@@ -85,7 +99,7 @@ index c341ad7..130f7ce 100644
      heapprofd_client \
      gatekeeperd \
      gpuservice \
-@@ -275,9 +267,6 @@ PRODUCT_PACKAGES += \
+@@ -282,9 +274,6 @@ PRODUCT_PACKAGES += \
      tc \
      telecom \
      telephony-common \
@@ -95,7 +109,7 @@ index c341ad7..130f7ce 100644
      tune2fs \
      uiautomator \
      uinput \
-@@ -298,13 +287,6 @@ ifneq ($(PRODUCT_IS_ATV),true)
+@@ -313,13 +302,6 @@ ifneq ($(PRODUCT_IS_ATV),true)
 
  endif
 
@@ -106,10 +120,10 @@ index c341ad7..130f7ce 100644
 -
 -endif
 -
- # VINTF data for system image
- PRODUCT_PACKAGES += \
-     system_manifest.xml \
-@@ -343,11 +325,6 @@ ifeq ($(EMMA_INSTRUMENT),true)
+ # Check if the build supports NFC apex or not
+ ifeq ($(RELEASE_PACKAGE_NFC_STACK),NfcNci)
+     PRODUCT_PACKAGES += \
+@@ -379,11 +361,6 @@ ifeq ($(EMMA_INSTRUMENT),true)
    endif # EMMA_INSTRUMENT_STATIC
  endif # EMMA_INSTRUMENT
 
@@ -121,7 +135,7 @@ index c341ad7..130f7ce 100644
  # Moving angle from vendor to system
  ifeq ($(RELEASE_ANGLE_ON_SYSTEM),true)
  PRODUCT_PACKAGES += \
-@@ -407,9 +384,6 @@ PRODUCT_COPY_FILES += \
+@@ -443,9 +420,6 @@ PRODUCT_COPY_FILES += \
  PRODUCT_COPY_FILES += system/core/rootdir/init.zygote32.rc:system/etc/init/hw/init.zygote32.rc
  PRODUCT_VENDOR_PROPERTIES += ro.zygote?=zygote32
 
@@ -131,7 +145,7 @@ index c341ad7..130f7ce 100644
  # Packages included only for eng or userdebug builds, previously debug tagged
  PRODUCT_PACKAGES_DEBUG := \
      adb_keys \
-@@ -454,11 +428,6 @@ endif
+@@ -491,11 +465,6 @@ endif
  PRODUCT_SYSTEM_SERVER_APPS += \
      SettingsProvider \
 
@@ -170,7 +184,7 @@ index b2ce4c5..c468988 100644
  PRODUCT_PACKAGES += \
 
 diff --git a/target/product/handheld_system.mk b/target/product/handheld_system.mk
-index 76d7a0b..74a348f 100644
+index 9c05861..9723376 100644
 --- a/target/product/handheld_system.mk
 +++ b/target/product/handheld_system.mk
 @@ -33,10 +33,8 @@ $(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
@@ -254,22 +268,22 @@ index ef48719..4b76ad5 100644
  PRODUCT_COPY_FILES := \
 
 diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
-index 2c783ac..b12ca62 100644
+index 5091944..db78f3a 100644
 --- a/tools/releasetools/common.py
 +++ b/tools/releasetools/common.py
-@@ -3883,10 +3883,7 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
-     recovery_img_path = "vendor/etc/recovery.img"
-     recovery_resource_dat_path = "SYSTEM/vendor/etc/recovery-resource.dat"
+@@ -3818,10 +3818,7 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
+     logger.warning('Recovery patch generation is disable when prebuilt vendor image is used.')
+     return None
 
 -  if full_recovery_image:
 -    output_sink(recovery_img_path, recovery_img.data)
 -
 -  else:
 +  if not full_recovery_image:
-     include_recovery_dtbo = info_dict.get("include_recovery_dtbo") == "true"
-     include_recovery_acpio = info_dict.get("include_recovery_acpio") == "true"
-     path = os.path.join(input_dir, recovery_resource_dat_path)
-@@ -3963,7 +3960,6 @@ fi
+     d = Difference(recovery_img, boot_img)
+     _, _, patch = d.ComputePatch()
+     output_sink("recovery-from-boot.p", patch)
+@@ -3880,7 +3877,6 @@ fi
 
    # The install script location moved from /system/etc to /system/bin in the L
    # release. In the R release it is in VENDOR/bin or SYSTEM/vendor/bin.
@@ -305,7 +319,7 @@ index c1a7c00..ae730f5 100644
 
 project build/soong/
 diff --git a/ui/build/finder.go b/ui/build/finder.go
-index d0bcf40..a0e8ae5 100644
+index 573df21..50aba12 100644
 --- a/ui/build/finder.go
 +++ b/ui/build/finder.go
 @@ -65,7 +65,7 @@ func NewSourceFinder(ctx Context, config Config) (f *finder.Finder) {
@@ -318,77 +332,23 @@ index d0bcf40..a0e8ae5 100644
  		IncludeFiles: []string{
  			// Kati build definitions.
 
-project external/noto-fonts/
-diff --git a/fonts.mk b/fonts.mk
-index 25b4e54..de686e0 100644
---- a/fonts.mk
-+++ b/fonts.mk
-@@ -53,7 +53,7 @@ PRODUCT_PACKAGES := \
-     NotoSansCham-Bold.ttf \
-     NotoSansCham-Regular.ttf \
-     NotoSansCherokee-Regular.ttf \
--    NotoSansCJK-Regular.ttc \
-+    NotoSansCJK.ttc \
-     NotoSansCoptic-Regular.ttf \
-     NotoSansCuneiform-Regular.ttf \
-     NotoSansCypriot-Regular.ttf \
-@@ -191,6 +191,7 @@ PRODUCT_PACKAGES := \
-     NotoSerif-Regular.ttf \
-     NotoSerifArmenian-VF.ttf \
-     NotoSerifBengali-VF.ttf \
-+    NotoSerifCJK-Bold.ttc \
-     NotoSerifCJK-Regular.ttc \
-     NotoSerifDevanagari-VF.ttf \
-     NotoSerifDogra-Regular.ttf \
+project external/bash/
+diff --git a/Android.bp b/Android.bp
+deleted file mode 100644
+index d307e28..0000000
+--- a/Android.bp
++++ /dev/null
 
-diff --git a/notosanscjk/Android.bp b/notosanscjk/Android.bp
-index a1f45f9..04e9cf1 100644
---- a/notosanscjk/Android.bp
-+++ b/notosanscjk/Android.bp
-@@ -46,6 +46,6 @@ license {
- }
-
- prebuilt_font {
--    name: "NotoSansCJK-Regular.ttc",
--    src: "NotoSansCJK-Regular.ttc",
-+    name: "NotoSansCJK.ttc",
-+    src: "NotoSansCJK.ttc",
- }
-
-diff --git a/notoserifcjk/Android.bp b/notoserifcjk/Android.bp
-index 6a8e590..cc231c3 100644
---- a/notoserifcjk/Android.bp
-+++ b/notoserifcjk/Android.bp
-@@ -45,6 +45,11 @@ license {
-     ],
- }
-
-+prebuilt_font {
-+    name: "NotoSerifCJK-Bold.ttc",
-+    src: "NotoSerifCJK-Bold.ttc",
-+}
-+
- prebuilt_font {
-     name: "NotoSerifCJK-Regular.ttc",
-     src: "NotoSerifCJK-Regular.ttc",
-
-diff --git a/scripts/subset_noto_cjk.py b/scripts/subset_noto_cjk.py
-index f69248b..adfb330 100755
---- a/scripts/subset_noto_cjk.py
-+++ b/scripts/subset_noto_cjk.py
-@@ -80,7 +80,7 @@ CONTROL_CHARS = tool_utils.parse_int_ranges('0000-001F')
-
- EXCLUDED_CODEPOINTS = sorted(EMOJI_IN_CJK | ANDROID_EMOJI | CONTROL_CHARS)
-
--TTC_NAMES = ('NotoSansCJK-Regular.ttc', 'NotoSerifCJK-Regular.ttc')
-+TTC_NAMES = ('NotoSansCJK.ttc', 'NotoSansCJK-Regular.ttc', 'NotoSerifCJK-Bold.ttc', 'NotoSerifCJK-Regular.ttc')
-
-
- def remove_from_cmap(infile, outfile, exclude=frozenset()):
+project external/nano/
+diff --git a/Android.bp b/Android.bp
+deleted file mode 100644
+index 5f75204..0000000
+--- a/Android.bp
++++ /dev/null
 
 project frameworks/base/
 diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
-index a9b7257a5..5253e5404 100755
+index 3977bdf41..e2892ff61 100755
 --- a/core/java/android/os/Build.java
 +++ b/core/java/android/os/Build.java
 @@ -1324,7 +1324,7 @@ public class Build {
@@ -401,89 +361,11 @@ index a9b7257a5..5253e5404 100755
 
          final String system = SystemProperties.get("ro.system.build.fingerprint");
 
-diff --git a/data/fonts/fonts.xml b/data/fonts/fonts.xml
-index 9320c144d..eeafcabc4 100644
---- a/data/fonts/fonts.xml
-+++ b/data/fonts/fonts.xml
-@@ -1409,36 +1409,48 @@
-         <font weight="400" style="normal">NotoSansSymbols-Regular-Subsetted.ttf</font>
-     </family>
-     <family lang="zh-Hans">
--        <font weight="400" style="normal" index="2" postScriptName="NotoSansCJKjp-Regular">
--            NotoSansCJK-Regular.ttc
--        </font>
--        <font weight="400" style="normal" index="2" fallbackFor="serif"
--              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
--        </font>
-+        <font weight="100" style="normal" index="2" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="300" style="normal" index="7" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="350" style="normal" index="12" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="27" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="500" style="normal" index="17" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="700" style="normal" index="37" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="900" style="normal" index="22" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="2" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
-+        <font weight="700" style="normal" index="2" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
-     </family>
-     <family lang="zh-Hant,zh-Bopo">
--        <font weight="400" style="normal" index="3" postScriptName="NotoSansCJKjp-Regular">
--            NotoSansCJK-Regular.ttc
--        </font>
--        <font weight="400" style="normal" index="3" fallbackFor="serif"
--              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
--        </font>
-+        <font weight="100" style="normal" index="3" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="300" style="normal" index="8" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="350" style="normal" index="13" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="28" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="500" style="normal" index="18" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="700" style="normal" index="38" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="900" style="normal" index="23" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="3" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
-+        <font weight="700" style="normal" index="3" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
-     </family>
-     <family lang="ja">
--        <font weight="400" style="normal" index="0" postScriptName="NotoSansCJKjp-Regular">
--            NotoSansCJK-Regular.ttc
--        </font>
--        <font weight="400" style="normal" index="0" fallbackFor="serif"
--              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
--        </font>
-+        <font weight="100" style="normal" index="0" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="300" style="normal" index="5" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="350" style="normal" index="10" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="25" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="500" style="normal" index="15" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="700" style="normal" index="35" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="900" style="normal" index="20" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="0" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
-+        <font weight="700" style="normal" index="0" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
-     </family>
-     <family lang="ko">
--        <font weight="400" style="normal" index="1" postScriptName="NotoSansCJKjp-Regular">
--            NotoSansCJK-Regular.ttc
--        </font>
--        <font weight="400" style="normal" index="1" fallbackFor="serif"
--              postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc
--        </font>
-+        <font weight="100" style="normal" index="1" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="300" style="normal" index="6" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="350" style="normal" index="11" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="26" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="500" style="normal" index="16" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="700" style="normal" index="36" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="900" style="normal" index="21" postScriptName="NotoSansCJKjp">NotoSansCJK.ttc</font>
-+        <font weight="400" style="normal" index="1" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Regular">NotoSerifCJK-Regular.ttc</font>
-+        <font weight="700" style="normal" index="1" fallbackFor="serif" postScriptName="NotoSerifCJKjp-Bold">NotoSerifCJK-Bold.ttc</font>
-     </family>
-     <family lang="und-Zsye" ignore="true">
-         <font weight="400" style="normal">NotoColorEmojiLegacy.ttf</font>
-
 diff --git a/services/core/java/com/android/server/pm/ComputerEngine.java b/services/core/java/com/android/server/pm/ComputerEngine.java
-index d8cbe9d5e..0b180fa87 100644
+index 7d0043685..b86fd79e1 100644
 --- a/services/core/java/com/android/server/pm/ComputerEngine.java
 +++ b/services/core/java/com/android/server/pm/ComputerEngine.java
-@@ -1472,7 +1472,7 @@ public class ComputerEngine implements Computer {
+@@ -1474,7 +1474,7 @@ public class ComputerEngine implements Computer {
      private static native boolean isDebuggable();
 
      public static boolean isMicrogSigned(AndroidPackage p) {
@@ -515,6 +397,7 @@ index e2ead88..0a248b5 100644
 
          if (should_drop_caps) {
              minijail_use_caps(jail.get(), CAP_TO_MASK(CAP_SETUID) | CAP_TO_MASK(CAP_SETGID));
+
 diff --git a/root/adbroot_service.cpp b/root/adbroot_service.cpp
 index ff30f4b..243f18e 100644
 --- a/root/adbroot_service.cpp
@@ -529,7 +412,7 @@ index ff30f4b..243f18e 100644
  }
 
 diff --git a/sockets.cpp b/sockets.cpp
-index e10f710..8df7e72 100644
+index a33157b..b5971fb 100644
 --- a/sockets.cpp
 +++ b/sockets.cpp
 @@ -473,7 +473,7 @@ asocket* create_local_service_socket(std::string_view name, atransport* transpor
@@ -544,10 +427,10 @@ index e10f710..8df7e72 100644
 
 project system/core/
 diff --git a/init/Android.bp b/init/Android.bp
-index 6d7d9ba..78c58aa 100644
+index 327c56e..3066390 100644
 --- a/init/Android.bp
 +++ b/init/Android.bp
-@@ -119,7 +119,7 @@ libinit_cc_defaults {
+@@ -118,7 +118,7 @@ libinit_cc_defaults {
      cflags: [
          "-DALLOW_FIRST_STAGE_CONSOLE=0",
          "-DALLOW_LOCAL_PROP_OVERRIDE=0",
@@ -556,7 +439,7 @@ index 6d7d9ba..78c58aa 100644
          "-DANDROID_BASE_UNIQUE_FD_DISABLE_IMPLICIT_CONVERSION",
          "-DDUMP_ON_UMOUNT_FAILURE=0",
          "-DINIT_FULL_SOURCES",
-@@ -407,7 +407,7 @@ init_first_stage_cc_defaults {
+@@ -406,7 +406,7 @@ init_first_stage_cc_defaults {
          "-Werror",
          "-DALLOW_FIRST_STAGE_CONSOLE=0",
          "-DALLOW_LOCAL_PROP_OVERRIDE=0",
@@ -567,10 +450,10 @@ index 6d7d9ba..78c58aa 100644
          "-DDUMP_ON_UMOUNT_FAILURE=0",
 
 diff --git a/rootdir/init.rc b/rootdir/init.rc
-index 317f809..0a31d86 100644
+index 92e8f27..533159d 100644
 --- a/rootdir/init.rc
 +++ b/rootdir/init.rc
-@@ -681,24 +681,12 @@ on post-fs-data
+@@ -696,24 +696,12 @@ on post-fs-data
      # Make sure we have the device encryption key.
      installkey /data
 
@@ -587,7 +470,7 @@ index 317f809..0a31d86 100644
 
 -    # Start tombstoned early to be able to store tombstones.
 -    mkdir /data/anr 0775 system system encryption=Require
--    mkdir /data/tombstones 0771 system system encryption=Require
+-    mkdir /data/tombstones 0775 system system encryption=Require
 -    mkdir /data/vendor/tombstones 0771 root root
 -    mkdir /data/vendor/tombstones/wifi 0771 wifi wifi
 -    start tombstoned
@@ -595,15 +478,17 @@ index 317f809..0a31d86 100644
      # Make sure that apexd is started in the default namespace
      enter_default_mount_ns
 
-@@ -781,7 +769,6 @@ on post-fs-data
+@@ -794,9 +782,7 @@ on post-fs-data
+     chmod 0660 /data/misc/bluedroid/bt_config.conf
+     chown bluetooth bluetooth /data/misc/bluedroid/bt_config.conf
      mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
-     mkdir /data/misc/bluetooth/logs 0770 bluetooth bluetooth
+-    mkdir /data/misc/bluetooth/logs 0770 bluetooth bluetooth
      mkdir /data/misc/nfc 0770 nfc nfc
 -    mkdir /data/misc/nfc/logs 0770 nfc nfc
      mkdir /data/misc/credstore 0700 credstore credstore
      mkdir /data/misc/gatekeeper 0700 system system
      mkdir /data/misc/keychain 0771 system system
-@@ -810,14 +797,6 @@ on post-fs-data
+@@ -825,14 +811,6 @@ on post-fs-data
      mkdir /data/misc/audioserver 0700 audioserver audioserver
      mkdir /data/misc/cameraserver 0700 cameraserver cameraserver
      mkdir /data/misc/vold 0700 root root
@@ -618,15 +503,15 @@ index 317f809..0a31d86 100644
      # profile file layout
      mkdir /data/misc/profiles 0771 system system
      mkdir /data/misc/profiles/cur 0771 system system
-@@ -828,7 +807,6 @@ on post-fs-data
-     mkdir /data/misc/apexdata 0711 root root
+@@ -844,7 +822,6 @@ on post-fs-data
      mkdir /data/misc/apexrollback 0700 root root
      mkdir /data/misc/appcompat/ 0700 system system
+     mkdir /data/misc/uprobestats-configs/ 0777 uprobestats uprobestats
 -    mkdir /data/misc/snapshotctl_log 0755 root root
      # create location to store pre-reboot information
      mkdir /data/misc/prereboot 0700 system system
      # directory used for on-device refresh metrics file.
-@@ -851,7 +829,6 @@ on post-fs-data
+@@ -867,7 +844,6 @@ on post-fs-data
      # For security reasons, /data/local/tmp should always be empty.
      # Do not place files or directories in /data/local/tmp
      mkdir /data/local/tmp 0771 shell shell
@@ -634,7 +519,7 @@ index 317f809..0a31d86 100644
      mkdir /data/app-private 0771 system system encryption=Require
      mkdir /data/app-ephemeral 0771 system system encryption=Require
      mkdir /data/app-asec 0700 root root encryption=Require
-@@ -863,25 +840,8 @@ on post-fs-data
+@@ -879,25 +855,8 @@ on post-fs-data
      mkdir /data/fonts/files 0771 system system
      mkdir /data/fonts/config 0770 system system
 
@@ -660,7 +545,7 @@ index 317f809..0a31d86 100644
 
      # create resource-cache and double-check the perms
      mkdir /data/resource-cache 0771 system system encryption=Require
-@@ -915,13 +875,7 @@ on post-fs-data
+@@ -931,13 +890,7 @@ on post-fs-data
      mkdir /data/system/environ 0700 system system
      # b/183861600 attempt to fix selinux label before running derive_classpath service
      restorecon /data/system/environ
@@ -674,7 +559,7 @@ index 317f809..0a31d86 100644
 
      # Create the parent directories of the user CE and DE storage directories.
      # These parent directories must use encryption=None, since each of their
-@@ -981,10 +935,7 @@ on post-fs-data
+@@ -997,10 +950,7 @@ on post-fs-data
      mkdir /data_mirror/ref_profiles 0700 root root
      mount none /data/misc/profiles/ref /data_mirror/ref_profiles bind rec
 
@@ -686,7 +571,7 @@ index 317f809..0a31d86 100644
 
      # Delete these if need be, per b/139193659
      mkdir /data/rollback 0700 system system encryption=DeleteIfNecessary
-@@ -1200,7 +1151,6 @@ on charger
+@@ -1216,7 +1166,6 @@ on charger
      class_start charger
 
  on property:sys.boot_completed=1
@@ -694,7 +579,7 @@ index 317f809..0a31d86 100644
      # Setup per_boot directory so other .rc could start to use it on boot_completed
      exec - system system -- /bin/rm -rf /data/per_boot
      mkdir /data/per_boot 0700 system system encryption=Require key=per_boot_ref
-@@ -1279,17 +1229,6 @@ service console /system/bin/sh
+@@ -1295,17 +1244,6 @@ service console /system/bin/sh
      setenv HOSTNAME console
      shutdown critical
 
@@ -714,10 +599,10 @@ index 317f809..0a31d86 100644
 
 project system/sepolicy/
 diff --git a/build/soong/policy.go b/build/soong/policy.go
-index 9d87275..a3a694f 100644
+index cbcc57a..4a99277 100644
 --- a/build/soong/policy.go
 +++ b/build/soong/policy.go
-@@ -412,7 +412,7 @@ func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Pat
+@@ -416,7 +416,7 @@ func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Pat
  			FlagWithArg("-o ", os.DevNull).
  			FlagWithArg("-f ", os.DevNull)
 
@@ -726,7 +611,7 @@ index 9d87275..a3a694f 100644
  			secilcCmd.Flag("-N")
  		}
  	}
-@@ -530,13 +530,13 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -534,13 +534,13 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
  		FlagWithOutput("-o ", bin).
  		FlagWithArg("-f ", os.DevNull)
 
@@ -756,10 +641,10 @@ index 97948f3..8578b28 100644
 -ALL_DEFAULT_INSTALLED_MODULES += $(BOOTANIMATION_SYMLINK)
 
 diff --git a/config/common.mk b/config/common.mk
-index fe917f9..5420155 100644
+index ca58f4a..8263467 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -98,8 +98,6 @@ endif
+@@ -108,8 +108,6 @@ endif
  # Bootanimation
  TARGET_SCREEN_WIDTH ?= 1080
  TARGET_SCREEN_HEIGHT ?= 1920
@@ -768,7 +653,7 @@ index fe917f9..5420155 100644
 
  # Build Manifest
  PRODUCT_PACKAGES += \
-@@ -120,10 +118,6 @@ endif
+@@ -130,10 +128,6 @@ endif
 
  PRODUCT_PACKAGES += \
      LineageSettingsProvider \
@@ -779,7 +664,7 @@ index fe917f9..5420155 100644
 
  # Config
  PRODUCT_PACKAGES += \
-@@ -132,13 +126,9 @@ PRODUCT_PACKAGES += \
+@@ -142,13 +136,9 @@ PRODUCT_PACKAGES += \
 
  # Extra tools in Lineage
  PRODUCT_PACKAGES += \
@@ -793,7 +678,7 @@ index fe917f9..5420155 100644
 
  PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
      system/bin/curl \
-@@ -158,23 +148,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+@@ -168,23 +158,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
      system/%/libfuse-lite.so \
      system/%/libntfs-3g.so
 
@@ -817,7 +702,7 @@ index fe917f9..5420155 100644
  # Storage manager
  PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
      ro.storage_manager.enabled=true
-@@ -207,7 +180,7 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
+@@ -217,7 +190,7 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
      SystemUI
 
  PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
