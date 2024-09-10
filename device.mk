@@ -121,7 +121,8 @@ PRODUCT_PACKAGES += libcutils_shim
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.1.vendor \
-    android.hardware.drm-service.clearkey
+    android.hardware.drm-service.clearkey \
+    libcrypto_shim
 
 # Fingerprint sensor
 PRODUCT_PACKAGES += \
