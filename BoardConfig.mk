@@ -43,14 +43,7 @@ BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO := true
 
 # Dexpreopt
-# [NOTE] This section might assign to readonly variable of Android build system.
-# [NOTE] Please keep only WITH_DEXPREOPT_DEBUG_INFO then remove others, if no patch (repo_XX.diff) is applied.
 LOCAL_DEX_PREOPT := true
-PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := everything
-PRODUCT_DEX_PREOPT_DEFAULT_FLAGS := --compiler-filter=everything
-PRODUCT_OTHER_JAVA_DEBUG_INFO := false
-PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := everything
-PRODUCT_SYSTEM_SERVER_DEBUG_INFO := false
 USE_DEX2OAT_DEBUG := false
 WITH_DEXPREOPT_DEBUG_INFO := false
 

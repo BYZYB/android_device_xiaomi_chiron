@@ -26,24 +26,6 @@ index 5fbc916..a68057d 100644
  endif
  endif
 
-diff --git a/core/product.mk b/core/product.mk
-index 0411fe2..be10e7e 100644
---- a/core/product.mk
-+++ b/core/product.mk
-@@ -574,7 +574,12 @@ _readonly_late_variables += \
-   PRODUCT_COPY_FILES \
-   PRODUCT_DEX_PREOPT_NEVER_ALLOW_STRIPPING \
-   PRODUCT_DEX_PREOPT_BOOT_FLAGS \
--  PRODUCT_SOONG_NAMESPACES
-+  PRODUCT_SOONG_NAMESPACES \
-+  PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER \
-+  PRODUCT_DEX_PREOPT_DEFAULT_FLAGS \
-+  PRODUCT_OTHER_JAVA_DEBUG_INFO \
-+  PRODUCT_SYSTEM_SERVER_COMPILER_FILTER \
-+  PRODUCT_SYSTEM_SERVER_DEBUG_INFO
-
- _readonly_early_variables := $(filter-out $(_readonly_late_variables),$(_product_var_list))
-
 diff --git a/core/sysprop.mk b/core/sysprop.mk
 index 0fcc92c..7bf2989 100644
 --- a/core/sysprop.mk
