@@ -4,8 +4,5 @@ vendor_internal_prop(cnss_prop)
 # Fingerprint
 vendor_public_prop(vendor_fp_prop)
 
-# Power
-vendor_internal_prop(vendor_power_prop)
-
 # Sensors
 vendor_internal_prop(sensors_panel_prop)
