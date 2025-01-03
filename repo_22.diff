@@ -1,18 +1,18 @@
+
 project build/make/
 diff --git a/core/Makefile b/core/Makefile
-index fce4e6f..70aa520 100644
+index 20db344..8e2fa52 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -6958,7 +6958,7 @@ INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
+@@ -7183,7 +7183,7 @@ INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
  $(call declare-0p-target,$(INTERNAL_OTA_METADATA))
-
+ 
  ifeq ($(TARGET_BUILD_VARIANT),user)
 -    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 +    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
  else
  ifneq ($(LINEAGE_BUILD),)
      $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
-
 diff --git a/core/java.mk b/core/java.mk
 index 5fbc916..a68057d 100644
 --- a/core/java.mk
@@ -25,12 +25,12 @@ index 5fbc916..a68057d 100644
 +LOCAL_JAVACFLAGS+= -g:none
  endif
  endif
-
+ 
 diff --git a/core/sysprop.mk b/core/sysprop.mk
-index 0fcc92c..7bf2989 100644
+index e7a140a..5126189 100644
 --- a/core/sysprop.mk
 +++ b/core/sysprop.mk
-@@ -178,7 +178,7 @@ endif
+@@ -173,7 +173,7 @@ endif
  # Both of these tags will be removed and replaced with "release-keys"
  # when the target-files is signed in a post-build step.
  ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/make/target/product/security/testkey)
@@ -39,9 +39,8 @@ index 0fcc92c..7bf2989 100644
  else
  BUILD_KEYS := dev-keys
  endif
-
 diff --git a/target/product/base_system.mk b/target/product/base_system.mk
-index 0eded97..c545cd8 100644
+index 339a20b..79608c3 100644
 --- a/target/product/base_system.mk
 +++ b/target/product/base_system.mk
 @@ -31,9 +31,7 @@ PRODUCT_PACKAGES += \
@@ -60,10 +59,10 @@ index 0eded97..c545cd8 100644
      bu \
 -    bugreport \
 -    bugreportz \
+     build_flag_system \
      cgroups.json \
      charger \
-     cmd \
-@@ -78,9 +74,6 @@ PRODUCT_PACKAGES += \
+@@ -79,9 +75,6 @@ PRODUCT_PACKAGES += \
      com.android.wifi \
      ContactsProvider \
      content \
@@ -73,7 +72,7 @@ index 0eded97..c545cd8 100644
      device_config \
      dmctl \
      dnsmasq \
-@@ -109,7 +102,6 @@ PRODUCT_PACKAGES += \
+@@ -110,7 +103,6 @@ PRODUCT_PACKAGES += \
      group_system \
      gsid \
      gsi_tool \
@@ -81,7 +80,7 @@ index 0eded97..c545cd8 100644
      heapprofd_client \
      gatekeeperd \
      gpuservice \
-@@ -282,9 +274,6 @@ PRODUCT_PACKAGES += \
+@@ -286,9 +278,6 @@ PRODUCT_PACKAGES += \
      tc \
      telecom \
      telephony-common \
@@ -91,10 +90,10 @@ index 0eded97..c545cd8 100644
      tune2fs \
      uiautomator \
      uinput \
-@@ -313,13 +302,6 @@ ifneq ($(PRODUCT_IS_ATV),true)
-
+@@ -328,13 +317,6 @@ ifneq ($(PRODUCT_IS_ATV),true)
+ 
  endif
-
+ 
 -# Product does not support Dynamic System Update
 -ifneq ($(PRODUCT_NO_DYNAMIC_SYSTEM_UPDATE),true)
 -    PRODUCT_PACKAGES += \
@@ -105,32 +104,32 @@ index 0eded97..c545cd8 100644
  # Check if the build supports NFC apex or not
  ifeq ($(RELEASE_PACKAGE_NFC_STACK),NfcNci)
      PRODUCT_PACKAGES += \
-@@ -379,11 +361,6 @@ ifeq ($(EMMA_INSTRUMENT),true)
+@@ -400,11 +382,6 @@ ifeq ($(EMMA_INSTRUMENT),true)
    endif # EMMA_INSTRUMENT_STATIC
  endif # EMMA_INSTRUMENT
-
+ 
 -ifeq (,$(DISABLE_WALLPAPER_BACKUP))
 -  PRODUCT_PACKAGES += \
 -    WallpaperBackup
 -endif
 -
- # Moving angle from vendor to system
- ifeq ($(RELEASE_ANGLE_ON_SYSTEM),true)
  PRODUCT_PACKAGES += \
-@@ -443,9 +420,6 @@ PRODUCT_COPY_FILES += \
- PRODUCT_COPY_FILES += system/core/rootdir/init.zygote32.rc:system/etc/init/hw/init.zygote32.rc
+     libEGL_angle \
+     libGLESv1_CM_angle \
+@@ -472,9 +449,6 @@ PRODUCT_PACKAGES += etc_hosts
+ PRODUCT_PACKAGES += init.zygote32.rc
  PRODUCT_VENDOR_PROPERTIES += ro.zygote?=zygote32
-
+ 
 -PRODUCT_SYSTEM_PROPERTIES += debug.atrace.tags.enableflags=0
 -PRODUCT_SYSTEM_PROPERTIES += persist.traced.enable=1
 -
- # Packages included only for eng or userdebug builds, previously debug tagged
- PRODUCT_PACKAGES_DEBUG := \
-     adb_keys \
-@@ -491,11 +465,6 @@ endif
+ # Include kernel configs.
+ PRODUCT_PACKAGES += \
+     approved-ogki-builds.xml \
+@@ -524,11 +498,6 @@ endif
  PRODUCT_SYSTEM_SERVER_APPS += \
      SettingsProvider \
-
+ 
 -ifeq (,$(DISABLE_WALLPAPER_BACKUP))
 -  PRODUCT_SYSTEM_SERVER_APPS += \
 -    WallpaperBackup
@@ -138,20 +137,19 @@ index 0eded97..c545cd8 100644
 -
  PRODUCT_PACKAGES_DEBUG_JAVA_COVERAGE := \
      libdumpcoverage
-
+ 
 diff --git a/target/product/full_base.mk b/target/product/full_base.mk
 index 7aa7903..5f5aad1 100644
 --- a/target/product/full_base.mk
 +++ b/target/product/full_base.mk
 @@ -25,7 +25,6 @@ PRODUCT_PACKAGES := \
-
+ 
  PRODUCT_PACKAGES += \
      LiveWallpapersPicker \
 -    PhotoTable \
      preinstalled-packages-platform-full-base.xml
-
+ 
  # Net:
-
 diff --git a/target/product/handheld_product.mk b/target/product/handheld_product.mk
 index b2ce4c5..c468988 100644
 --- a/target/product/handheld_product.mk
@@ -161,18 +159,17 @@ index b2ce4c5..c468988 100644
      QuickSearchBox \
      SettingsIntelligence \
 -    frameworks-base-overlays
-
+ 
  ifeq ($(LINEAGE_BUILD),)
  PRODUCT_PACKAGES += \
-
 diff --git a/target/product/handheld_system.mk b/target/product/handheld_system.mk
-index 9c05861..9723376 100644
+index d61479d..be45725 100644
 --- a/target/product/handheld_system.mk
 +++ b/target/product/handheld_system.mk
-@@ -33,10 +33,8 @@ $(call inherit-product-if-exists, frameworks/base/data/keyboards/keyboards.mk)
- $(call inherit-product-if-exists, frameworks/webview/chromium/chromium.mk)
-
+@@ -34,10 +34,8 @@ $(call inherit-product-if-exists, frameworks/webview/chromium/chromium.mk)
+ 
  PRODUCT_PACKAGES += \
+     android.software.window_magnification.prebuilt.xml \
 -    BasicDreams \
      BlockedNumberProvider \
      BluetoothMidiService \
@@ -180,7 +177,7 @@ index 9c05861..9723376 100644
      BuiltInPrintService \
      CalendarProvider \
      cameraserver \
-@@ -47,7 +45,6 @@ PRODUCT_PACKAGES += \
+@@ -48,7 +46,6 @@ PRODUCT_PACKAGES += \
      DeviceAsWebcam \
      DocumentsUI \
      DownloadProviderUi \
@@ -188,7 +185,7 @@ index 9c05861..9723376 100644
      ExternalStorageProvider \
      FusedLocation \
      InputDevices \
-@@ -56,7 +53,6 @@ PRODUCT_PACKAGES += \
+@@ -57,7 +54,6 @@ PRODUCT_PACKAGES += \
      ManagedProvisioning \
      MmsService \
      MtpService \
@@ -196,37 +193,32 @@ index 9c05861..9723376 100644
      PacProcessor \
      preinstalled-packages-platform-handheld-system.xml \
      PrintRecommendationService \
-@@ -64,8 +60,6 @@ PRODUCT_PACKAGES += \
+@@ -65,8 +61,6 @@ PRODUCT_PACKAGES += \
      ProxyHandler \
      screenrecord \
      SecureElement \
 -    SharedStorageBackup \
 -    SimAppDialog \
      Telecom \
-     TelephonyProvider \
      TeleService \
-
+     UserDictionaryProvider \
 diff --git a/target/product/handheld_system_ext.mk b/target/product/handheld_system_ext.mk
-index 1218f7a..a298a94 100644
+index 187b627..5d5f758 100644
 --- a/target/product/handheld_system_ext.mk
 +++ b/target/product/handheld_system_ext.mk
-@@ -28,7 +28,6 @@ PRODUCT_PACKAGES += \
+@@ -28,4 +28,3 @@ PRODUCT_PACKAGES += \
      Settings \
      StorageManager \
      SystemUI \
 -    WallpaperCropper \
-
- # Base modules when shipping api level is less than or equal to 34
- PRODUCT_PACKAGES_SHIPPING_API_LEVEL_34 += \
-
 diff --git a/target/product/media_system.mk b/target/product/media_system.mk
-index 94d9177..f51e20d 100644
+index 0733d06..9448cbf 100644
 --- a/target/product/media_system.mk
 +++ b/target/product/media_system.mk
-@@ -70,10 +70,6 @@ PRODUCT_VENDOR_PROPERTIES += \
+@@ -64,10 +64,6 @@ PRODUCT_VENDOR_PROPERTIES += \
      tombstoned.max_tombstone_count?=50
  endif
-
+ 
 -PRODUCT_VENDOR_PROPERTIES += \
 -    ro.logd.size.stats=64K \
 -    log.tag.stats_log=I
@@ -234,7 +226,6 @@ index 94d9177..f51e20d 100644
  # Enable CFI for security-sensitive components
  $(call inherit-product, $(SRC_TARGET_DIR)/product/cfi-common.mk)
  $(call inherit-product-if-exists, vendor/google/products/cfi-vendor.mk)
-
 diff --git a/target/product/telephony_system.mk b/target/product/telephony_system.mk
 index ef48719..4b76ad5 100644
 --- a/target/product/telephony_system.mk
@@ -246,17 +237,16 @@ index ef48719..4b76ad5 100644
 -    CallLogBackup \
 -    com.android.cellbroadcast \
 -    CellBroadcastLegacyApp \
-
+ 
  PRODUCT_COPY_FILES := \
-
 diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
-index 5091944..db78f3a 100644
+index 2afa3b9..ce07d2f 100644
 --- a/tools/releasetools/common.py
 +++ b/tools/releasetools/common.py
-@@ -3818,10 +3818,7 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
+@@ -3863,10 +3863,7 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
      logger.warning('Recovery patch generation is disable when prebuilt vendor image is used.')
      return None
-
+ 
 -  if full_recovery_image:
 -    output_sink(recovery_img_path, recovery_img.data)
 -
@@ -265,23 +255,22 @@ index 5091944..db78f3a 100644
      d = Difference(recovery_img, boot_img)
      _, _, patch = d.ComputePatch()
      output_sink("recovery-from-boot.p", patch)
-@@ -3880,7 +3877,6 @@ fi
-
+@@ -3925,7 +3922,6 @@ fi
+ 
    # The install script location moved from /system/etc to /system/bin in the L
    # release. In the R release it is in VENDOR/bin or SYSTEM/vendor/bin.
 -  output_sink("bin/install-recovery.sh", sh.encode())
-
-
+ 
+ 
  class DynamicPartitionUpdate(object):
-
 diff --git a/tools/releasetools/non_ab_ota.py b/tools/releasetools/non_ab_ota.py
-index c1a7c00..ae730f5 100644
+index bc98187..cce8fb8 100644
 --- a/tools/releasetools/non_ab_ota.py
 +++ b/tools/releasetools/non_ab_ota.py
 @@ -149,8 +149,6 @@ def WriteFullOTAPackage(input_zip, output_file):
        metadata=metadata,
        info_dict=OPTIONS.info_dict)
-
+ 
 -  assert HasRecoveryPatch(input_zip, info_dict=OPTIONS.info_dict)
 -
    # Assertions (e.g. downgrade check, device properties check).
@@ -290,7 +279,7 @@ index c1a7c00..ae730f5 100644
 @@ -184,10 +182,6 @@ def WriteFullOTAPackage(input_zip, output_file):
    #    complete script normally
    #    (allow recovery to mark itself finished and reboot)
-
+ 
 -  recovery_img = common.GetBootableImage("recovery.img", "recovery.img",
 -                                         OPTIONS.input_tmp, "RECOVERY")
 -  common.CheckSize(recovery_img.data, "recovery.img", target_info)
@@ -300,6 +289,19 @@ index c1a7c00..ae730f5 100644
        assert False, "two-step packages not supported by this build"
 
 project build/soong/
+diff --git a/scripts/gen_build_prop.py b/scripts/gen_build_prop.py
+index ac2c6ff..a4dd8cc 100644
+--- a/scripts/gen_build_prop.py
++++ b/scripts/gen_build_prop.py
+@@ -42,7 +42,7 @@ def get_build_flavor(product_config):
+ def get_build_keys(product_config):
+   default_cert = product_config.get("DefaultAppCertificate", "")
+   if default_cert == "" or default_cert == os.path.join(TEST_KEY_DIR, "testKey"):
+-    return "test-keys"
++    return "release-keys"
+   return "dev-keys"
+ 
+ def override_config(config):
 diff --git a/ui/build/finder.go b/ui/build/finder.go
 index 573df21..50aba12 100644
 --- a/ui/build/finder.go
@@ -314,51 +316,26 @@ index 573df21..50aba12 100644
  		IncludeFiles: []string{
  			// Kati build definitions.
 
-project external/bash/
-diff --git a/Android.bp b/Android.bp
-deleted file mode 100644
-index d307e28..0000000
---- a/Android.bp
-+++ /dev/null
-
-project external/nano/
-diff --git a/Android.bp b/Android.bp
-deleted file mode 100644
-index 5f75204..0000000
---- a/Android.bp
-+++ /dev/null
-
 project frameworks/base/
-diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
-index 3977bdf41..e2892ff61 100755
---- a/core/java/android/os/Build.java
-+++ b/core/java/android/os/Build.java
-@@ -1324,7 +1324,7 @@ public class Build {
-                         + String.valueOf(result));
-             }
-
--            return result == 0;
-+            return true;
-         }
-
-         final String system = SystemProperties.get("ro.system.build.fingerprint");
-
 diff --git a/services/core/java/com/android/server/pm/ComputerEngine.java b/services/core/java/com/android/server/pm/ComputerEngine.java
-index 7d0043685..b86fd79e1 100644
+index 4cf099aed..56f87f1fc 100644
 --- a/services/core/java/com/android/server/pm/ComputerEngine.java
 +++ b/services/core/java/com/android/server/pm/ComputerEngine.java
-@@ -1474,7 +1474,7 @@ public class ComputerEngine implements Computer {
+@@ -1491,10 +1491,6 @@ public class ComputerEngine implements Computer {
      private static native boolean isDebuggable();
-
+ 
      public static boolean isMicrogSigned(AndroidPackage p) {
 -        if (!isDebuggable()) {
-+        if (false) {
-             return false;
-         }
+-            return false;
+-        }
+-
+         // Allowlist the following apps:
+         // * com.android.vending - microG Companion
+         // * com.google.android.gms - microG Services
 
 project packages/modules/adb/
 diff --git a/daemon/main.cpp b/daemon/main.cpp
-index e2ead88..0a248b5 100644
+index 6f0fcbc..4b6c074 100644
 --- a/daemon/main.cpp
 +++ b/daemon/main.cpp
 @@ -72,7 +72,7 @@ static bool should_drop_privileges() {
@@ -367,7 +344,7 @@ index e2ead88..0a248b5 100644
      bool ro_secure = android::base::GetBoolProperty("ro.secure", true);
 -    bool ro_debuggable = __android_log_is_debuggable();
 +    bool ro_debuggable = true;
-
+ 
      // Drop privileges if ro.secure is set...
      bool drop = ro_secure;
 @@ -118,7 +118,7 @@ static void drop_privileges(int server_port) {
@@ -376,30 +353,29 @@ index e2ead88..0a248b5 100644
      if (should_drop_privileges()) {
 -        const bool should_drop_caps = !__android_log_is_debuggable();
 +        const bool should_drop_caps = false;
-
+ 
          if (should_drop_caps) {
-             minijail_use_caps(jail.get(), CAP_TO_MASK(CAP_SETUID) | CAP_TO_MASK(CAP_SETGID));
-
+             // CAP_SETUI and CAP_SETGID are required for change_uid and change_gid calls below.
 diff --git a/root/adbroot_service.cpp b/root/adbroot_service.cpp
 index ff30f4b..243f18e 100644
 --- a/root/adbroot_service.cpp
 +++ b/root/adbroot_service.cpp
 @@ -106,7 +106,7 @@ ndk::ScopedAStatus ADBRootService::isSupported(bool* _aidl_return) {
      }
-
+ 
      AutoMutex _l(lock_);
 -    *_aidl_return = __android_log_is_debuggable();
 +    *_aidl_return = true;
      return ndk::ScopedAStatus::ok();
  }
-
+ 
 diff --git a/sockets.cpp b/sockets.cpp
-index a33157b..b5971fb 100644
+index f766f7e..1dd0dca 100644
 --- a/sockets.cpp
 +++ b/sockets.cpp
 @@ -473,7 +473,7 @@ asocket* create_local_service_socket(std::string_view name, atransport* transpor
      LOG(VERBOSE) << "LS(" << s->id << "): bound to '" << name << "' via " << fd_value;
-
+ 
  #if !ADB_HOST
 -    if ((name.starts_with("root:") && getuid() != 0 && __android_log_is_debuggable()) ||
 +    if ((name.starts_with("root:") && getuid() != 0) ||
@@ -409,10 +385,10 @@ index a33157b..b5971fb 100644
 
 project system/core/
 diff --git a/init/Android.bp b/init/Android.bp
-index 327c56e..3066390 100644
+index 072568d..605cbab 100644
 --- a/init/Android.bp
 +++ b/init/Android.bp
-@@ -118,7 +118,7 @@ libinit_cc_defaults {
+@@ -114,7 +114,7 @@ libinit_cc_defaults {
      cflags: [
          "-DALLOW_FIRST_STAGE_CONSOLE=0",
          "-DALLOW_LOCAL_PROP_OVERRIDE=0",
@@ -421,7 +397,7 @@ index 327c56e..3066390 100644
          "-DANDROID_BASE_UNIQUE_FD_DISABLE_IMPLICIT_CONVERSION",
          "-DDUMP_ON_UMOUNT_FAILURE=0",
          "-DINIT_FULL_SOURCES",
-@@ -406,7 +406,7 @@ init_first_stage_cc_defaults {
+@@ -412,7 +412,7 @@ init_first_stage_cc_defaults {
          "-Werror",
          "-DALLOW_FIRST_STAGE_CONSOLE=0",
          "-DALLOW_LOCAL_PROP_OVERRIDE=0",
@@ -430,15 +406,14 @@ index 327c56e..3066390 100644
          "-DREBOOT_BOOTLOADER_ON_PANIC=0",
          "-DWORLD_WRITABLE_KMSG=0",
          "-DDUMP_ON_UMOUNT_FAILURE=0",
-
 diff --git a/rootdir/init.rc b/rootdir/init.rc
-index 92e8f27..533159d 100644
+index 1acd637..42f0ac3 100644
 --- a/rootdir/init.rc
 +++ b/rootdir/init.rc
-@@ -696,24 +696,12 @@ on post-fs-data
+@@ -709,24 +709,12 @@ on post-fs-data
      # Make sure we have the device encryption key.
      installkey /data
-
+ 
 -    # Start bootcharting as soon as possible after the data partition is
 -    # mounted to collect more data.
 -    mkdir /data/bootchart 0755 shell shell encryption=Require
@@ -446,10 +421,10 @@ index 92e8f27..533159d 100644
 -
      # Avoid predictable entropy pool. Carry over entropy from previous boot.
      copy /data/system/entropy.dat /dev/urandom
-
+ 
      mkdir /data/vendor 0771 root root encryption=Require
      mkdir /data/vendor/hardware 0771 root root
-
+ 
 -    # Start tombstoned early to be able to store tombstones.
 -    mkdir /data/anr 0775 system system encryption=Require
 -    mkdir /data/tombstones 0775 system system encryption=Require
@@ -459,8 +434,8 @@ index 92e8f27..533159d 100644
 -
      # Make sure that apexd is started in the default namespace
      enter_default_mount_ns
-
-@@ -794,9 +782,7 @@ on post-fs-data
+ 
+@@ -807,9 +795,7 @@ on post-fs-data
      chmod 0660 /data/misc/bluedroid/bt_config.conf
      chown bluetooth bluetooth /data/misc/bluedroid/bt_config.conf
      mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
@@ -470,7 +445,7 @@ index 92e8f27..533159d 100644
      mkdir /data/misc/credstore 0700 credstore credstore
      mkdir /data/misc/gatekeeper 0700 system system
      mkdir /data/misc/keychain 0771 system system
-@@ -825,14 +811,6 @@ on post-fs-data
+@@ -838,14 +824,6 @@ on post-fs-data
      mkdir /data/misc/audioserver 0700 audioserver audioserver
      mkdir /data/misc/cameraserver 0700 cameraserver cameraserver
      mkdir /data/misc/vold 0700 root root
@@ -485,7 +460,7 @@ index 92e8f27..533159d 100644
      # profile file layout
      mkdir /data/misc/profiles 0771 system system
      mkdir /data/misc/profiles/cur 0771 system system
-@@ -844,7 +822,6 @@ on post-fs-data
+@@ -857,7 +835,6 @@ on post-fs-data
      mkdir /data/misc/apexrollback 0700 root root
      mkdir /data/misc/appcompat/ 0700 system system
      mkdir /data/misc/uprobestats-configs/ 0777 uprobestats uprobestats
@@ -493,7 +468,7 @@ index 92e8f27..533159d 100644
      # create location to store pre-reboot information
      mkdir /data/misc/prereboot 0700 system system
      # directory used for on-device refresh metrics file.
-@@ -867,7 +844,6 @@ on post-fs-data
+@@ -882,7 +859,6 @@ on post-fs-data
      # For security reasons, /data/local/tmp should always be empty.
      # Do not place files or directories in /data/local/tmp
      mkdir /data/local/tmp 0771 shell shell
@@ -501,10 +476,10 @@ index 92e8f27..533159d 100644
      mkdir /data/app-private 0771 system system encryption=Require
      mkdir /data/app-ephemeral 0771 system system encryption=Require
      mkdir /data/app-asec 0700 root root encryption=Require
-@@ -879,25 +855,8 @@ on post-fs-data
+@@ -897,25 +873,8 @@ on post-fs-data
      mkdir /data/fonts/files 0771 system system
      mkdir /data/fonts/config 0770 system system
-
+ 
 -    # Create directories to push tests to for each linker namespace.
 -    # Create the subdirectories in case the first test is run as root
 -    # so it doesn't end up owned by root.
@@ -524,10 +499,10 @@ index 92e8f27..533159d 100644
 -    # create the OTA package directory. It will be accessed by GmsCore (cache
 -    # group), update_engine and update_verifier.
 -    mkdir /data/ota_package 0770 system cache encryption=Require
-
+ 
      # create resource-cache and double-check the perms
      mkdir /data/resource-cache 0771 system system encryption=Require
-@@ -931,13 +890,7 @@ on post-fs-data
+@@ -949,13 +908,7 @@ on post-fs-data
      mkdir /data/system/environ 0700 system system
      # b/183861600 attempt to fix selinux label before running derive_classpath service
      restorecon /data/system/environ
@@ -538,33 +513,33 @@ index 92e8f27..533159d 100644
 -    # TODO(b/270286197): remove these after couple releases.
 -    mkdir /data/system/shutdown-checkpoints 0700 system system
 -    restorecon_recursive /data/system/shutdown-checkpoints
-
+ 
      # Create the parent directories of the user CE and DE storage directories.
      # These parent directories must use encryption=None, since each of their
-@@ -997,10 +950,7 @@ on post-fs-data
+@@ -1026,10 +979,7 @@ on post-fs-data
      mkdir /data_mirror/ref_profiles 0700 root root
      mount none /data/misc/profiles/ref /data_mirror/ref_profiles bind rec
-
+ 
 -    mkdir /data/cache 0770 system cache encryption=Require
 -    mkdir /data/cache/recovery 0770 system cache
 -    mkdir /data/cache/backup_stage 0700 system system
 -    mkdir /data/cache/backup 0700 system system
 +    symlink /cache /data/cache
-
+ 
      # Delete these if need be, per b/139193659
      mkdir /data/rollback 0700 system system encryption=DeleteIfNecessary
-@@ -1216,7 +1166,6 @@ on charger
+@@ -1265,7 +1215,6 @@ on charger
      class_start charger
-
+ 
  on property:sys.boot_completed=1
 -    bootchart stop
      # Setup per_boot directory so other .rc could start to use it on boot_completed
      exec - system system -- /bin/rm -rf /data/per_boot
      mkdir /data/per_boot 0700 system system encryption=Require key=per_boot_ref
-@@ -1295,17 +1244,6 @@ service console /system/bin/sh
+@@ -1344,17 +1293,6 @@ service console /system/bin/sh
      setenv HOSTNAME console
      shutdown critical
-
+ 
 -on property:ro.debuggable=1
 -    # Give writes to the same group for the trace folder on debug builds,
 -    # it's further protected by selinux policy.
@@ -578,31 +553,32 @@ index 92e8f27..533159d 100644
 -
  on init && property:ro.debuggable=1
      start console
+ 
 
 project system/sepolicy/
 diff --git a/build/soong/policy.go b/build/soong/policy.go
-index cbcc57a..4a99277 100644
+index 8bdf01b..8fd7fa3 100644
 --- a/build/soong/policy.go
 +++ b/build/soong/policy.go
-@@ -416,7 +416,7 @@ func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Pat
+@@ -414,7 +414,7 @@ func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Pat
  			FlagWithArg("-o ", os.DevNull).
  			FlagWithArg("-f ", os.DevNull)
-
+ 
 -		if proptools.BoolDefault(c.properties.Ignore_neverallow, ctx.Config().SelinuxIgnoreNeverallows()) {
 +		if proptools.BoolDefault(c.properties.Ignore_neverallow, true) {
  			secilcCmd.Flag("-N")
  		}
  	}
-@@ -534,13 +534,13 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -525,13 +525,13 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
  		FlagWithOutput("-o ", bin).
  		FlagWithArg("-f ", os.DevNull)
-
+ 
 -	if proptools.BoolDefault(c.properties.Ignore_neverallow, ctx.Config().SelinuxIgnoreNeverallows()) {
 +	if proptools.BoolDefault(c.properties.Ignore_neverallow, true) {
  		secilcCmd.Flag("-N")
  	}
  	rule.Temporary(bin)
-
+ 
  	// permissive check is performed only in user build (not debuggable).
 -	if !ctx.Config().Debuggable() {
 +	if false {
@@ -621,33 +597,32 @@ index 97948f3..8578b28 100644
  	$(hide) ln -sf bootanimation.zip $@
 -
 -ALL_DEFAULT_INSTALLED_MODULES += $(BOOTANIMATION_SYMLINK)
-
 diff --git a/config/common.mk b/config/common.mk
-index ca58f4a..8263467 100644
+index afc8723..aebc7ec 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -108,8 +108,6 @@ endif
+@@ -115,8 +115,6 @@ endif
  # Bootanimation
  TARGET_SCREEN_WIDTH ?= 1080
  TARGET_SCREEN_HEIGHT ?= 1920
 -PRODUCT_PACKAGES += \
 -    bootanimation.zip
-
+ 
  # Build Manifest
  PRODUCT_PACKAGES += \
-@@ -130,10 +128,6 @@ endif
-
+@@ -137,10 +135,6 @@ endif
+ 
  PRODUCT_PACKAGES += \
      LineageSettingsProvider \
 -    Updater
 -
 -PRODUCT_COPY_FILES += \
 -    vendor/lineage/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
-
+ 
  # Config
  PRODUCT_PACKAGES += \
-@@ -142,13 +136,9 @@ PRODUCT_PACKAGES += \
-
+@@ -149,13 +143,9 @@ PRODUCT_PACKAGES += \
+ 
  # Extra tools in Lineage
  PRODUCT_PACKAGES += \
 -    bash \
@@ -657,13 +632,13 @@ index ca58f4a..8263467 100644
 -    nano \
      setcap \
 -    vim
-
- PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
-     system/bin/curl \
-@@ -168,23 +158,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+ 
+ PRODUCT_PACKAGES += \
+     nano_recovery
+@@ -178,23 +168,6 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
      system/%/libfuse-lite.so \
      system/%/libntfs-3g.so
-
+ 
 -# Openssh
 -PRODUCT_PACKAGES += \
 -    scp \
@@ -684,63 +659,21 @@ index ca58f4a..8263467 100644
  # Storage manager
  PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
      ro.storage_manager.enabled=true
-@@ -217,7 +190,7 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
+@@ -227,7 +200,7 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
      SystemUI
-
+ 
  PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 -    dalvik.vm.systemuicompilerfilter=speed
 +    dalvik.vm.systemuicompilerfilter=everything
-
- # SetupWizard
- PRODUCT_PRODUCT_PROPERTIES += \
-
-diff --git a/config/common_full.mk b/config/common_full.mk
-index f7eecd8..354d716 100644
---- a/config/common_full.mk
-+++ b/config/common_full.mk
-@@ -3,35 +3,19 @@ $(call inherit-product, vendor/lineage/config/common_mobile.mk)
-
- PRODUCT_SIZE := full
-
--# Include {Lato,Rubik} fonts
--$(call inherit-product-if-exists, external/google-fonts/lato/fonts.mk)
--$(call inherit-product-if-exists, external/google-fonts/rubik/fonts.mk)
--
- # Apps
- PRODUCT_PACKAGES += \
-     Eleven \
-     Etar \
-     Profiles \
-     Recorder \
--    Seedvault
-
- ifneq ($(PRODUCT_NO_CAMERA),true)
- PRODUCT_PACKAGES += \
-     Aperture
- endif
-
--ifneq ($(TARGET_EXCLUDES_AUDIOFX),true)
--PRODUCT_PACKAGES += \
--    AudioFX
--endif
--
- # Extra cmdline tools
- PRODUCT_PACKAGES += \
-     unrar \
-     zstd
--
--# Fonts
--PRODUCT_PACKAGES += \
--    fonts_customization.xml \
--    FontLatoOverlay \
--    FontRubikOverlay
-
+ 
+ ifeq ($(TARGET_BUILD_VARIANT),userdebug)
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 diff --git a/config/common_mobile.mk b/config/common_mobile.mk
-index 4e898b4..e0a9b9d 100644
+index a09a9ef..4873940 100644
 --- a/config/common_mobile.mk
 +++ b/config/common_mobile.mk
-@@ -47,38 +47,9 @@ endif
-
+@@ -49,37 +49,8 @@ endif
+ 
  # Customizations
  PRODUCT_PACKAGES += \
 -    IconPackCircularAndroidOverlay \
@@ -774,20 +707,63 @@ index 4e898b4..e0a9b9d 100644
 -    IconShapeTaperedRectOverlay \
 -    IconShapeTeardropOverlay \
 -    IconShapeVesselOverlay \
-     LineageNavigationBarNoHint \
 +    NavigationBarMode3ButtonOverlay \
 +    NavigationBarModeGesturalOverlay \
-     NavigationBarMode2ButtonOverlay
-
- # Media
-@@ -91,6 +62,4 @@ PRODUCT_PACKAGES += \
-
+     LineageNavigationBarNoHint
+ 
+ # Legal
+@@ -109,6 +80,4 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+ 
  # Themes
  PRODUCT_PACKAGES += \
 -    LineageBlackTheme \
      ThemePicker \
 -    ThemesStub
-
+diff --git a/config/common_mobile_full.mk b/config/common_mobile_full.mk
+index 22b1acf..0aba249 100644
+--- a/config/common_mobile_full.mk
++++ b/config/common_mobile_full.mk
+@@ -3,17 +3,12 @@ $(call inherit-product, vendor/lineage/config/common_mobile.mk)
+ 
+ PRODUCT_SIZE := full
+ 
+-# Include {Lato,Rubik} fonts
+-$(call inherit-product-if-exists, external/google-fonts/lato/fonts.mk)
+-$(call inherit-product-if-exists, external/google-fonts/rubik/fonts.mk)
+-
+ # Apps
+ PRODUCT_PACKAGES += \
+     Camelot \
+     Etar \
+     Profiles \
+     Recorder \
+-    Seedvault \
+     Twelve
+ 
+ ifneq ($(PRODUCT_NO_CAMERA),true)
+@@ -21,22 +16,11 @@ PRODUCT_PACKAGES += \
+     Aperture
+ endif
+ 
+-ifneq ($(TARGET_EXCLUDES_AUDIOFX),true)
+-PRODUCT_PACKAGES += \
+-    AudioFX
+-endif
+-
+ # Extra cmdline tools
+ PRODUCT_PACKAGES += \
+     unrar \
+     zstd
+ 
+-# Fonts
+-PRODUCT_PACKAGES += \
+-    fonts_customization.xml \
+-    FontLatoOverlay \
+-    FontRubikOverlay
+-
+ # Include Lineage LatinIME dictionaries
+ PRODUCT_PACKAGE_OVERLAYS += vendor/lineage/overlay/dictionaries
+ PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/lineage/overlay/dictionaries
 diff --git a/config/telephony.mk b/config/telephony.mk
 index 0c6ebba..6878efb 100644
 --- a/config/telephony.mk
@@ -797,21 +773,6 @@ index 0c6ebba..6878efb 100644
  PRODUCT_PACKAGES += \
      messaging \
 -    Stk
-
+ 
  # Default ringtone
  PRODUCT_PRODUCT_PROPERTIES += \
-
-diff --git a/prebuilt/common/etc/init/init.lineage-system_ext.rc b/prebuilt/common/etc/init/init.lineage-system_ext.rc
-index fdee7ea..d75d559 100644
---- a/prebuilt/common/etc/init/init.lineage-system_ext.rc
-+++ b/prebuilt/common/etc/init/init.lineage-system_ext.rc
-@@ -1,9 +1,3 @@
- # LineageOS core functionality
- on init
-     export TERMINFO /system_ext/etc/terminfo
--
--# bugreport is triggered by holding down volume down, volume up and power
--service bugreport /system/bin/dumpstate -d -p -z
--    oneshot
--    disabled
--    keycodes 114 115 116
