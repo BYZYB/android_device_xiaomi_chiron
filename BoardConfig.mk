@@ -19,6 +19,9 @@ DEVICE_PATH := device/xiaomi/chiron
 # Temporary solutions
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
+# A/B
+AB_OTA_UPDATER := false
+
 # ANT+
 BOARD_ANT_WIRELESS_DEVICE := "qualcomm-hidl"
 
