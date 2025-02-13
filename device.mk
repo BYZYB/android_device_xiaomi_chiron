@@ -153,7 +153,7 @@ PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-service
 
 # Lights
-PRODUCT_PACKAGES += android.hardware.light-service.xiaomi
+PRODUCT_PACKAGES += android.hardware.light-service.lineage
 
 # Lineage Health
 PRODUCT_PACKAGES += vendor.lineage.health-service.default
