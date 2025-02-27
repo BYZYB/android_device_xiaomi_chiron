@@ -49,3 +49,7 @@ fi
 
 chmod g-w /data/vendor/modem_config
 setprop ro.vendor.ril.mbn_copy_completed 1
+
+if [ -f "/data/local/init.custom.post_boot.sh" ]; then
+    /data/local/init.custom.post_boot.sh
+fi

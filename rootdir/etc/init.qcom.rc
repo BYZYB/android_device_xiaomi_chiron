@@ -199,13 +199,6 @@ service vendor.cnss-daemon /vendor/bin/cnss-daemon -n -l
     capabilities NET_ADMIN
     task_profiles ServiceCapacityLow
 
-service vendor.custom-post-boot /vendor/bin/init.custom.post_boot.sh
-    class late_start
-    user root
-    disabled
-    oneshot
-    task_profiles ServiceCapacityLow
-
 service vendor.irsc_util /vendor/bin/irsc_util "/vendor/etc/sec_config"
     class core
     user root
